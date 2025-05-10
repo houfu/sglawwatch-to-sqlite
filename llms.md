@@ -1,0 +1,2911 @@
+<documents>
+<document index="1">
+<source>./LICENSE</source>
+<document_content>
+                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
+
+   APPENDIX: How to apply the Apache License to your work.
+
+      To apply the Apache License to your work, attach the following
+      boilerplate notice, with the fields enclosed by brackets "[]"
+      replaced with your own identifying information. (Don't include
+      the brackets!)  The text should be enclosed in the appropriate
+      comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same "printed page" as the copyright notice for easier
+      identification within third-party archives.
+
+   Copyright [yyyy] [name of copyright owner]
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+</document_content>
+</document>
+<document index="2">
+<source>./README.md</source>
+<document_content>
+# sglawwatch-to-sqlite
+
+[![PyPI](https://img.shields.io/pypi/v/sglawwatch-to-sqlite.svg)](https://pypi.org/project/sglawwatch-to-sqlite/)
+[![Changelog](https://img.shields.io/github/v/release/houfu/sglawwatch-to-sqlite?include_prereleases&label=changelog)](https://github.com/houfu/sglawwatch-to-sqlite/releases)
+[![Tests](https://github.com/houfu/sglawwatch-to-sqlite/actions/workflows/test.yml/badge.svg)](https://github.com/houfu/sglawwatch-to-sqlite/actions/workflows/test.yml)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/houfu/sglawwatch-to-sqlite/blob/master/LICENSE)
+
+Track Singapore's legal developments by importing Singapore Law Watch's RSS feed into a searchable SQLite database
+
+## Installation
+
+Install this tool using `pip`:
+```bash
+pip install sglawwatch-to-sqlite
+```
+## Usage
+
+For help, run:
+```bash
+sglawwatch-to-sqlite --help
+```
+You can also use:
+```bash
+python -m sglawwatch_to_sqlite --help
+```
+## Development
+
+To contribute to this tool, first checkout the code. Then create a new virtual environment:
+```bash
+cd sglawwatch-to-sqlite
+python -m venv venv
+source venv/bin/activate
+```
+Now install the dependencies and test dependencies:
+```bash
+pip install -e '.[test]'
+```
+To run the tests:
+```bash
+python -m pytest
+```
+
+</document_content>
+</document>
+<document index="3">
+<source>./llms.md</source>
+<document_content>
+<documents>
+<document index="1">
+<source>./LICENSE</source>
+<document_content>
+                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
+
+   APPENDIX: How to apply the Apache License to your work.
+
+      To apply the Apache License to your work, attach the following
+      boilerplate notice, with the fields enclosed by brackets "[]"
+      replaced with your own identifying information. (Don't include
+      the brackets!)  The text should be enclosed in the appropriate
+      comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same "printed page" as the copyright notice for easier
+      identification within third-party archives.
+
+   Copyright [yyyy] [name of copyright owner]
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+</document_content>
+</document>
+<document index="2">
+<source>./README.md</source>
+<document_content>
+# sglawwatch-to-sqlite
+
+[![PyPI](https://img.shields.io/pypi/v/sglawwatch-to-sqlite.svg)](https://pypi.org/project/sglawwatch-to-sqlite/)
+[![Changelog](https://img.shields.io/github/v/release/houfu/sglawwatch-to-sqlite?include_prereleases&label=changelog)](https://github.com/houfu/sglawwatch-to-sqlite/releases)
+[![Tests](https://github.com/houfu/sglawwatch-to-sqlite/actions/workflows/test.yml/badge.svg)](https://github.com/houfu/sglawwatch-to-sqlite/actions/workflows/test.yml)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/houfu/sglawwatch-to-sqlite/blob/master/LICENSE)
+
+Track Singapore's legal developments by importing Singapore Law Watch's RSS feed into a searchable SQLite database
+
+## Installation
+
+Install this tool using `pip`:
+```bash
+pip install sglawwatch-to-sqlite
+```
+## Usage
+
+For help, run:
+```bash
+sglawwatch-to-sqlite --help
+```
+You can also use:
+```bash
+python -m sglawwatch_to_sqlite --help
+```
+## Development
+
+To contribute to this tool, first checkout the code. Then create a new virtual environment:
+```bash
+cd sglawwatch-to-sqlite
+python -m venv venv
+source venv/bin/activate
+```
+Now install the dependencies and test dependencies:
+```bash
+pip install -e '.[test]'
+```
+To run the tests:
+```bash
+python -m pytest
+```
+
+</document_content>
+</document>
+
+</document_content>
+</document>
+<document index="4">
+<source>./pyproject.toml</source>
+<document_content>
+[project]
+name = "sglawwatch-to-sqlite"
+version = "0.1"
+description = "Track Singapore's legal developments by importing Singapore Law Watch's RSS feed into a searchable SQLite database"
+readme = "README.md"
+authors = [{ name = "Ang Hou Fu" }]
+license = "Apache-2.0"
+requires-python = ">=3.8"
+classifiers = []
+dependencies = [
+    "click",
+    "feedparser>=6.0.11",
+    "httpx>=0.28.1",
+    "openai>=1.78.0",
+    "sqlite-utils>=3.38",
+    "tenacity>=9.0.0",
+    "boto3>=1.37.38",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest-asyncio>=0.24.0",
+    "pytest>=8.3.5",
+]
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+
+[project.urls]
+Homepage = "https://github.com/houfu/sglawwatch-to-sqlite"
+Changelog = "https://github.com/houfu/sglawwatch-to-sqlite/releases"
+Issues = "https://github.com/houfu/sglawwatch-to-sqlite/issues"
+CI = "https://github.com/houfu/sglawwatch-to-sqlite/actions"
+
+[project.scripts]
+sglawwatch-to-sqlite = "sglawwatch_to_sqlite.cli:cli"
+
+[project.optional-dependencies]
+test = ["pytest"]
+</document_content>
+</document>
+<document index="5">
+<source>./uv.lock</source>
+<document_content>
+version = 1
+requires-python = ">=3.8"
+resolution-markers = [
+    "python_full_version < '3.10'",
+    "python_full_version >= '3.10'",
+]
+
+[[package]]
+name = "annotated-types"
+version = "0.7.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "typing-extensions", marker = "python_full_version < '3.9'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ee/67/531ea369ba64dcff5ec9c3402f9f51bf748cec26dde048a2f973a4eea7f5/annotated_types-0.7.0.tar.gz", hash = "sha256:aff07c09a53a08bc8cfccb9c85b05f1aa9a2a6f23728d790723543408344ce89", size = 16081 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/78/b6/6307fbef88d9b5ee7421e68d78a9f162e0da4900bc5f5793f6d3d0e34fb8/annotated_types-0.7.0-py3-none-any.whl", hash = "sha256:1f02e8b43a8fbbc3f3e0d4f0f4bfc8131bcb4eebe8849b8e5c773f3a1c582a53", size = 13643 },
+]
+
+[[package]]
+name = "anyio"
+version = "4.5.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "exceptiongroup", marker = "python_full_version < '3.11'" },
+    { name = "idna" },
+    { name = "sniffio" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/4d/f9/9a7ce600ebe7804daf90d4d48b1c0510a4561ddce43a596be46676f82343/anyio-4.5.2.tar.gz", hash = "sha256:23009af4ed04ce05991845451e11ef02fc7c5ed29179ac9a420e5ad0ac7ddc5b", size = 171293 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1b/b4/f7e396030e3b11394436358ca258a81d6010106582422f23443c16ca1873/anyio-4.5.2-py3-none-any.whl", hash = "sha256:c011ee36bc1e8ba40e5a81cb9df91925c218fe9b778554e0b56a21e1b5d4716f", size = 89766 },
+]
+
+[[package]]
+name = "boto3"
+version = "1.37.38"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "botocore" },
+    { name = "jmespath" },
+    { name = "s3transfer" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/b5/d1c2e8c484cea43891629bbab6ca90ce9ca932586750bc0e786c8f096ccf/boto3-1.37.38.tar.gz", hash = "sha256:88c02910933ab7777597d1ca7c62375f52822e0aa1a8e0c51b2598a547af42b2", size = 111623 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d3/87/8189f22ee798177bc7b40afd13f046442c5f91b699e70a950b42ff447e80/boto3-1.37.38-py3-none-any.whl", hash = "sha256:b6d42803607148804dff82389757827a24ce9271f0583748853934c86310999f", size = 139922 },
+]
+
+[[package]]
+name = "botocore"
+version = "1.37.38"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jmespath" },
+    { name = "python-dateutil" },
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/34/79/4e072e614339727f79afef704e5993b5b4d2667c1671c757cc4deb954744/botocore-1.37.38.tar.gz", hash = "sha256:c3ea386177171f2259b284db6afc971c959ec103fa2115911c4368bea7cbbc5d", size = 13832365 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/55/1b/93f3504afc7c523dcaa8a8147cfc75421983e30b08d9f93a533929589630/botocore-1.37.38-py3-none-any.whl", hash = "sha256:23b4097780e156a4dcaadfc1ed156ce25cb95b6087d010c4bb7f7f5d9bc9d219", size = 13499391 },
+]
+
+[[package]]
+name = "certifi"
+version = "2025.4.26"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e8/9e/c05b3920a3b7d20d3d3310465f50348e5b3694f4f88c6daf736eef3024c4/certifi-2025.4.26.tar.gz", hash = "sha256:0a816057ea3cdefcef70270d2c515e4506bbc954f417fa5ade2021213bb8f0c6", size = 160705 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4a/7e/3db2bd1b1f9e95f7cddca6d6e75e2f2bd9f51b1246e546d88addca0106bd/certifi-2025.4.26-py3-none-any.whl", hash = "sha256:30350364dfe371162649852c63336a15c70c6510c2ad5015b21c2345311805f3", size = 159618 },
+]
+
+[[package]]
+name = "click"
+version = "8.1.8"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama", marker = "platform_system == 'Windows'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b9/2e/0090cbf739cee7d23781ad4b89a9894a41538e4fcf4c31dcdd705b78eb8b/click-8.1.8.tar.gz", hash = "sha256:ed53c9d8990d83c2a27deae68e4ee337473f6330c040a31d4225c9574d16096a", size = 226593 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7e/d4/7ebdbd03970677812aac39c869717059dbb71a4cfc033ca6e5221787892c/click-8.1.8-py3-none-any.whl", hash = "sha256:63c132bbbed01578a06712a2d1f497bb62d9c1c0d329b7903a866228027263b2", size = 98188 },
+]
+
+[[package]]
+name = "click-default-group"
+version = "1.2.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "click" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/1d/ce/edb087fb53de63dad3b36408ca30368f438738098e668b78c87f93cd41df/click_default_group-1.2.4.tar.gz", hash = "sha256:eb3f3c99ec0d456ca6cd2a7f08f7d4e91771bef51b01bdd9580cc6450fe1251e", size = 3505 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2c/1a/aff8bb287a4b1400f69e09a53bd65de96aa5cee5691925b38731c67fc695/click_default_group-1.2.4-py2.py3-none-any.whl", hash = "sha256:9b60486923720e7fc61731bdb32b617039aba820e22e1c88766b1125592eaa5f", size = 4123 },
+]
+
+[[package]]
+name = "colorama"
+version = "0.4.6"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d8/53/6f443c9a4a8358a93a6792e2acffb9d9d5cb0a5cfd8802644b7b1c9a02e4/colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44", size = 27697 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6", size = 25335 },
+]
+
+[[package]]
+name = "distro"
+version = "1.9.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/fc/f8/98eea607f65de6527f8a2e8885fc8015d3e6f5775df186e443e0964a11c3/distro-1.9.0.tar.gz", hash = "sha256:2fa77c6fd8940f116ee1d6b94a2f90b13b5ea8d019b98bc8bafdcabcdd9bdbed", size = 60722 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/12/b3/231ffd4ab1fc9d679809f356cebee130ac7daa00d6d6f3206dd4fd137e9e/distro-1.9.0-py3-none-any.whl", hash = "sha256:7bffd925d65168f85027d8da9af6bddab658135b840670a223589bc0c8ef02b2", size = 20277 },
+]
+
+[[package]]
+name = "exceptiongroup"
+version = "1.2.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/09/35/2495c4ac46b980e4ca1f6ad6db102322ef3ad2410b79fdde159a4b0f3b92/exceptiongroup-1.2.2.tar.gz", hash = "sha256:47c2edf7c6738fafb49fd34290706d1a1a2f4d1c6df275526b62cbb4aa5393cc", size = 28883 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/02/cc/b7e31358aac6ed1ef2bb790a9746ac2c69bcb3c8588b41616914eb106eaf/exceptiongroup-1.2.2-py3-none-any.whl", hash = "sha256:3111b9d131c238bec2f8f516e123e14ba243563fb135d3fe885990585aa7795b", size = 16453 },
+]
+
+[[package]]
+name = "feedparser"
+version = "6.0.11"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "sgmllib3k" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ff/aa/7af346ebeb42a76bf108027fe7f3328bb4e57a3a96e53e21fd9ef9dd6dd0/feedparser-6.0.11.tar.gz", hash = "sha256:c9d0407b64c6f2a065d0ebb292c2b35c01050cc0dc33757461aaabdc4c4184d5", size = 286197 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7c/d4/8c31aad9cc18f451c49f7f9cfb5799dadffc88177f7917bc90a66459b1d7/feedparser-6.0.11-py3-none-any.whl", hash = "sha256:0be7ee7b395572b19ebeb1d6aafb0028dee11169f1c934e0ed67d54992f4ad45", size = 81343 },
+]
+
+[[package]]
+name = "h11"
+version = "0.16.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/01/ee/02a2c011bdab74c6fb3c75474d40b3052059d95df7e73351460c8588d963/h11-0.16.0.tar.gz", hash = "sha256:4e35b956cf45792e4caa5885e69fba00bdbc6ffafbfa020300e549b208ee5ff1", size = 101250 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/04/4b/29cac41a4d98d144bf5f6d33995617b185d14b22401f75ca86f384e87ff1/h11-0.16.0-py3-none-any.whl", hash = "sha256:63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86", size = 37515 },
+]
+
+[[package]]
+name = "httpcore"
+version = "1.0.9"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "certifi" },
+    { name = "h11" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/06/94/82699a10bca87a5556c9c59b5963f2d039dbd239f25bc2a63907a05a14cb/httpcore-1.0.9.tar.gz", hash = "sha256:6e34463af53fd2ab5d807f399a9b45ea31c3dfa2276f15a2c3f00afff6e176e8", size = 85484 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7e/f5/f66802a942d491edb555dd61e3a9961140fd64c90bce1eafd741609d334d/httpcore-1.0.9-py3-none-any.whl", hash = "sha256:2d400746a40668fc9dec9810239072b40b4484b640a8c38fd654a024c7a1bf55", size = 78784 },
+]
+
+[[package]]
+name = "httpx"
+version = "0.28.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anyio" },
+    { name = "certifi" },
+    { name = "httpcore" },
+    { name = "idna" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b1/df/48c586a5fe32a0f01324ee087459e112ebb7224f646c0b5023f5e79e9956/httpx-0.28.1.tar.gz", hash = "sha256:75e98c5f16b0f35b567856f597f06ff2270a374470a5c2392242528e3e3e42fc", size = 141406 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2a/39/e50c7c3a983047577ee07d2a9e53faf5a69493943ec3f6a384bdc792deb2/httpx-0.28.1-py3-none-any.whl", hash = "sha256:d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad", size = 73517 },
+]
+
+[[package]]
+name = "idna"
+version = "3.10"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f1/70/7703c29685631f5a7590aa73f1f1d3fa9a380e654b86af429e0934a32f7d/idna-3.10.tar.gz", hash = "sha256:12f65c9b470abda6dc35cf8e63cc574b1c52b11df2c86030af0ac09b01b13ea9", size = 190490 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/76/c6/c88e154df9c4e1a2a66ccf0005a88dfb2650c1dffb6f5ce603dfbd452ce3/idna-3.10-py3-none-any.whl", hash = "sha256:946d195a0d259cbba61165e88e65941f16e9b36ea6ddb97f00452bae8b1287d3", size = 70442 },
+]
+
+[[package]]
+name = "iniconfig"
+version = "2.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f2/97/ebf4da567aa6827c909642694d71c9fcf53e5b504f2d96afea02718862f3/iniconfig-2.1.0.tar.gz", hash = "sha256:3abbd2e30b36733fee78f9c7f7308f2d0050e88f0087fd25c2645f63c773e1c7", size = 4793 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2c/e1/e6716421ea10d38022b952c159d5161ca1193197fb744506875fbb87ea7b/iniconfig-2.1.0-py3-none-any.whl", hash = "sha256:9deba5723312380e77435581c6bf4935c94cbfab9b1ed33ef8d238ea168eb760", size = 6050 },
+]
+
+[[package]]
+name = "jiter"
+version = "0.9.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/1e/c2/e4562507f52f0af7036da125bb699602ead37a2332af0788f8e0a3417f36/jiter-0.9.0.tar.gz", hash = "sha256:aadba0964deb424daa24492abc3d229c60c4a31bfee205aedbf1acc7639d7893", size = 162604 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b0/82/39f7c9e67b3b0121f02a0b90d433626caa95a565c3d2449fea6bcfa3f5f5/jiter-0.9.0-cp310-cp310-macosx_10_12_x86_64.whl", hash = "sha256:816ec9b60fdfd1fec87da1d7ed46c66c44ffec37ab2ef7de5b147b2fce3fd5ad", size = 314540 },
+    { url = "https://files.pythonhosted.org/packages/01/07/7bf6022c5a152fca767cf5c086bb41f7c28f70cf33ad259d023b53c0b858/jiter-0.9.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:9b1d3086f8a3ee0194ecf2008cf81286a5c3e540d977fa038ff23576c023c0ea", size = 321065 },
+    { url = "https://files.pythonhosted.org/packages/6c/b2/de3f3446ecba7c48f317568e111cc112613da36c7b29a6de45a1df365556/jiter-0.9.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:1339f839b91ae30b37c409bf16ccd3dc453e8b8c3ed4bd1d6a567193651a4a51", size = 341664 },
+    { url = "https://files.pythonhosted.org/packages/13/cf/6485a4012af5d407689c91296105fcdb080a3538e0658d2abf679619c72f/jiter-0.9.0-cp310-cp310-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:ffba79584b3b670fefae66ceb3a28822365d25b7bf811e030609a3d5b876f538", size = 364635 },
+    { url = "https://files.pythonhosted.org/packages/0d/f7/4a491c568f005553240b486f8e05c82547340572d5018ef79414b4449327/jiter-0.9.0-cp310-cp310-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:5cfc7d0a8e899089d11f065e289cb5b2daf3d82fbe028f49b20d7b809193958d", size = 406288 },
+    { url = "https://files.pythonhosted.org/packages/d3/ca/f4263ecbce7f5e6bded8f52a9f1a66540b270c300b5c9f5353d163f9ac61/jiter-0.9.0-cp310-cp310-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:e00a1a2bbfaaf237e13c3d1592356eab3e9015d7efd59359ac8b51eb56390a12", size = 397499 },
+    { url = "https://files.pythonhosted.org/packages/ac/a2/522039e522a10bac2f2194f50e183a49a360d5f63ebf46f6d890ef8aa3f9/jiter-0.9.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d1d9870561eb26b11448854dce0ff27a9a27cb616b632468cafc938de25e9e51", size = 352926 },
+    { url = "https://files.pythonhosted.org/packages/b1/67/306a5c5abc82f2e32bd47333a1c9799499c1c3a415f8dde19dbf876f00cb/jiter-0.9.0-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:9872aeff3f21e437651df378cb75aeb7043e5297261222b6441a620218b58708", size = 384506 },
+    { url = "https://files.pythonhosted.org/packages/0f/89/c12fe7b65a4fb74f6c0d7b5119576f1f16c79fc2953641f31b288fad8a04/jiter-0.9.0-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:1fd19112d1049bdd47f17bfbb44a2c0001061312dcf0e72765bfa8abd4aa30e5", size = 520621 },
+    { url = "https://files.pythonhosted.org/packages/c4/2b/d57900c5c06e6273fbaa76a19efa74dbc6e70c7427ab421bf0095dfe5d4a/jiter-0.9.0-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:6ef5da104664e526836070e4a23b5f68dec1cc673b60bf1edb1bfbe8a55d0678", size = 512613 },
+    { url = "https://files.pythonhosted.org/packages/89/05/d8b90bfb21e58097d5a4e0224f2940568366f68488a079ae77d4b2653500/jiter-0.9.0-cp310-cp310-win32.whl", hash = "sha256:cb12e6d65ebbefe5518de819f3eda53b73187b7089040b2d17f5b39001ff31c4", size = 206613 },
+    { url = "https://files.pythonhosted.org/packages/2c/1d/5767f23f88e4f885090d74bbd2755518050a63040c0f59aa059947035711/jiter-0.9.0-cp310-cp310-win_amd64.whl", hash = "sha256:c43ca669493626d8672be3b645dbb406ef25af3f4b6384cfd306da7eb2e70322", size = 208371 },
+    { url = "https://files.pythonhosted.org/packages/23/44/e241a043f114299254e44d7e777ead311da400517f179665e59611ab0ee4/jiter-0.9.0-cp311-cp311-macosx_10_12_x86_64.whl", hash = "sha256:6c4d99c71508912a7e556d631768dcdef43648a93660670986916b297f1c54af", size = 314654 },
+    { url = "https://files.pythonhosted.org/packages/fb/1b/a7e5e42db9fa262baaa9489d8d14ca93f8663e7f164ed5e9acc9f467fc00/jiter-0.9.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:8f60fb8ce7df529812bf6c625635a19d27f30806885139e367af93f6e734ef58", size = 320909 },
+    { url = "https://files.pythonhosted.org/packages/60/bf/8ebdfce77bc04b81abf2ea316e9c03b4a866a7d739cf355eae4d6fd9f6fe/jiter-0.9.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:51c4e1a4f8ea84d98b7b98912aa4290ac3d1eabfde8e3c34541fae30e9d1f08b", size = 341733 },
+    { url = "https://files.pythonhosted.org/packages/a8/4e/754ebce77cff9ab34d1d0fa0fe98f5d42590fd33622509a3ba6ec37ff466/jiter-0.9.0-cp311-cp311-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:5f4c677c424dc76684fea3e7285a7a2a7493424bea89ac441045e6a1fb1d7b3b", size = 365097 },
+    { url = "https://files.pythonhosted.org/packages/32/2c/6019587e6f5844c612ae18ca892f4cd7b3d8bbf49461ed29e384a0f13d98/jiter-0.9.0-cp311-cp311-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:2221176dfec87f3470b21e6abca056e6b04ce9bff72315cb0b243ca9e835a4b5", size = 406603 },
+    { url = "https://files.pythonhosted.org/packages/da/e9/c9e6546c817ab75a1a7dab6dcc698e62e375e1017113e8e983fccbd56115/jiter-0.9.0-cp311-cp311-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:3c7adb66f899ffa25e3c92bfcb593391ee1947dbdd6a9a970e0d7e713237d572", size = 396625 },
+    { url = "https://files.pythonhosted.org/packages/be/bd/976b458add04271ebb5a255e992bd008546ea04bb4dcadc042a16279b4b4/jiter-0.9.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c98d27330fdfb77913c1097a7aab07f38ff2259048949f499c9901700789ac15", size = 351832 },
+    { url = "https://files.pythonhosted.org/packages/07/51/fe59e307aaebec9265dbad44d9d4381d030947e47b0f23531579b9a7c2df/jiter-0.9.0-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:eda3f8cc74df66892b1d06b5d41a71670c22d95a1ca2cbab73654745ce9d0419", size = 384590 },
+    { url = "https://files.pythonhosted.org/packages/db/55/5dcd2693794d8e6f4889389ff66ef3be557a77f8aeeca8973a97a7c00557/jiter-0.9.0-cp311-cp311-musllinux_1_1_aarch64.whl", hash = "sha256:dd5ab5ddc11418dce28343123644a100f487eaccf1de27a459ab36d6cca31043", size = 520690 },
+    { url = "https://files.pythonhosted.org/packages/54/d5/9f51dc90985e9eb251fbbb747ab2b13b26601f16c595a7b8baba964043bd/jiter-0.9.0-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:42f8a68a69f047b310319ef8e2f52fdb2e7976fb3313ef27df495cf77bcad965", size = 512649 },
+    { url = "https://files.pythonhosted.org/packages/a6/e5/4e385945179bcf128fa10ad8dca9053d717cbe09e258110e39045c881fe5/jiter-0.9.0-cp311-cp311-win32.whl", hash = "sha256:a25519efb78a42254d59326ee417d6f5161b06f5da827d94cf521fed961b1ff2", size = 206920 },
+    { url = "https://files.pythonhosted.org/packages/4c/47/5e0b94c603d8e54dd1faab439b40b832c277d3b90743e7835879ab663757/jiter-0.9.0-cp311-cp311-win_amd64.whl", hash = "sha256:923b54afdd697dfd00d368b7ccad008cccfeb1efb4e621f32860c75e9f25edbd", size = 210119 },
+    { url = "https://files.pythonhosted.org/packages/af/d7/c55086103d6f29b694ec79156242304adf521577530d9031317ce5338c59/jiter-0.9.0-cp312-cp312-macosx_10_12_x86_64.whl", hash = "sha256:7b46249cfd6c48da28f89eb0be3f52d6fdb40ab88e2c66804f546674e539ec11", size = 309203 },
+    { url = "https://files.pythonhosted.org/packages/b0/01/f775dfee50beb420adfd6baf58d1c4d437de41c9b666ddf127c065e5a488/jiter-0.9.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:609cf3c78852f1189894383cf0b0b977665f54cb38788e3e6b941fa6d982c00e", size = 319678 },
+    { url = "https://files.pythonhosted.org/packages/ab/b8/09b73a793714726893e5d46d5c534a63709261af3d24444ad07885ce87cb/jiter-0.9.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d726a3890a54561e55a9c5faea1f7655eda7f105bd165067575ace6e65f80bb2", size = 341816 },
+    { url = "https://files.pythonhosted.org/packages/35/6f/b8f89ec5398b2b0d344257138182cc090302854ed63ed9c9051e9c673441/jiter-0.9.0-cp312-cp312-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:2e89dc075c1fef8fa9be219e249f14040270dbc507df4215c324a1839522ea75", size = 364152 },
+    { url = "https://files.pythonhosted.org/packages/9b/ca/978cc3183113b8e4484cc7e210a9ad3c6614396e7abd5407ea8aa1458eef/jiter-0.9.0-cp312-cp312-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:04e8ffa3c353b1bc4134f96f167a2082494351e42888dfcf06e944f2729cbe1d", size = 406991 },
+    { url = "https://files.pythonhosted.org/packages/13/3a/72861883e11a36d6aa314b4922125f6ae90bdccc225cd96d24cc78a66385/jiter-0.9.0-cp312-cp312-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:203f28a72a05ae0e129b3ed1f75f56bc419d5f91dfacd057519a8bd137b00c42", size = 395824 },
+    { url = "https://files.pythonhosted.org/packages/87/67/22728a86ef53589c3720225778f7c5fdb617080e3deaed58b04789418212/jiter-0.9.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fca1a02ad60ec30bb230f65bc01f611c8608b02d269f998bc29cca8619a919dc", size = 351318 },
+    { url = "https://files.pythonhosted.org/packages/69/b9/f39728e2e2007276806d7a6609cda7fac44ffa28ca0d02c49a4f397cc0d9/jiter-0.9.0-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:237e5cee4d5d2659aaf91bbf8ec45052cc217d9446070699441a91b386ae27dc", size = 384591 },
+    { url = "https://files.pythonhosted.org/packages/eb/8f/8a708bc7fd87b8a5d861f1c118a995eccbe6d672fe10c9753e67362d0dd0/jiter-0.9.0-cp312-cp312-musllinux_1_1_aarch64.whl", hash = "sha256:528b6b71745e7326eed73c53d4aa57e2a522242320b6f7d65b9c5af83cf49b6e", size = 520746 },
+    { url = "https://files.pythonhosted.org/packages/95/1e/65680c7488bd2365dbd2980adaf63c562d3d41d3faac192ebc7ef5b4ae25/jiter-0.9.0-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:9f48e86b57bc711eb5acdfd12b6cb580a59cc9a993f6e7dcb6d8b50522dcd50d", size = 512754 },
+    { url = "https://files.pythonhosted.org/packages/78/f3/fdc43547a9ee6e93c837685da704fb6da7dba311fc022e2766d5277dfde5/jiter-0.9.0-cp312-cp312-win32.whl", hash = "sha256:699edfde481e191d81f9cf6d2211debbfe4bd92f06410e7637dffb8dd5dfde06", size = 207075 },
+    { url = "https://files.pythonhosted.org/packages/cd/9d/742b289016d155f49028fe1bfbeb935c9bf0ffeefdf77daf4a63a42bb72b/jiter-0.9.0-cp312-cp312-win_amd64.whl", hash = "sha256:099500d07b43f61d8bd780466d429c45a7b25411b334c60ca875fa775f68ccb0", size = 207999 },
+    { url = "https://files.pythonhosted.org/packages/e7/1b/4cd165c362e8f2f520fdb43245e2b414f42a255921248b4f8b9c8d871ff1/jiter-0.9.0-cp313-cp313-macosx_10_12_x86_64.whl", hash = "sha256:2764891d3f3e8b18dce2cff24949153ee30c9239da7c00f032511091ba688ff7", size = 308197 },
+    { url = "https://files.pythonhosted.org/packages/13/aa/7a890dfe29c84c9a82064a9fe36079c7c0309c91b70c380dc138f9bea44a/jiter-0.9.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:387b22fbfd7a62418d5212b4638026d01723761c75c1c8232a8b8c37c2f1003b", size = 318160 },
+    { url = "https://files.pythonhosted.org/packages/6a/38/5888b43fc01102f733f085673c4f0be5a298f69808ec63de55051754e390/jiter-0.9.0-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:40d8da8629ccae3606c61d9184970423655fb4e33d03330bcdfe52d234d32f69", size = 341259 },
+    { url = "https://files.pythonhosted.org/packages/3d/5e/bbdbb63305bcc01006de683b6228cd061458b9b7bb9b8d9bc348a58e5dc2/jiter-0.9.0-cp313-cp313-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:a1be73d8982bdc278b7b9377426a4b44ceb5c7952073dd7488e4ae96b88e1103", size = 363730 },
+    { url = "https://files.pythonhosted.org/packages/75/85/53a3edc616992fe4af6814c25f91ee3b1e22f7678e979b6ea82d3bc0667e/jiter-0.9.0-cp313-cp313-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:2228eaaaa111ec54b9e89f7481bffb3972e9059301a878d085b2b449fbbde635", size = 405126 },
+    { url = "https://files.pythonhosted.org/packages/ae/b3/1ee26b12b2693bd3f0b71d3188e4e5d817b12e3c630a09e099e0a89e28fa/jiter-0.9.0-cp313-cp313-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:11509bfecbc319459647d4ac3fd391d26fdf530dad00c13c4dadabf5b81f01a4", size = 393668 },
+    { url = "https://files.pythonhosted.org/packages/11/87/e084ce261950c1861773ab534d49127d1517b629478304d328493f980791/jiter-0.9.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3f22238da568be8bbd8e0650e12feeb2cfea15eda4f9fc271d3b362a4fa0604d", size = 352350 },
+    { url = "https://files.pythonhosted.org/packages/f0/06/7dca84b04987e9df563610aa0bc154ea176e50358af532ab40ffb87434df/jiter-0.9.0-cp313-cp313-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:17f5d55eb856597607562257c8e36c42bc87f16bef52ef7129b7da11afc779f3", size = 384204 },
+    { url = "https://files.pythonhosted.org/packages/16/2f/82e1c6020db72f397dd070eec0c85ebc4df7c88967bc86d3ce9864148f28/jiter-0.9.0-cp313-cp313-musllinux_1_1_aarch64.whl", hash = "sha256:6a99bed9fbb02f5bed416d137944419a69aa4c423e44189bc49718859ea83bc5", size = 520322 },
+    { url = "https://files.pythonhosted.org/packages/36/fd/4f0cd3abe83ce208991ca61e7e5df915aa35b67f1c0633eb7cf2f2e88ec7/jiter-0.9.0-cp313-cp313-musllinux_1_1_x86_64.whl", hash = "sha256:e057adb0cd1bd39606100be0eafe742de2de88c79df632955b9ab53a086b3c8d", size = 512184 },
+    { url = "https://files.pythonhosted.org/packages/a0/3c/8a56f6d547731a0b4410a2d9d16bf39c861046f91f57c98f7cab3d2aa9ce/jiter-0.9.0-cp313-cp313-win32.whl", hash = "sha256:f7e6850991f3940f62d387ccfa54d1a92bd4bb9f89690b53aea36b4364bcab53", size = 206504 },
+    { url = "https://files.pythonhosted.org/packages/f4/1c/0c996fd90639acda75ed7fa698ee5fd7d80243057185dc2f63d4c1c9f6b9/jiter-0.9.0-cp313-cp313-win_amd64.whl", hash = "sha256:c8ae3bf27cd1ac5e6e8b7a27487bf3ab5f82318211ec2e1346a5b058756361f7", size = 204943 },
+    { url = "https://files.pythonhosted.org/packages/78/0f/77a63ca7aa5fed9a1b9135af57e190d905bcd3702b36aca46a01090d39ad/jiter-0.9.0-cp313-cp313t-macosx_11_0_arm64.whl", hash = "sha256:f0b2827fb88dda2cbecbbc3e596ef08d69bda06c6f57930aec8e79505dc17001", size = 317281 },
+    { url = "https://files.pythonhosted.org/packages/f9/39/a3a1571712c2bf6ec4c657f0d66da114a63a2e32b7e4eb8e0b83295ee034/jiter-0.9.0-cp313-cp313t-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:062b756ceb1d40b0b28f326cba26cfd575a4918415b036464a52f08632731e5a", size = 350273 },
+    { url = "https://files.pythonhosted.org/packages/ee/47/3729f00f35a696e68da15d64eb9283c330e776f3b5789bac7f2c0c4df209/jiter-0.9.0-cp313-cp313t-win_amd64.whl", hash = "sha256:6f7838bc467ab7e8ef9f387bd6de195c43bad82a569c1699cb822f6609dd4cdf", size = 206867 },
+    { url = "https://files.pythonhosted.org/packages/c6/9d/d308c4c16995fd9013df69efd7c162c553591e256095ffccd15d64e95511/jiter-0.9.0-cp38-cp38-macosx_10_12_x86_64.whl", hash = "sha256:4a2d16360d0642cd68236f931b85fe50288834c383492e4279d9f1792e309571", size = 315048 },
+    { url = "https://files.pythonhosted.org/packages/fc/a5/39ca1ac93aa21383fb3680f0ec6e7c04aa3f14096d538ff4c54083dcbcef/jiter-0.9.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:e84ed1c9c9ec10bbb8c37f450077cbe3c0d4e8c2b19f0a49a60ac7ace73c7452", size = 312018 },
+    { url = "https://files.pythonhosted.org/packages/29/b2/f27c5cdc7cfd2711b8aeff75694ecbd00bf53c35fddcfed70b082496fd45/jiter-0.9.0-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9f3c848209ccd1bfa344a1240763975ca917de753c7875c77ec3034f4151d06c", size = 342030 },
+    { url = "https://files.pythonhosted.org/packages/62/0a/3f8d91741fc5ef397ade812b54cb358373ced1a036026b8cdb73e71e7458/jiter-0.9.0-cp38-cp38-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:7825f46e50646bee937e0f849d14ef3a417910966136f59cd1eb848b8b5bb3e4", size = 365004 },
+    { url = "https://files.pythonhosted.org/packages/f1/c6/cac7517d42f94ec5049210bcb93d16f2df184e7f63c82e491786c471d44c/jiter-0.9.0-cp38-cp38-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:d82a811928b26d1a6311a886b2566f68ccf2b23cf3bfed042e18686f1f22c2d7", size = 406763 },
+    { url = "https://files.pythonhosted.org/packages/48/3a/6961d6575e34990e19e186b5b7f6d66e1112ab028dcbb934682547a6cbb5/jiter-0.9.0-cp38-cp38-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:0c058ecb51763a67f019ae423b1cbe3fa90f7ee6280c31a1baa6ccc0c0e2d06e", size = 398801 },
+    { url = "https://files.pythonhosted.org/packages/6c/94/cb3e4a5b6c54b86792aafb17a010ffb4b7632ca8e32c712cc024e7ce3f8b/jiter-0.9.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9897115ad716c48f0120c1f0c4efae348ec47037319a6c63b2d7838bb53aaef4", size = 345126 },
+    { url = "https://files.pythonhosted.org/packages/5e/aa/8f6c79b183f3a3f5f1de2753163ea55318a6f2edd9add9f43196f0f35b88/jiter-0.9.0-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:351f4c90a24c4fb8c87c6a73af2944c440494ed2bea2094feecacb75c50398ae", size = 385240 },
+    { url = "https://files.pythonhosted.org/packages/ae/f7/db358b9594e35be021005c2073a193989a6cbc883a2edb587c428877e07c/jiter-0.9.0-cp38-cp38-musllinux_1_1_aarch64.whl", hash = "sha256:d45807b0f236c485e1e525e2ce3a854807dfe28ccf0d013dd4a563395e28008a", size = 520965 },
+    { url = "https://files.pythonhosted.org/packages/e6/c1/a8456847dd62dcd2edd85e549f285b435c0c4c1fbe0ef9d17baf9ef9c999/jiter-0.9.0-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:1537a890724ba00fdba21787010ac6f24dad47f763410e9e1093277913592784", size = 513641 },
+    { url = "https://files.pythonhosted.org/packages/e1/6d/f9f6d753e9a57e796f1a2174ec9281f8d1793cdce0e1196390a99ff1a749/jiter-0.9.0-cp38-cp38-win32.whl", hash = "sha256:e3630ec20cbeaddd4b65513fa3857e1b7c4190d4481ef07fb63d0fad59033321", size = 206627 },
+    { url = "https://files.pythonhosted.org/packages/b3/c4/9429ce99ead24b4bf63914b302c789898a6c71f7b34a4a0e7f51d95c5c26/jiter-0.9.0-cp38-cp38-win_amd64.whl", hash = "sha256:2685f44bf80e95f8910553bf2d33b9c87bf25fceae6e9f0c1355f75d2922b0ee", size = 198285 },
+    { url = "https://files.pythonhosted.org/packages/aa/2c/9bee940db68d8cefb84178f8b15220c836276db8c6e09cbd422071c01c33/jiter-0.9.0-cp39-cp39-macosx_10_12_x86_64.whl", hash = "sha256:9ef340fae98065071ccd5805fe81c99c8f80484e820e40043689cf97fb66b3e2", size = 315246 },
+    { url = "https://files.pythonhosted.org/packages/d0/9b/42d5d59585d9af4fe207e96c6edac2a62bca26d76e2471e78c2f5da28bb8/jiter-0.9.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:efb767d92c63b2cd9ec9f24feeb48f49574a713870ec87e9ba0c2c6e9329c3e2", size = 312621 },
+    { url = "https://files.pythonhosted.org/packages/2e/a5/a64de757516e5531f8d147a32251905f0e23641738d3520a0a0724fe9651/jiter-0.9.0-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:113f30f87fb1f412510c6d7ed13e91422cfd329436364a690c34c8b8bd880c42", size = 343006 },
+    { url = "https://files.pythonhosted.org/packages/89/be/08d2bae711200d558ab8c5771f05f47cd09b82b2258a8d6fad0ee2c6a1f3/jiter-0.9.0-cp39-cp39-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:8793b6df019b988526f5a633fdc7456ea75e4a79bd8396a3373c371fc59f5c9b", size = 365099 },
+    { url = "https://files.pythonhosted.org/packages/03/9e/d137a0088be90ba5081f7d5d2383374bd77a1447158e44c3ec4e142f902c/jiter-0.9.0-cp39-cp39-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:7a9aaa5102dba4e079bb728076fadd5a2dca94c05c04ce68004cfd96f128ea34", size = 407834 },
+    { url = "https://files.pythonhosted.org/packages/04/4c/b6bee52a5b327830abea13eba4222f33f88895a1055eff8870ab3ebbde41/jiter-0.9.0-cp39-cp39-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:d838650f6ebaf4ccadfb04522463e74a4c378d7e667e0eb1865cfe3990bfac49", size = 399255 },
+    { url = "https://files.pythonhosted.org/packages/12/b7/364b615a35f99d01cc27d3caea8c3a3ac5451bd5cadf8e5dc4355b102aba/jiter-0.9.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c0194f813efdf4b8865ad5f5c5f50f8566df7d770a82c51ef593d09e0b347020", size = 354142 },
+    { url = "https://files.pythonhosted.org/packages/65/cc/5156f75c496aac65080e2995910104d0e46644df1452c20d963cb904b4b1/jiter-0.9.0-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:a7954a401d0a8a0b8bc669199db78af435aae1e3569187c2939c477c53cb6a0a", size = 385142 },
+    { url = "https://files.pythonhosted.org/packages/46/cf/370be59c38e56a6fed0308ca266b12d8178b8d6630284cc88ae5af110764/jiter-0.9.0-cp39-cp39-musllinux_1_1_aarch64.whl", hash = "sha256:4feafe787eb8a8d98168ab15637ca2577f6ddf77ac6c8c66242c2d028aa5420e", size = 522035 },
+    { url = "https://files.pythonhosted.org/packages/ff/f5/c462d994dcbff43de8a3c953548d609c73a5db8138182408944fce2b68c1/jiter-0.9.0-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:27cd1f2e8bb377f31d3190b34e4328d280325ad7ef55c6ac9abde72f79e84d2e", size = 513844 },
+    { url = "https://files.pythonhosted.org/packages/15/39/60d8f17de27586fa1e7c8215ead8222556d40a6b96b20f1ad70528961f99/jiter-0.9.0-cp39-cp39-win32.whl", hash = "sha256:161d461dcbe658cf0bd0aa375b30a968b087cdddc624fc585f3867c63c6eca95", size = 207147 },
+    { url = "https://files.pythonhosted.org/packages/4b/13/c10f17dcddd1b4c1313418e64ace5e77cc4f7313246140fb09044516a62c/jiter-0.9.0-cp39-cp39-win_amd64.whl", hash = "sha256:e8b36d8a16a61993be33e75126ad3d8aa29cf450b09576f3c427d27647fcb4aa", size = 208879 },
+]
+
+[[package]]
+name = "jmespath"
+version = "1.0.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/00/2a/e867e8531cf3e36b41201936b7fa7ba7b5702dbef42922193f05c8976cd6/jmespath-1.0.1.tar.gz", hash = "sha256:90261b206d6defd58fdd5e85f478bf633a2901798906be2ad389150c5c60edbe", size = 25843 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/31/b4/b9b800c45527aadd64d5b442f9b932b00648617eb5d63d2c7a6587b7cafc/jmespath-1.0.1-py3-none-any.whl", hash = "sha256:02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980", size = 20256 },
+]
+
+[[package]]
+name = "openai"
+version = "1.78.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anyio" },
+    { name = "distro" },
+    { name = "httpx" },
+    { name = "jiter" },
+    { name = "pydantic" },
+    { name = "sniffio" },
+    { name = "tqdm" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d1/7c/7c48bac9be52680e41e99ae7649d5da3a0184cd94081e028897f9005aa03/openai-1.78.0.tar.gz", hash = "sha256:254aef4980688468e96cbddb1f348ed01d274d02c64c6c69b0334bf001fb62b3", size = 442652 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cc/41/d64a6c56d0ec886b834caff7a07fc4d43e1987895594b144757e7a6b90d7/openai-1.78.0-py3-none-any.whl", hash = "sha256:1ade6a48cd323ad8a7715e7e1669bb97a17e1a5b8a916644261aaef4bf284778", size = 680407 },
+]
+
+[[package]]
+name = "packaging"
+version = "25.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/a1/d4/1fc4078c65507b51b96ca8f8c3ba19e6a61c8253c72794544580a7b6c24d/packaging-25.0.tar.gz", hash = "sha256:d443872c98d677bf60f6a1f2f8c1cb748e8fe762d2bf9d3148b5599295b0fc4f", size = 165727 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl", hash = "sha256:29572ef2b1f17581046b3a2227d5c611fb25ec70ca1ba8554b24b0e69331a484", size = 66469 },
+]
+
+[[package]]
+name = "pluggy"
+version = "1.5.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/96/2d/02d4312c973c6050a18b314a5ad0b3210edb65a906f868e31c111dede4a6/pluggy-1.5.0.tar.gz", hash = "sha256:2cffa88e94fdc978c4c574f15f9e59b7f4201d439195c3715ca9e2486f1d0cf1", size = 67955 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/88/5f/e351af9a41f866ac3f1fac4ca0613908d9a41741cfcf2228f4ad853b697d/pluggy-1.5.0-py3-none-any.whl", hash = "sha256:44e1ad92c8ca002de6377e165f3e0f1be63266ab4d554740532335b9d75ea669", size = 20556 },
+]
+
+[[package]]
+name = "pydantic"
+version = "2.10.6"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "annotated-types" },
+    { name = "pydantic-core" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b7/ae/d5220c5c52b158b1de7ca89fc5edb72f304a70a4c540c84c8844bf4008de/pydantic-2.10.6.tar.gz", hash = "sha256:ca5daa827cce33de7a42be142548b0096bf05a7e7b365aebfa5f8eeec7128236", size = 761681 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f4/3c/8cc1cc84deffa6e25d2d0c688ebb80635dfdbf1dbea3e30c541c8cf4d860/pydantic-2.10.6-py3-none-any.whl", hash = "sha256:427d664bf0b8a2b34ff5dd0f5a18df00591adcee7198fbd71981054cef37b584", size = 431696 },
+]
+
+[[package]]
+name = "pydantic-core"
+version = "2.27.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fc/01/f3e5ac5e7c25833db5eb555f7b7ab24cd6f8c322d3a3ad2d67a952dc0abc/pydantic_core-2.27.2.tar.gz", hash = "sha256:eb026e5a4c1fee05726072337ff51d1efb6f59090b7da90d30ea58625b1ffb39", size = 413443 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3a/bc/fed5f74b5d802cf9a03e83f60f18864e90e3aed7223adaca5ffb7a8d8d64/pydantic_core-2.27.2-cp310-cp310-macosx_10_12_x86_64.whl", hash = "sha256:2d367ca20b2f14095a8f4fa1210f5a7b78b8a20009ecced6b12818f455b1e9fa", size = 1895938 },
+    { url = "https://files.pythonhosted.org/packages/71/2a/185aff24ce844e39abb8dd680f4e959f0006944f4a8a0ea372d9f9ae2e53/pydantic_core-2.27.2-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:491a2b73db93fab69731eaee494f320faa4e093dbed776be1a829c2eb222c34c", size = 1815684 },
+    { url = "https://files.pythonhosted.org/packages/c3/43/fafabd3d94d159d4f1ed62e383e264f146a17dd4d48453319fd782e7979e/pydantic_core-2.27.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7969e133a6f183be60e9f6f56bfae753585680f3b7307a8e555a948d443cc05a", size = 1829169 },
+    { url = "https://files.pythonhosted.org/packages/a2/d1/f2dfe1a2a637ce6800b799aa086d079998959f6f1215eb4497966efd2274/pydantic_core-2.27.2-cp310-cp310-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:3de9961f2a346257caf0aa508a4da705467f53778e9ef6fe744c038119737ef5", size = 1867227 },
+    { url = "https://files.pythonhosted.org/packages/7d/39/e06fcbcc1c785daa3160ccf6c1c38fea31f5754b756e34b65f74e99780b5/pydantic_core-2.27.2-cp310-cp310-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:e2bb4d3e5873c37bb3dd58714d4cd0b0e6238cebc4177ac8fe878f8b3aa8e74c", size = 2037695 },
+    { url = "https://files.pythonhosted.org/packages/7a/67/61291ee98e07f0650eb756d44998214231f50751ba7e13f4f325d95249ab/pydantic_core-2.27.2-cp310-cp310-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:280d219beebb0752699480fe8f1dc61ab6615c2046d76b7ab7ee38858de0a4e7", size = 2741662 },
+    { url = "https://files.pythonhosted.org/packages/32/90/3b15e31b88ca39e9e626630b4c4a1f5a0dfd09076366f4219429e6786076/pydantic_core-2.27.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:47956ae78b6422cbd46f772f1746799cbb862de838fd8d1fbd34a82e05b0983a", size = 1993370 },
+    { url = "https://files.pythonhosted.org/packages/ff/83/c06d333ee3a67e2e13e07794995c1535565132940715931c1c43bfc85b11/pydantic_core-2.27.2-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:14d4a5c49d2f009d62a2a7140d3064f686d17a5d1a268bc641954ba181880236", size = 1996813 },
+    { url = "https://files.pythonhosted.org/packages/7c/f7/89be1c8deb6e22618a74f0ca0d933fdcb8baa254753b26b25ad3acff8f74/pydantic_core-2.27.2-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:337b443af21d488716f8d0b6164de833e788aa6bd7e3a39c005febc1284f4962", size = 2005287 },
+    { url = "https://files.pythonhosted.org/packages/b7/7d/8eb3e23206c00ef7feee17b83a4ffa0a623eb1a9d382e56e4aa46fd15ff2/pydantic_core-2.27.2-cp310-cp310-musllinux_1_1_armv7l.whl", hash = "sha256:03d0f86ea3184a12f41a2d23f7ccb79cdb5a18e06993f8a45baa8dfec746f0e9", size = 2128414 },
+    { url = "https://files.pythonhosted.org/packages/4e/99/fe80f3ff8dd71a3ea15763878d464476e6cb0a2db95ff1c5c554133b6b83/pydantic_core-2.27.2-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:7041c36f5680c6e0f08d922aed302e98b3745d97fe1589db0a3eebf6624523af", size = 2155301 },
+    { url = "https://files.pythonhosted.org/packages/2b/a3/e50460b9a5789ca1451b70d4f52546fa9e2b420ba3bfa6100105c0559238/pydantic_core-2.27.2-cp310-cp310-win32.whl", hash = "sha256:50a68f3e3819077be2c98110c1f9dcb3817e93f267ba80a2c05bb4f8799e2ff4", size = 1816685 },
+    { url = "https://files.pythonhosted.org/packages/57/4c/a8838731cb0f2c2a39d3535376466de6049034d7b239c0202a64aaa05533/pydantic_core-2.27.2-cp310-cp310-win_amd64.whl", hash = "sha256:e0fd26b16394ead34a424eecf8a31a1f5137094cabe84a1bcb10fa6ba39d3d31", size = 1982876 },
+    { url = "https://files.pythonhosted.org/packages/c2/89/f3450af9d09d44eea1f2c369f49e8f181d742f28220f88cc4dfaae91ea6e/pydantic_core-2.27.2-cp311-cp311-macosx_10_12_x86_64.whl", hash = "sha256:8e10c99ef58cfdf2a66fc15d66b16c4a04f62bca39db589ae8cba08bc55331bc", size = 1893421 },
+    { url = "https://files.pythonhosted.org/packages/9e/e3/71fe85af2021f3f386da42d291412e5baf6ce7716bd7101ea49c810eda90/pydantic_core-2.27.2-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:26f32e0adf166a84d0cb63be85c562ca8a6fa8de28e5f0d92250c6b7e9e2aff7", size = 1814998 },
+    { url = "https://files.pythonhosted.org/packages/a6/3c/724039e0d848fd69dbf5806894e26479577316c6f0f112bacaf67aa889ac/pydantic_core-2.27.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8c19d1ea0673cd13cc2f872f6c9ab42acc4e4f492a7ca9d3795ce2b112dd7e15", size = 1826167 },
+    { url = "https://files.pythonhosted.org/packages/2b/5b/1b29e8c1fb5f3199a9a57c1452004ff39f494bbe9bdbe9a81e18172e40d3/pydantic_core-2.27.2-cp311-cp311-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:5e68c4446fe0810e959cdff46ab0a41ce2f2c86d227d96dc3847af0ba7def306", size = 1865071 },
+    { url = "https://files.pythonhosted.org/packages/89/6c/3985203863d76bb7d7266e36970d7e3b6385148c18a68cc8915fd8c84d57/pydantic_core-2.27.2-cp311-cp311-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:d9640b0059ff4f14d1f37321b94061c6db164fbe49b334b31643e0528d100d99", size = 2036244 },
+    { url = "https://files.pythonhosted.org/packages/0e/41/f15316858a246b5d723f7d7f599f79e37493b2e84bfc789e58d88c209f8a/pydantic_core-2.27.2-cp311-cp311-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:40d02e7d45c9f8af700f3452f329ead92da4c5f4317ca9b896de7ce7199ea459", size = 2737470 },
+    { url = "https://files.pythonhosted.org/packages/a8/7c/b860618c25678bbd6d1d99dbdfdf0510ccb50790099b963ff78a124b754f/pydantic_core-2.27.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1c1fd185014191700554795c99b347d64f2bb637966c4cfc16998a0ca700d048", size = 1992291 },
+    { url = "https://files.pythonhosted.org/packages/bf/73/42c3742a391eccbeab39f15213ecda3104ae8682ba3c0c28069fbcb8c10d/pydantic_core-2.27.2-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:d81d2068e1c1228a565af076598f9e7451712700b673de8f502f0334f281387d", size = 1994613 },
+    { url = "https://files.pythonhosted.org/packages/94/7a/941e89096d1175d56f59340f3a8ebaf20762fef222c298ea96d36a6328c5/pydantic_core-2.27.2-cp311-cp311-musllinux_1_1_aarch64.whl", hash = "sha256:1a4207639fb02ec2dbb76227d7c751a20b1a6b4bc52850568e52260cae64ca3b", size = 2002355 },
+    { url = "https://files.pythonhosted.org/packages/6e/95/2359937a73d49e336a5a19848713555605d4d8d6940c3ec6c6c0ca4dcf25/pydantic_core-2.27.2-cp311-cp311-musllinux_1_1_armv7l.whl", hash = "sha256:3de3ce3c9ddc8bbd88f6e0e304dea0e66d843ec9de1b0042b0911c1663ffd474", size = 2126661 },
+    { url = "https://files.pythonhosted.org/packages/2b/4c/ca02b7bdb6012a1adef21a50625b14f43ed4d11f1fc237f9d7490aa5078c/pydantic_core-2.27.2-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:30c5f68ded0c36466acede341551106821043e9afaad516adfb6e8fa80a4e6a6", size = 2153261 },
+    { url = "https://files.pythonhosted.org/packages/72/9d/a241db83f973049a1092a079272ffe2e3e82e98561ef6214ab53fe53b1c7/pydantic_core-2.27.2-cp311-cp311-win32.whl", hash = "sha256:c70c26d2c99f78b125a3459f8afe1aed4d9687c24fd677c6a4436bc042e50d6c", size = 1812361 },
+    { url = "https://files.pythonhosted.org/packages/e8/ef/013f07248041b74abd48a385e2110aa3a9bbfef0fbd97d4e6d07d2f5b89a/pydantic_core-2.27.2-cp311-cp311-win_amd64.whl", hash = "sha256:08e125dbdc505fa69ca7d9c499639ab6407cfa909214d500897d02afb816e7cc", size = 1982484 },
+    { url = "https://files.pythonhosted.org/packages/10/1c/16b3a3e3398fd29dca77cea0a1d998d6bde3902fa2706985191e2313cc76/pydantic_core-2.27.2-cp311-cp311-win_arm64.whl", hash = "sha256:26f0d68d4b235a2bae0c3fc585c585b4ecc51382db0e3ba402a22cbc440915e4", size = 1867102 },
+    { url = "https://files.pythonhosted.org/packages/d6/74/51c8a5482ca447871c93e142d9d4a92ead74de6c8dc5e66733e22c9bba89/pydantic_core-2.27.2-cp312-cp312-macosx_10_12_x86_64.whl", hash = "sha256:9e0c8cfefa0ef83b4da9588448b6d8d2a2bf1a53c3f1ae5fca39eb3061e2f0b0", size = 1893127 },
+    { url = "https://files.pythonhosted.org/packages/d3/f3/c97e80721735868313c58b89d2de85fa80fe8dfeeed84dc51598b92a135e/pydantic_core-2.27.2-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:83097677b8e3bd7eaa6775720ec8e0405f1575015a463285a92bfdfe254529ef", size = 1811340 },
+    { url = "https://files.pythonhosted.org/packages/9e/91/840ec1375e686dbae1bd80a9e46c26a1e0083e1186abc610efa3d9a36180/pydantic_core-2.27.2-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:172fce187655fece0c90d90a678424b013f8fbb0ca8b036ac266749c09438cb7", size = 1822900 },
+    { url = "https://files.pythonhosted.org/packages/f6/31/4240bc96025035500c18adc149aa6ffdf1a0062a4b525c932065ceb4d868/pydantic_core-2.27.2-cp312-cp312-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:519f29f5213271eeeeb3093f662ba2fd512b91c5f188f3bb7b27bc5973816934", size = 1869177 },
+    { url = "https://files.pythonhosted.org/packages/fa/20/02fbaadb7808be578317015c462655c317a77a7c8f0ef274bc016a784c54/pydantic_core-2.27.2-cp312-cp312-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:05e3a55d124407fffba0dd6b0c0cd056d10e983ceb4e5dbd10dda135c31071d6", size = 2038046 },
+    { url = "https://files.pythonhosted.org/packages/06/86/7f306b904e6c9eccf0668248b3f272090e49c275bc488a7b88b0823444a4/pydantic_core-2.27.2-cp312-cp312-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:9c3ed807c7b91de05e63930188f19e921d1fe90de6b4f5cd43ee7fcc3525cb8c", size = 2685386 },
+    { url = "https://files.pythonhosted.org/packages/8d/f0/49129b27c43396581a635d8710dae54a791b17dfc50c70164866bbf865e3/pydantic_core-2.27.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6fb4aadc0b9a0c063206846d603b92030eb6f03069151a625667f982887153e2", size = 1997060 },
+    { url = "https://files.pythonhosted.org/packages/0d/0f/943b4af7cd416c477fd40b187036c4f89b416a33d3cc0ab7b82708a667aa/pydantic_core-2.27.2-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:28ccb213807e037460326424ceb8b5245acb88f32f3d2777427476e1b32c48c4", size = 2004870 },
+    { url = "https://files.pythonhosted.org/packages/35/40/aea70b5b1a63911c53a4c8117c0a828d6790483f858041f47bab0b779f44/pydantic_core-2.27.2-cp312-cp312-musllinux_1_1_aarch64.whl", hash = "sha256:de3cd1899e2c279b140adde9357c4495ed9d47131b4a4eaff9052f23398076b3", size = 1999822 },
+    { url = "https://files.pythonhosted.org/packages/f2/b3/807b94fd337d58effc5498fd1a7a4d9d59af4133e83e32ae39a96fddec9d/pydantic_core-2.27.2-cp312-cp312-musllinux_1_1_armv7l.whl", hash = "sha256:220f892729375e2d736b97d0e51466252ad84c51857d4d15f5e9692f9ef12be4", size = 2130364 },
+    { url = "https://files.pythonhosted.org/packages/fc/df/791c827cd4ee6efd59248dca9369fb35e80a9484462c33c6649a8d02b565/pydantic_core-2.27.2-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:a0fcd29cd6b4e74fe8ddd2c90330fd8edf2e30cb52acda47f06dd615ae72da57", size = 2158303 },
+    { url = "https://files.pythonhosted.org/packages/9b/67/4e197c300976af185b7cef4c02203e175fb127e414125916bf1128b639a9/pydantic_core-2.27.2-cp312-cp312-win32.whl", hash = "sha256:1e2cb691ed9834cd6a8be61228471d0a503731abfb42f82458ff27be7b2186fc", size = 1834064 },
+    { url = "https://files.pythonhosted.org/packages/1f/ea/cd7209a889163b8dcca139fe32b9687dd05249161a3edda62860430457a5/pydantic_core-2.27.2-cp312-cp312-win_amd64.whl", hash = "sha256:cc3f1a99a4f4f9dd1de4fe0312c114e740b5ddead65bb4102884b384c15d8bc9", size = 1989046 },
+    { url = "https://files.pythonhosted.org/packages/bc/49/c54baab2f4658c26ac633d798dab66b4c3a9bbf47cff5284e9c182f4137a/pydantic_core-2.27.2-cp312-cp312-win_arm64.whl", hash = "sha256:3911ac9284cd8a1792d3cb26a2da18f3ca26c6908cc434a18f730dc0db7bfa3b", size = 1885092 },
+    { url = "https://files.pythonhosted.org/packages/41/b1/9bc383f48f8002f99104e3acff6cba1231b29ef76cfa45d1506a5cad1f84/pydantic_core-2.27.2-cp313-cp313-macosx_10_12_x86_64.whl", hash = "sha256:7d14bd329640e63852364c306f4d23eb744e0f8193148d4044dd3dacdaacbd8b", size = 1892709 },
+    { url = "https://files.pythonhosted.org/packages/10/6c/e62b8657b834f3eb2961b49ec8e301eb99946245e70bf42c8817350cbefc/pydantic_core-2.27.2-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:82f91663004eb8ed30ff478d77c4d1179b3563df6cdb15c0817cd1cdaf34d154", size = 1811273 },
+    { url = "https://files.pythonhosted.org/packages/ba/15/52cfe49c8c986e081b863b102d6b859d9defc63446b642ccbbb3742bf371/pydantic_core-2.27.2-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:71b24c7d61131bb83df10cc7e687433609963a944ccf45190cfc21e0887b08c9", size = 1823027 },
+    { url = "https://files.pythonhosted.org/packages/b1/1c/b6f402cfc18ec0024120602bdbcebc7bdd5b856528c013bd4d13865ca473/pydantic_core-2.27.2-cp313-cp313-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:fa8e459d4954f608fa26116118bb67f56b93b209c39b008277ace29937453dc9", size = 1868888 },
+    { url = "https://files.pythonhosted.org/packages/bd/7b/8cb75b66ac37bc2975a3b7de99f3c6f355fcc4d89820b61dffa8f1e81677/pydantic_core-2.27.2-cp313-cp313-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:ce8918cbebc8da707ba805b7fd0b382816858728ae7fe19a942080c24e5b7cd1", size = 2037738 },
+    { url = "https://files.pythonhosted.org/packages/c8/f1/786d8fe78970a06f61df22cba58e365ce304bf9b9f46cc71c8c424e0c334/pydantic_core-2.27.2-cp313-cp313-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:eda3f5c2a021bbc5d976107bb302e0131351c2ba54343f8a496dc8783d3d3a6a", size = 2685138 },
+    { url = "https://files.pythonhosted.org/packages/a6/74/d12b2cd841d8724dc8ffb13fc5cef86566a53ed358103150209ecd5d1999/pydantic_core-2.27.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bd8086fa684c4775c27f03f062cbb9eaa6e17f064307e86b21b9e0abc9c0f02e", size = 1997025 },
+    { url = "https://files.pythonhosted.org/packages/a0/6e/940bcd631bc4d9a06c9539b51f070b66e8f370ed0933f392db6ff350d873/pydantic_core-2.27.2-cp313-cp313-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:8d9b3388db186ba0c099a6d20f0604a44eabdeef1777ddd94786cdae158729e4", size = 2004633 },
+    { url = "https://files.pythonhosted.org/packages/50/cc/a46b34f1708d82498c227d5d80ce615b2dd502ddcfd8376fc14a36655af1/pydantic_core-2.27.2-cp313-cp313-musllinux_1_1_aarch64.whl", hash = "sha256:7a66efda2387de898c8f38c0cf7f14fca0b51a8ef0b24bfea5849f1b3c95af27", size = 1999404 },
+    { url = "https://files.pythonhosted.org/packages/ca/2d/c365cfa930ed23bc58c41463bae347d1005537dc8db79e998af8ba28d35e/pydantic_core-2.27.2-cp313-cp313-musllinux_1_1_armv7l.whl", hash = "sha256:18a101c168e4e092ab40dbc2503bdc0f62010e95d292b27827871dc85450d7ee", size = 2130130 },
+    { url = "https://files.pythonhosted.org/packages/f4/d7/eb64d015c350b7cdb371145b54d96c919d4db516817f31cd1c650cae3b21/pydantic_core-2.27.2-cp313-cp313-musllinux_1_1_x86_64.whl", hash = "sha256:ba5dd002f88b78a4215ed2f8ddbdf85e8513382820ba15ad5ad8955ce0ca19a1", size = 2157946 },
+    { url = "https://files.pythonhosted.org/packages/a4/99/bddde3ddde76c03b65dfd5a66ab436c4e58ffc42927d4ff1198ffbf96f5f/pydantic_core-2.27.2-cp313-cp313-win32.whl", hash = "sha256:1ebaf1d0481914d004a573394f4be3a7616334be70261007e47c2a6fe7e50130", size = 1834387 },
+    { url = "https://files.pythonhosted.org/packages/71/47/82b5e846e01b26ac6f1893d3c5f9f3a2eb6ba79be26eef0b759b4fe72946/pydantic_core-2.27.2-cp313-cp313-win_amd64.whl", hash = "sha256:953101387ecf2f5652883208769a79e48db18c6df442568a0b5ccd8c2723abee", size = 1990453 },
+    { url = "https://files.pythonhosted.org/packages/51/b2/b2b50d5ecf21acf870190ae5d093602d95f66c9c31f9d5de6062eb329ad1/pydantic_core-2.27.2-cp313-cp313-win_arm64.whl", hash = "sha256:ac4dbfd1691affb8f48c2c13241a2e3b60ff23247cbcf981759c768b6633cf8b", size = 1885186 },
+    { url = "https://files.pythonhosted.org/packages/43/53/13e9917fc69c0a4aea06fd63ed6a8d6cda9cf140ca9584d49c1650b0ef5e/pydantic_core-2.27.2-cp38-cp38-macosx_10_12_x86_64.whl", hash = "sha256:d3e8d504bdd3f10835468f29008d72fc8359d95c9c415ce6e767203db6127506", size = 1899595 },
+    { url = "https://files.pythonhosted.org/packages/f4/20/26c549249769ed84877f862f7bb93f89a6ee08b4bee1ed8781616b7fbb5e/pydantic_core-2.27.2-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:521eb9b7f036c9b6187f0b47318ab0d7ca14bd87f776240b90b21c1f4f149320", size = 1775010 },
+    { url = "https://files.pythonhosted.org/packages/35/eb/8234e05452d92d2b102ffa1b56d801c3567e628fdc63f02080fdfc68fd5e/pydantic_core-2.27.2-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:85210c4d99a0114f5a9481b44560d7d1e35e32cc5634c656bc48e590b669b145", size = 1830727 },
+    { url = "https://files.pythonhosted.org/packages/8f/df/59f915c8b929d5f61e5a46accf748a87110ba145156f9326d1a7d28912b2/pydantic_core-2.27.2-cp38-cp38-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:d716e2e30c6f140d7560ef1538953a5cd1a87264c737643d481f2779fc247fe1", size = 1868393 },
+    { url = "https://files.pythonhosted.org/packages/d5/52/81cf4071dca654d485c277c581db368b0c95b2b883f4d7b736ab54f72ddf/pydantic_core-2.27.2-cp38-cp38-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:f66d89ba397d92f840f8654756196d93804278457b5fbede59598a1f9f90b228", size = 2040300 },
+    { url = "https://files.pythonhosted.org/packages/9c/00/05197ce1614f5c08d7a06e1d39d5d8e704dc81971b2719af134b844e2eaf/pydantic_core-2.27.2-cp38-cp38-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:669e193c1c576a58f132e3158f9dfa9662969edb1a250c54d8fa52590045f046", size = 2738785 },
+    { url = "https://files.pythonhosted.org/packages/f7/a3/5f19bc495793546825ab160e530330c2afcee2281c02b5ffafd0b32ac05e/pydantic_core-2.27.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9fdbe7629b996647b99c01b37f11170a57ae675375b14b8c13b8518b8320ced5", size = 1996493 },
+    { url = "https://files.pythonhosted.org/packages/ed/e8/e0102c2ec153dc3eed88aea03990e1b06cfbca532916b8a48173245afe60/pydantic_core-2.27.2-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:d262606bf386a5ba0b0af3b97f37c83d7011439e3dc1a9298f21efb292e42f1a", size = 1998544 },
+    { url = "https://files.pythonhosted.org/packages/fb/a3/4be70845b555bd80aaee9f9812a7cf3df81550bce6dadb3cfee9c5d8421d/pydantic_core-2.27.2-cp38-cp38-musllinux_1_1_aarch64.whl", hash = "sha256:cabb9bcb7e0d97f74df8646f34fc76fbf793b7f6dc2438517d7a9e50eee4f14d", size = 2007449 },
+    { url = "https://files.pythonhosted.org/packages/e3/9f/b779ed2480ba355c054e6d7ea77792467631d674b13d8257085a4bc7dcda/pydantic_core-2.27.2-cp38-cp38-musllinux_1_1_armv7l.whl", hash = "sha256:d2d63f1215638d28221f664596b1ccb3944f6e25dd18cd3b86b0a4c408d5ebb9", size = 2129460 },
+    { url = "https://files.pythonhosted.org/packages/a0/f0/a6ab0681f6e95260c7fbf552874af7302f2ea37b459f9b7f00698f875492/pydantic_core-2.27.2-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:bca101c00bff0adb45a833f8451b9105d9df18accb8743b08107d7ada14bd7da", size = 2159609 },
+    { url = "https://files.pythonhosted.org/packages/8a/2b/e1059506795104349712fbca647b18b3f4a7fd541c099e6259717441e1e0/pydantic_core-2.27.2-cp38-cp38-win32.whl", hash = "sha256:f6f8e111843bbb0dee4cb6594cdc73e79b3329b526037ec242a3e49012495b3b", size = 1819886 },
+    { url = "https://files.pythonhosted.org/packages/aa/6d/df49c17f024dfc58db0bacc7b03610058018dd2ea2eaf748ccbada4c3d06/pydantic_core-2.27.2-cp38-cp38-win_amd64.whl", hash = "sha256:fd1aea04935a508f62e0d0ef1f5ae968774a32afc306fb8545e06f5ff5cdf3ad", size = 1980773 },
+    { url = "https://files.pythonhosted.org/packages/27/97/3aef1ddb65c5ccd6eda9050036c956ff6ecbfe66cb7eb40f280f121a5bb0/pydantic_core-2.27.2-cp39-cp39-macosx_10_12_x86_64.whl", hash = "sha256:c10eb4f1659290b523af58fa7cffb452a61ad6ae5613404519aee4bfbf1df993", size = 1896475 },
+    { url = "https://files.pythonhosted.org/packages/ad/d3/5668da70e373c9904ed2f372cb52c0b996426f302e0dee2e65634c92007d/pydantic_core-2.27.2-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:ef592d4bad47296fb11f96cd7dc898b92e795032b4894dfb4076cfccd43a9308", size = 1772279 },
+    { url = "https://files.pythonhosted.org/packages/8a/9e/e44b8cb0edf04a2f0a1f6425a65ee089c1d6f9c4c2dcab0209127b6fdfc2/pydantic_core-2.27.2-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c61709a844acc6bf0b7dce7daae75195a10aac96a596ea1b776996414791ede4", size = 1829112 },
+    { url = "https://files.pythonhosted.org/packages/1c/90/1160d7ac700102effe11616e8119e268770f2a2aa5afb935f3ee6832987d/pydantic_core-2.27.2-cp39-cp39-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:42c5f762659e47fdb7b16956c71598292f60a03aa92f8b6351504359dbdba6cf", size = 1866780 },
+    { url = "https://files.pythonhosted.org/packages/ee/33/13983426df09a36d22c15980008f8d9c77674fc319351813b5a2739b70f3/pydantic_core-2.27.2-cp39-cp39-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:4c9775e339e42e79ec99c441d9730fccf07414af63eac2f0e48e08fd38a64d76", size = 2037943 },
+    { url = "https://files.pythonhosted.org/packages/01/d7/ced164e376f6747e9158c89988c293cd524ab8d215ae4e185e9929655d5c/pydantic_core-2.27.2-cp39-cp39-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:57762139821c31847cfb2df63c12f725788bd9f04bc2fb392790959b8f70f118", size = 2740492 },
+    { url = "https://files.pythonhosted.org/packages/8b/1f/3dc6e769d5b7461040778816aab2b00422427bcaa4b56cc89e9c653b2605/pydantic_core-2.27.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0d1e85068e818c73e048fe28cfc769040bb1f475524f4745a5dc621f75ac7630", size = 1995714 },
+    { url = "https://files.pythonhosted.org/packages/07/d7/a0bd09bc39283530b3f7c27033a814ef254ba3bd0b5cfd040b7abf1fe5da/pydantic_core-2.27.2-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:097830ed52fd9e427942ff3b9bc17fab52913b2f50f2880dc4a5611446606a54", size = 1997163 },
+    { url = "https://files.pythonhosted.org/packages/2d/bb/2db4ad1762e1c5699d9b857eeb41959191980de6feb054e70f93085e1bcd/pydantic_core-2.27.2-cp39-cp39-musllinux_1_1_aarch64.whl", hash = "sha256:044a50963a614ecfae59bb1eaf7ea7efc4bc62f49ed594e18fa1e5d953c40e9f", size = 2005217 },
+    { url = "https://files.pythonhosted.org/packages/53/5f/23a5a3e7b8403f8dd8fc8a6f8b49f6b55c7d715b77dcf1f8ae919eeb5628/pydantic_core-2.27.2-cp39-cp39-musllinux_1_1_armv7l.whl", hash = "sha256:4e0b4220ba5b40d727c7f879eac379b822eee5d8fff418e9d3381ee45b3b0362", size = 2127899 },
+    { url = "https://files.pythonhosted.org/packages/c2/ae/aa38bb8dd3d89c2f1d8362dd890ee8f3b967330821d03bbe08fa01ce3766/pydantic_core-2.27.2-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:5e4f4bb20d75e9325cc9696c6802657b58bc1dbbe3022f32cc2b2b632c3fbb96", size = 2155726 },
+    { url = "https://files.pythonhosted.org/packages/98/61/4f784608cc9e98f70839187117ce840480f768fed5d386f924074bf6213c/pydantic_core-2.27.2-cp39-cp39-win32.whl", hash = "sha256:cca63613e90d001b9f2f9a9ceb276c308bfa2a43fafb75c8031c4f66039e8c6e", size = 1817219 },
+    { url = "https://files.pythonhosted.org/packages/57/82/bb16a68e4a1a858bb3768c2c8f1ff8d8978014e16598f001ea29a25bf1d1/pydantic_core-2.27.2-cp39-cp39-win_amd64.whl", hash = "sha256:77d1bca19b0f7021b3a982e6f903dcd5b2b06076def36a652e3907f596e29f67", size = 1985382 },
+    { url = "https://files.pythonhosted.org/packages/46/72/af70981a341500419e67d5cb45abe552a7c74b66326ac8877588488da1ac/pydantic_core-2.27.2-pp310-pypy310_pp73-macosx_10_12_x86_64.whl", hash = "sha256:2bf14caea37e91198329b828eae1618c068dfb8ef17bb33287a7ad4b61ac314e", size = 1891159 },
+    { url = "https://files.pythonhosted.org/packages/ad/3d/c5913cccdef93e0a6a95c2d057d2c2cba347815c845cda79ddd3c0f5e17d/pydantic_core-2.27.2-pp310-pypy310_pp73-macosx_11_0_arm64.whl", hash = "sha256:b0cb791f5b45307caae8810c2023a184c74605ec3bcbb67d13846c28ff731ff8", size = 1768331 },
+    { url = "https://files.pythonhosted.org/packages/f6/f0/a3ae8fbee269e4934f14e2e0e00928f9346c5943174f2811193113e58252/pydantic_core-2.27.2-pp310-pypy310_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:688d3fd9fcb71f41c4c015c023d12a79d1c4c0732ec9eb35d96e3388a120dcf3", size = 1822467 },
+    { url = "https://files.pythonhosted.org/packages/d7/7a/7bbf241a04e9f9ea24cd5874354a83526d639b02674648af3f350554276c/pydantic_core-2.27.2-pp310-pypy310_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3d591580c34f4d731592f0e9fe40f9cc1b430d297eecc70b962e93c5c668f15f", size = 1979797 },
+    { url = "https://files.pythonhosted.org/packages/4f/5f/4784c6107731f89e0005a92ecb8a2efeafdb55eb992b8e9d0a2be5199335/pydantic_core-2.27.2-pp310-pypy310_pp73-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:82f986faf4e644ffc189a7f1aafc86e46ef70372bb153e7001e8afccc6e54133", size = 1987839 },
+    { url = "https://files.pythonhosted.org/packages/6d/a7/61246562b651dff00de86a5f01b6e4befb518df314c54dec187a78d81c84/pydantic_core-2.27.2-pp310-pypy310_pp73-musllinux_1_1_aarch64.whl", hash = "sha256:bec317a27290e2537f922639cafd54990551725fc844249e64c523301d0822fc", size = 1998861 },
+    { url = "https://files.pythonhosted.org/packages/86/aa/837821ecf0c022bbb74ca132e117c358321e72e7f9702d1b6a03758545e2/pydantic_core-2.27.2-pp310-pypy310_pp73-musllinux_1_1_armv7l.whl", hash = "sha256:0296abcb83a797db256b773f45773da397da75a08f5fcaef41f2044adec05f50", size = 2116582 },
+    { url = "https://files.pythonhosted.org/packages/81/b0/5e74656e95623cbaa0a6278d16cf15e10a51f6002e3ec126541e95c29ea3/pydantic_core-2.27.2-pp310-pypy310_pp73-musllinux_1_1_x86_64.whl", hash = "sha256:0d75070718e369e452075a6017fbf187f788e17ed67a3abd47fa934d001863d9", size = 2151985 },
+    { url = "https://files.pythonhosted.org/packages/63/37/3e32eeb2a451fddaa3898e2163746b0cffbbdbb4740d38372db0490d67f3/pydantic_core-2.27.2-pp310-pypy310_pp73-win_amd64.whl", hash = "sha256:7e17b560be3c98a8e3aa66ce828bdebb9e9ac6ad5466fba92eb74c4c95cb1151", size = 2004715 },
+    { url = "https://files.pythonhosted.org/packages/29/0e/dcaea00c9dbd0348b723cae82b0e0c122e0fa2b43fa933e1622fd237a3ee/pydantic_core-2.27.2-pp39-pypy39_pp73-macosx_10_12_x86_64.whl", hash = "sha256:c33939a82924da9ed65dab5a65d427205a73181d8098e79b6b426bdf8ad4e656", size = 1891733 },
+    { url = "https://files.pythonhosted.org/packages/86/d3/e797bba8860ce650272bda6383a9d8cad1d1c9a75a640c9d0e848076f85e/pydantic_core-2.27.2-pp39-pypy39_pp73-macosx_11_0_arm64.whl", hash = "sha256:00bad2484fa6bda1e216e7345a798bd37c68fb2d97558edd584942aa41b7d278", size = 1768375 },
+    { url = "https://files.pythonhosted.org/packages/41/f7/f847b15fb14978ca2b30262548f5fc4872b2724e90f116393eb69008299d/pydantic_core-2.27.2-pp39-pypy39_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c817e2b40aba42bac6f457498dacabc568c3b7a986fc9ba7c8d9d260b71485fb", size = 1822307 },
+    { url = "https://files.pythonhosted.org/packages/9c/63/ed80ec8255b587b2f108e514dc03eed1546cd00f0af281e699797f373f38/pydantic_core-2.27.2-pp39-pypy39_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:251136cdad0cb722e93732cb45ca5299fb56e1344a833640bf93b2803f8d1bfd", size = 1979971 },
+    { url = "https://files.pythonhosted.org/packages/a9/6d/6d18308a45454a0de0e975d70171cadaf454bc7a0bf86b9c7688e313f0bb/pydantic_core-2.27.2-pp39-pypy39_pp73-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:d2088237af596f0a524d3afc39ab3b036e8adb054ee57cbb1dcf8e09da5b29cc", size = 1987616 },
+    { url = "https://files.pythonhosted.org/packages/82/8a/05f8780f2c1081b800a7ca54c1971e291c2d07d1a50fb23c7e4aef4ed403/pydantic_core-2.27.2-pp39-pypy39_pp73-musllinux_1_1_aarch64.whl", hash = "sha256:d4041c0b966a84b4ae7a09832eb691a35aec90910cd2dbe7a208de59be77965b", size = 1998943 },
+    { url = "https://files.pythonhosted.org/packages/5e/3e/fe5b6613d9e4c0038434396b46c5303f5ade871166900b357ada4766c5b7/pydantic_core-2.27.2-pp39-pypy39_pp73-musllinux_1_1_armv7l.whl", hash = "sha256:8083d4e875ebe0b864ffef72a4304827015cff328a1be6e22cc850753bfb122b", size = 2116654 },
+    { url = "https://files.pythonhosted.org/packages/db/ad/28869f58938fad8cc84739c4e592989730bfb69b7c90a8fff138dff18e1e/pydantic_core-2.27.2-pp39-pypy39_pp73-musllinux_1_1_x86_64.whl", hash = "sha256:f141ee28a0ad2123b6611b6ceff018039df17f32ada8b534e6aa039545a3efb2", size = 2152292 },
+    { url = "https://files.pythonhosted.org/packages/a1/0c/c5c5cd3689c32ed1fe8c5d234b079c12c281c051759770c05b8bed6412b5/pydantic_core-2.27.2-pp39-pypy39_pp73-win_amd64.whl", hash = "sha256:7d0c8399fcc1848491f00e0314bd59fb34a9c008761bcb422a057670c3f65e35", size = 2004961 },
+]
+
+[[package]]
+name = "pytest"
+version = "8.3.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "exceptiongroup", marker = "python_full_version < '3.11'" },
+    { name = "iniconfig" },
+    { name = "packaging" },
+    { name = "pluggy" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ae/3c/c9d525a414d506893f0cd8a8d0de7706446213181570cdbd766691164e40/pytest-8.3.5.tar.gz", hash = "sha256:f4efe70cc14e511565ac476b57c279e12a855b11f48f212af1080ef2263d3845", size = 1450891 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/30/3d/64ad57c803f1fa1e963a7946b6e0fea4a70df53c1a7fed304586539c2bac/pytest-8.3.5-py3-none-any.whl", hash = "sha256:c69214aa47deac29fad6c2a4f590b9c4a9fdb16a403176fe154b79c0b4d4d820", size = 343634 },
+]
+
+[[package]]
+name = "pytest-asyncio"
+version = "0.24.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/52/6d/c6cf50ce320cf8611df7a1254d86233b3df7cc07f9b5f5cbcb82e08aa534/pytest_asyncio-0.24.0.tar.gz", hash = "sha256:d081d828e576d85f875399194281e92bf8a68d60d72d1a2faf2feddb6c46b276", size = 49855 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/96/31/6607dab48616902f76885dfcf62c08d929796fc3b2d2318faf9fd54dbed9/pytest_asyncio-0.24.0-py3-none-any.whl", hash = "sha256:a811296ed596b69bf0b6f3dc40f83bcaf341b155a269052d82efa2b25ac7037b", size = 18024 },
+]
+
+[[package]]
+name = "python-dateutil"
+version = "2.9.0.post0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/66/c0/0c8b6ad9f17a802ee498c46e004a0eb49bc148f2fd230864601a86dcf6db/python-dateutil-2.9.0.post0.tar.gz", hash = "sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3", size = 342432 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl", hash = "sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427", size = 229892 },
+]
+
+[[package]]
+name = "s3transfer"
+version = "0.11.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "botocore" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c4/2b/5c9562795c2eb2b5f63536961754760c25bf0f34af93d36aa28dea2fb303/s3transfer-0.11.5.tar.gz", hash = "sha256:8c8aad92784779ab8688a61aefff3e28e9ebdce43142808eaa3f0b0f402f68b7", size = 149107 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/45/39/13402e323666d17850eca87e4cd6ecfcf9fd7809cac9efdcce10272fc29d/s3transfer-0.11.5-py3-none-any.whl", hash = "sha256:757af0f2ac150d3c75bc4177a32355c3862a98d20447b69a0161812992fe0bd4", size = 84782 },
+]
+
+[[package]]
+name = "sglawwatch-to-sqlite"
+version = "0.1"
+source = { editable = "." }
+dependencies = [
+    { name = "boto3" },
+    { name = "click" },
+    { name = "feedparser" },
+    { name = "httpx" },
+    { name = "openai" },
+    { name = "sqlite-utils" },
+    { name = "tenacity" },
+]
+
+[package.optional-dependencies]
+test = [
+    { name = "pytest" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "boto3", specifier = ">=1.37.38" },
+    { name = "click" },
+    { name = "feedparser", specifier = ">=6.0.11" },
+    { name = "httpx", specifier = ">=0.28.1" },
+    { name = "openai", specifier = ">=1.78.0" },
+    { name = "pytest", marker = "extra == 'test'" },
+    { name = "sqlite-utils", specifier = ">=3.38" },
+    { name = "tenacity", specifier = ">=9.0.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pytest", specifier = ">=8.3.5" },
+    { name = "pytest-asyncio", specifier = ">=0.24.0" },
+]
+
+[[package]]
+name = "sgmllib3k"
+version = "1.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/9e/bd/3704a8c3e0942d711c1299ebf7b9091930adae6675d7c8f476a7ce48653c/sgmllib3k-1.0.0.tar.gz", hash = "sha256:7868fb1c8bfa764c1ac563d3cf369c381d1325d36124933a726f29fcdaa812e9", size = 5750 }
+
+[[package]]
+name = "six"
+version = "1.17.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81", size = 34031 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274", size = 11050 },
+]
+
+[[package]]
+name = "sniffio"
+version = "1.3.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/a2/87/a6771e1546d97e7e041b6ae58d80074f81b7d5121207425c964ddf5cfdbd/sniffio-1.3.1.tar.gz", hash = "sha256:f4324edc670a0f49750a81b895f35c3adb843cca46f0530f79fc1babb23789dc", size = 20372 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e9/44/75a9c9421471a6c4805dbf2356f7c181a29c1879239abab1ea2cc8f38b40/sniffio-1.3.1-py3-none-any.whl", hash = "sha256:2f6da418d1f1e0fddd844478f41680e794e6051915791a034ff65e5f100525a2", size = 10235 },
+]
+
+[[package]]
+name = "sqlite-fts4"
+version = "1.0.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/c2/6d/9dad6c3b433ab8912ace969c66abd595f8e0a2ccccdb73602b1291dbda29/sqlite-fts4-1.0.3.tar.gz", hash = "sha256:78b05eeaf6680e9dbed8986bde011e9c086a06cb0c931b3cf7da94c214e8930c", size = 9718 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/51/29/0096e8b1811aaa78cfb296996f621f41120c21c2f5cd448ae1d54979d9fc/sqlite_fts4-1.0.3-py3-none-any.whl", hash = "sha256:0359edd8dea6fd73c848989e1e2b1f31a50fe5f9d7272299ff0e8dbaa62d035f", size = 9972 },
+]
+
+[[package]]
+name = "sqlite-utils"
+version = "3.38"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "click" },
+    { name = "click-default-group" },
+    { name = "pluggy" },
+    { name = "python-dateutil" },
+    { name = "sqlite-fts4" },
+    { name = "tabulate" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/51/43/ce9183a21911e0b73248c8fb83f8b8038515cb80053912c2a009e9765564/sqlite_utils-3.38.tar.gz", hash = "sha256:1ae77b931384052205a15478d429464f6c67a3ac3b4eafd3c674ac900f623aab", size = 214449 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4d/eb/f8e8e827805f810838efff3311cccd2601238c5fa3fc35c1f878709e161b/sqlite_utils-3.38-py3-none-any.whl", hash = "sha256:8a27441015c3b2ef475f555861f7a2592f73bc60d247af9803a11b65fc605bf9", size = 68183 },
+]
+
+[[package]]
+name = "tabulate"
+version = "0.9.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ec/fe/802052aecb21e3797b8f7902564ab6ea0d60ff8ca23952079064155d1ae1/tabulate-0.9.0.tar.gz", hash = "sha256:0095b12bf5966de529c0feb1fa08671671b3368eec77d7ef7ab114be2c068b3c", size = 81090 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/40/44/4a5f08c96eb108af5cb50b41f76142f0afa346dfa99d5296fe7202a11854/tabulate-0.9.0-py3-none-any.whl", hash = "sha256:024ca478df22e9340661486f85298cff5f6dcdba14f3813e8830015b9ed1948f", size = 35252 },
+]
+
+[[package]]
+name = "tenacity"
+version = "9.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/cd/94/91fccdb4b8110642462e653d5dcb27e7b674742ad68efd146367da7bdb10/tenacity-9.0.0.tar.gz", hash = "sha256:807f37ca97d62aa361264d497b0e31e92b8027044942bfa756160d908320d73b", size = 47421 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b6/cb/b86984bed139586d01532a587464b5805f12e397594f19f931c4c2fbfa61/tenacity-9.0.0-py3-none-any.whl", hash = "sha256:93de0c98785b27fcf659856aa9f54bfbd399e29969b0621bc7f762bd441b4539", size = 28169 },
+]
+
+[[package]]
+name = "tomli"
+version = "2.2.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/18/87/302344fed471e44a87289cf4967697d07e532f2421fdaf868a303cbae4ff/tomli-2.2.1.tar.gz", hash = "sha256:cd45e1dc79c835ce60f7404ec8119f2eb06d38b1deba146f07ced3bbc44505ff", size = 17175 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/43/ca/75707e6efa2b37c77dadb324ae7d9571cb424e61ea73fad7c56c2d14527f/tomli-2.2.1-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:678e4fa69e4575eb77d103de3df8a895e1591b48e740211bd1067378c69e8249", size = 131077 },
+    { url = "https://files.pythonhosted.org/packages/c7/16/51ae563a8615d472fdbffc43a3f3d46588c264ac4f024f63f01283becfbb/tomli-2.2.1-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:023aa114dd824ade0100497eb2318602af309e5a55595f76b626d6d9f3b7b0a6", size = 123429 },
+    { url = "https://files.pythonhosted.org/packages/f1/dd/4f6cd1e7b160041db83c694abc78e100473c15d54620083dbd5aae7b990e/tomli-2.2.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:ece47d672db52ac607a3d9599a9d48dcb2f2f735c6c2d1f34130085bb12b112a", size = 226067 },
+    { url = "https://files.pythonhosted.org/packages/a9/6b/c54ede5dc70d648cc6361eaf429304b02f2871a345bbdd51e993d6cdf550/tomli-2.2.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6972ca9c9cc9f0acaa56a8ca1ff51e7af152a9f87fb64623e31d5c83700080ee", size = 236030 },
+    { url = "https://files.pythonhosted.org/packages/1f/47/999514fa49cfaf7a92c805a86c3c43f4215621855d151b61c602abb38091/tomli-2.2.1-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:c954d2250168d28797dd4e3ac5cf812a406cd5a92674ee4c8f123c889786aa8e", size = 240898 },
+    { url = "https://files.pythonhosted.org/packages/73/41/0a01279a7ae09ee1573b423318e7934674ce06eb33f50936655071d81a24/tomli-2.2.1-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:8dd28b3e155b80f4d54beb40a441d366adcfe740969820caf156c019fb5c7ec4", size = 229894 },
+    { url = "https://files.pythonhosted.org/packages/55/18/5d8bc5b0a0362311ce4d18830a5d28943667599a60d20118074ea1b01bb7/tomli-2.2.1-cp311-cp311-musllinux_1_2_i686.whl", hash = "sha256:e59e304978767a54663af13c07b3d1af22ddee3bb2fb0618ca1593e4f593a106", size = 245319 },
+    { url = "https://files.pythonhosted.org/packages/92/a3/7ade0576d17f3cdf5ff44d61390d4b3febb8a9fc2b480c75c47ea048c646/tomli-2.2.1-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:33580bccab0338d00994d7f16f4c4ec25b776af3ffaac1ed74e0b3fc95e885a8", size = 238273 },
+    { url = "https://files.pythonhosted.org/packages/72/6f/fa64ef058ac1446a1e51110c375339b3ec6be245af9d14c87c4a6412dd32/tomli-2.2.1-cp311-cp311-win32.whl", hash = "sha256:465af0e0875402f1d226519c9904f37254b3045fc5084697cefb9bdde1ff99ff", size = 98310 },
+    { url = "https://files.pythonhosted.org/packages/6a/1c/4a2dcde4a51b81be3530565e92eda625d94dafb46dbeb15069df4caffc34/tomli-2.2.1-cp311-cp311-win_amd64.whl", hash = "sha256:2d0f2fdd22b02c6d81637a3c95f8cd77f995846af7414c5c4b8d0545afa1bc4b", size = 108309 },
+    { url = "https://files.pythonhosted.org/packages/52/e1/f8af4c2fcde17500422858155aeb0d7e93477a0d59a98e56cbfe75070fd0/tomli-2.2.1-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:4a8f6e44de52d5e6c657c9fe83b562f5f4256d8ebbfe4ff922c495620a7f6cea", size = 132762 },
+    { url = "https://files.pythonhosted.org/packages/03/b8/152c68bb84fc00396b83e7bbddd5ec0bd3dd409db4195e2a9b3e398ad2e3/tomli-2.2.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:8d57ca8095a641b8237d5b079147646153d22552f1c637fd3ba7f4b0b29167a8", size = 123453 },
+    { url = "https://files.pythonhosted.org/packages/c8/d6/fc9267af9166f79ac528ff7e8c55c8181ded34eb4b0e93daa767b8841573/tomli-2.2.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:4e340144ad7ae1533cb897d406382b4b6fede8890a03738ff1683af800d54192", size = 233486 },
+    { url = "https://files.pythonhosted.org/packages/5c/51/51c3f2884d7bab89af25f678447ea7d297b53b5a3b5730a7cb2ef6069f07/tomli-2.2.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:db2b95f9de79181805df90bedc5a5ab4c165e6ec3fe99f970d0e302f384ad222", size = 242349 },
+    { url = "https://files.pythonhosted.org/packages/ab/df/bfa89627d13a5cc22402e441e8a931ef2108403db390ff3345c05253935e/tomli-2.2.1-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:40741994320b232529c802f8bc86da4e1aa9f413db394617b9a256ae0f9a7f77", size = 252159 },
+    { url = "https://files.pythonhosted.org/packages/9e/6e/fa2b916dced65763a5168c6ccb91066f7639bdc88b48adda990db10c8c0b/tomli-2.2.1-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:400e720fe168c0f8521520190686ef8ef033fb19fc493da09779e592861b78c6", size = 237243 },
+    { url = "https://files.pythonhosted.org/packages/b4/04/885d3b1f650e1153cbb93a6a9782c58a972b94ea4483ae4ac5cedd5e4a09/tomli-2.2.1-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:02abe224de6ae62c19f090f68da4e27b10af2b93213d36cf44e6e1c5abd19fdd", size = 259645 },
+    { url = "https://files.pythonhosted.org/packages/9c/de/6b432d66e986e501586da298e28ebeefd3edc2c780f3ad73d22566034239/tomli-2.2.1-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:b82ebccc8c8a36f2094e969560a1b836758481f3dc360ce9a3277c65f374285e", size = 244584 },
+    { url = "https://files.pythonhosted.org/packages/1c/9a/47c0449b98e6e7d1be6cbac02f93dd79003234ddc4aaab6ba07a9a7482e2/tomli-2.2.1-cp312-cp312-win32.whl", hash = "sha256:889f80ef92701b9dbb224e49ec87c645ce5df3fa2cc548664eb8a25e03127a98", size = 98875 },
+    { url = "https://files.pythonhosted.org/packages/ef/60/9b9638f081c6f1261e2688bd487625cd1e660d0a85bd469e91d8db969734/tomli-2.2.1-cp312-cp312-win_amd64.whl", hash = "sha256:7fc04e92e1d624a4a63c76474610238576942d6b8950a2d7f908a340494e67e4", size = 109418 },
+    { url = "https://files.pythonhosted.org/packages/04/90/2ee5f2e0362cb8a0b6499dc44f4d7d48f8fff06d28ba46e6f1eaa61a1388/tomli-2.2.1-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:f4039b9cbc3048b2416cc57ab3bda989a6fcf9b36cf8937f01a6e731b64f80d7", size = 132708 },
+    { url = "https://files.pythonhosted.org/packages/c0/ec/46b4108816de6b385141f082ba99e315501ccd0a2ea23db4a100dd3990ea/tomli-2.2.1-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:286f0ca2ffeeb5b9bd4fcc8d6c330534323ec51b2f52da063b11c502da16f30c", size = 123582 },
+    { url = "https://files.pythonhosted.org/packages/a0/bd/b470466d0137b37b68d24556c38a0cc819e8febe392d5b199dcd7f578365/tomli-2.2.1-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a92ef1a44547e894e2a17d24e7557a5e85a9e1d0048b0b5e7541f76c5032cb13", size = 232543 },
+    { url = "https://files.pythonhosted.org/packages/d9/e5/82e80ff3b751373f7cead2815bcbe2d51c895b3c990686741a8e56ec42ab/tomli-2.2.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9316dc65bed1684c9a98ee68759ceaed29d229e985297003e494aa825ebb0281", size = 241691 },
+    { url = "https://files.pythonhosted.org/packages/05/7e/2a110bc2713557d6a1bfb06af23dd01e7dde52b6ee7dadc589868f9abfac/tomli-2.2.1-cp313-cp313-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:e85e99945e688e32d5a35c1ff38ed0b3f41f43fad8df0bdf79f72b2ba7bc5272", size = 251170 },
+    { url = "https://files.pythonhosted.org/packages/64/7b/22d713946efe00e0adbcdfd6d1aa119ae03fd0b60ebed51ebb3fa9f5a2e5/tomli-2.2.1-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:ac065718db92ca818f8d6141b5f66369833d4a80a9d74435a268c52bdfa73140", size = 236530 },
+    { url = "https://files.pythonhosted.org/packages/38/31/3a76f67da4b0cf37b742ca76beaf819dca0ebef26d78fc794a576e08accf/tomli-2.2.1-cp313-cp313-musllinux_1_2_i686.whl", hash = "sha256:d920f33822747519673ee656a4b6ac33e382eca9d331c87770faa3eef562aeb2", size = 258666 },
+    { url = "https://files.pythonhosted.org/packages/07/10/5af1293da642aded87e8a988753945d0cf7e00a9452d3911dd3bb354c9e2/tomli-2.2.1-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:a198f10c4d1b1375d7687bc25294306e551bf1abfa4eace6650070a5c1ae2744", size = 243954 },
+    { url = "https://files.pythonhosted.org/packages/5b/b9/1ed31d167be802da0fc95020d04cd27b7d7065cc6fbefdd2f9186f60d7bd/tomli-2.2.1-cp313-cp313-win32.whl", hash = "sha256:d3f5614314d758649ab2ab3a62d4f2004c825922f9e370b29416484086b264ec", size = 98724 },
+    { url = "https://files.pythonhosted.org/packages/c7/32/b0963458706accd9afcfeb867c0f9175a741bf7b19cd424230714d722198/tomli-2.2.1-cp313-cp313-win_amd64.whl", hash = "sha256:a38aa0308e754b0e3c67e344754dff64999ff9b513e691d0e786265c93583c69", size = 109383 },
+    { url = "https://files.pythonhosted.org/packages/6e/c2/61d3e0f47e2b74ef40a68b9e6ad5984f6241a942f7cd3bbfbdbd03861ea9/tomli-2.2.1-py3-none-any.whl", hash = "sha256:cb55c73c5f4408779d0cf3eef9f762b9c9f147a77de7b258bef0a5628adc85cc", size = 14257 },
+]
+
+[[package]]
+name = "tqdm"
+version = "4.67.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama", marker = "platform_system == 'Windows'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a8/4b/29b4ef32e036bb34e4ab51796dd745cdba7ed47ad142a9f4a1eb8e0c744d/tqdm-4.67.1.tar.gz", hash = "sha256:f8aef9c52c08c13a65f30ea34f4e5aac3fd1a34959879d7e59e63027286627f2", size = 169737 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d0/30/dc54f88dd4a2b5dc8a0279bdd7270e735851848b762aeb1c1184ed1f6b14/tqdm-4.67.1-py3-none-any.whl", hash = "sha256:26445eca388f82e72884e0d580d5464cd801a3ea01e63e5601bdff9ba6a48de2", size = 78540 },
+]
+
+[[package]]
+name = "typing-extensions"
+version = "4.13.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f6/37/23083fcd6e35492953e8d2aaaa68b860eb422b34627b13f2ce3eb6106061/typing_extensions-4.13.2.tar.gz", hash = "sha256:e6c81219bd689f51865d9e372991c540bda33a0379d5573cddb9a3a23f7caaef", size = 106967 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8b/54/b1ae86c0973cc6f0210b53d508ca3641fb6d0c56823f288d108bc7ab3cc8/typing_extensions-4.13.2-py3-none-any.whl", hash = "sha256:a439e7c04b49fec3e5d3e2beaa21755cadbbdc391694e28ccdd36ca4a1408f8c", size = 45806 },
+]
+
+[[package]]
+name = "urllib3"
+version = "1.26.20"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e4/e8/6ff5e6bc22095cfc59b6ea711b687e2b7ed4bdb373f7eeec370a97d7392f/urllib3-1.26.20.tar.gz", hash = "sha256:40c2dc0c681e47eb8f90e7e27bf6ff7df2e677421fd46756da1161c39ca70d32", size = 307380 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/33/cf/8435d5a7159e2a9c83a95896ed596f68cf798005fe107cc655b5c5c14704/urllib3-1.26.20-py2.py3-none-any.whl", hash = "sha256:0ed14ccfbf1c30a9072c7ca157e4319b70d65f623e91e7b32fadb2853431016e", size = 144225 },
+]
+
+</document_content>
+</document>
+<document index="6">
+<source>./tests/conftest.py</source>
+<document_content>
+import asyncio
+import os
+from unittest.mock import MagicMock, AsyncMock
+
+import feedparser
+import pytest
+import sqlite_utils
+
+
+@pytest.fixture
+def mock_db():
+    """Fixture providing a mock SQLite database."""
+    mock = MagicMock(spec=sqlite_utils.Database)
+
+    # Set up mock tables
+    headlines_table = MagicMock()
+    metadata_table = MagicMock()
+
+    # Configure __getitem__ to return appropriate tables
+    mock.__getitem__.side_effect = lambda table_name: {
+        'headlines': headlines_table,
+        'metadata': metadata_table,
+    }.get(table_name, MagicMock())
+
+    return mock
+
+
+@pytest.fixture
+def mock_metadata_table(mock_db):
+    """Fixture for the metadata table with controlled behavior."""
+    metadata = mock_db['metadata']
+
+    # Mock the get method to return a value or raise NotFoundError
+    def get_side_effect(key):
+        if key == "headlines_last_updated":
+            return {"key": key, "value": "2025-05-01T00:00:00"}
+        else:
+            from sqlite_utils.db import NotFoundError
+            raise NotFoundError(f"No such item: {key}")
+
+    metadata.get.side_effect = get_side_effect
+    return metadata
+
+
+@pytest.fixture
+def mock_feed_entries():
+    """Fixture providing sample RSS feed entries in XML format."""
+    return """
+ <rss version="2.0">
+<channel>
+<title>Singapore Law Watch - SLW Today</title>
+<link>http://www.singaporelawwatch.sg</link>
+<copyright>Copyright 2018, Singapore Government, Singapore Academy of Law.</copyright>
+<generator>Singapore Law Watch</generator>
+<language>en-gb</language>
+<item>
+<title>Law don argues in inmates’ appeal that parts of Misuse of Drugs Act are unconstitutional</title>
+<link>https://www.singaporelawwatch.sg/Headlines/Law-don-argues-in-inmates-appeal-that-parts-of-Misuse-of-Drugs-Act-are-unconstitutional</link>
+<description><p>Deputy A-G counters that presumption of innocence not provided for in Constitution.</p></description>
+<author>Straits Times: Selina Lum</author>
+<category>Straits Times</category>
+<pubDate>08 May 2025 00:01:00</pubDate>
+<eventDate/>
+</item>
+<item>
+<title>Singapore and EU sign digital trade pact, deepening cooperation amid global uncertainties</title>
+<link>https://www.singaporelawwatch.sg/Headlines/Singapore-and-EU-sign-digital-trade-pact-deepening-cooperation-amid-global-uncertainties</link>
+<description><p>The agreement supplements the EU-Singapore Free Trade Agreement (EUSFTA) that entered into force in 2019.</p></description>
+<author>Straits Times: Angela Tan</author>
+<category>Straits Times</category>
+<pubDate>08 May 2025 00:01:00</pubDate>
+<eventDate/>
+</item>
+<item>
+<title>Generative AI a top priority for firms but privacy concerns remain: GIC survey</title>
+<link>https://www.singaporelawwatch.sg/Headlines/Generative-AI-a-top-priority-for-firms-but-privacy-concerns-remain-GIC-survey</link>
+<description><p>Many exploring its use for software development and IT applications.</p></description>
+<author>Straits Times: Timothy Goh</author>
+<category>Straits Times</category>
+<pubDate>08 May 2025 00:01:00</pubDate>
+<eventDate/>
+</item>
+<item>
+<title>ADV: Law & Technology in Singapore book launch - 23 May</title>
+<link>https://store.lawnet.com/law-and-technology-in-singapore-navigating-the-future-of-legal-practice-in-a-digital-age.html?utm_source=slw_edm&utm_medium=slwleaderboard&utm_campaign=2025may-poem_lawntech2esem-slw_edm-slwleaderboard-&utm_id=poem_lawntech2esem</link>
+<description><p>This <a href="https://store.lawnet.com/seminar-book-law-and-technology-in-singapore-navigating-the-future-of-legal-practice-in-a-digital-age.html?utm_source=slw_edm&amp;utm_medium=slwleaderboard&amp;utm_campaign=2025may-poem_lawntech2esem-slw_edm-slwleaderboard-&amp;utm_id=poem_lawntech2esem" target="_blank"><span style="color:#0033ff;">seminar</span></a> marks the release of the second edition of Law and Technology in Singapore, offering a timely exploration of how emerging technologies are reshaping legal practice and frameworks in Singapore. The authors will provide an overview of how technology intersects with various areas of Singapore law, examine current legal practices, and explore future developments.</p></description>
+<author>Academy Publishing</author>
+<category>Academy Publishing</category>
+<pubDate>08 May 2025 00:01:00</pubDate>
+<eventDate/>
+</item>
+</channel>   
+</rss>
+    """
+
+
+@pytest.fixture
+def mock_feed(mock_feed_entries):
+    """Fixture providing a mock feedparser result."""
+    mock = MagicMock(spec=feedparser.FeedParserDict)
+    mock.bozo = False
+    mock.entries = mock_feed_entries
+    mock.feed = {
+        'title': 'Singapore Law Watch Headlines',
+        'updated': 'Fri, 09 May 2025 12:00:00 GMT'
+    }
+    return mock
+
+
+@pytest.fixture
+def mock_feed_error():
+    """Fixture providing a mock feedparser result with an error."""
+    mock = MagicMock(spec=feedparser.FeedParserDict)
+    mock.bozo = True
+    mock.bozo_exception = "XML parsing error: mismatched tag at line 42"
+    mock.entries = []
+    mock.feed = {}
+    return mock
+
+
+@pytest.fixture
+def mock_jina_response():
+    """Fixture providing a mock response from Jina API."""
+    return """
+    <article>
+        <h1>New Court Decision on Property Law</h1>
+        <p>In a landmark decision handed down yesterday, the High Court ruled 
+        that property owners must adhere to stricter disclosure requirements 
+        when selling residential properties.</p>
+        <p>The decision in Smith v. Jones (2025) will have far-reaching implications
+        for the real estate market in Singapore.</p>
+        <p>Legal experts suggest this may lead to significant changes in how 
+        property transactions are conducted nationwide.</p>
+    </article>
+    """
+
+
+@pytest.fixture
+def mock_openai_response():
+    """Fixture providing a mock response from OpenAI API."""
+    return "The High Court has established stricter disclosure requirements for property sellers in a landmark ruling. Smith v. Jones (2025) mandates comprehensive disclosure of property defects, potentially transforming Singapore's real estate transactions and strengthening buyer protections. Industry experts anticipate significant adjustments to current practices."
+
+
+@pytest.fixture
+def mock_env_vars():
+    """Fixture to set and restore environment variables."""
+    original_env = os.environ.copy()
+    os.environ['JINA_API_TOKEN'] = 'mock-jina-token'
+    os.environ['OPENAI_API_KEY'] = 'mock-openai-key'
+
+    yield
+
+    # Reset environment to original state
+    os.environ.clear()
+    os.environ.update(original_env)
+
+
+@pytest.fixture
+def mock_httpx_client():
+    """Fixture providing a mock httpx.AsyncClient."""
+    mock_client = AsyncMock()
+
+    # Mock response for Jina API
+    mock_response = AsyncMock()
+    mock_response.text = "<article>Sample article content</article>"
+    mock_response.status_code = 200
+
+    # Configure the client to return the mock response
+    mock_client.__aenter__.return_value.get.return_value = mock_response
+
+    return mock_client
+
+
+@pytest.fixture
+def mock_openai_client():
+    """Fixture providing a mock OpenAI client."""
+    mock_client = AsyncMock()
+
+    # Create a mock response object
+    mock_response = AsyncMock()
+    mock_response.output_text = "This is a concise legal summary."
+
+    # Set up the client to return the mock response
+    mock_client.responses.create.return_value = mock_response
+
+    return mock_client
+
+
+@pytest.fixture
+def event_loop():
+    """Create an instance of the default event loop for each test case.
+
+    This is needed for pytest-asyncio to work properly.
+    """
+    loop = asyncio.get_event_loop_policy().new_event_loop()
+    yield loop
+    loop.close()
+
+
+@pytest.fixture
+def mock_boto3_client():
+    """Mock boto3 client for S3 testing."""
+    mock_client = MagicMock()
+
+    # Configure the download_file method
+    mock_client.download_file = MagicMock()
+
+    # Configure the upload_file method
+    mock_client.upload_file = MagicMock()
+
+    return mock_client
+
+
+@pytest.fixture
+def mock_boto3():
+    """Mock the boto3 module for S3 testing."""
+    mock_module = MagicMock()
+    mock_module.client.return_value = MagicMock()
+    return mock_module
+
+
+@pytest.fixture
+def mock_s3_env():
+    """Fixture to set and restore S3-related environment variables."""
+    original_env = os.environ.copy()
+    os.environ['AWS_ACCESS_KEY_ID'] = 'mock-aws-key'
+    os.environ['AWS_SECRET_ACCESS_KEY'] = 'mock-aws-secret'
+    os.environ['AWS_DEFAULT_REGION'] = 'us-east-1'
+    os.environ['S3_BUCKET_NAME'] = 'mock-bucket'
+
+    yield
+
+    # Reset environment to original state
+    os.environ.clear()
+    os.environ.update(original_env)
+
+
+</document_content>
+</document>
+<document index="7">
+<source>./tests/test_db_manager.py</source>
+<document_content>
+import os
+import tempfile
+from datetime import datetime
+from unittest.mock import patch, MagicMock
+
+import pytest
+
+from sglawwatch_to_sqlite.db_manager import DatabaseManager
+from sglawwatch_to_sqlite.storage import DB_FILENAME
+
+
+@pytest.fixture
+def temp_dir():
+    """Create a temporary directory for testing."""
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        yield tmpdirname
+
+
+@pytest.fixture
+def db_manager(temp_dir):
+    """Setup a test database manager and return it."""
+    return DatabaseManager(temp_dir)
+
+
+def test_database_manager_initialization(temp_dir):
+    """Test that DatabaseManager initializes correctly."""
+    db_manager = DatabaseManager(temp_dir)
+    db = db_manager.get_database()
+
+    # Check if all expected tables exist
+    table_names = db.table_names()
+    assert "schema_versions" in table_names
+    assert "headlines" in table_names
+    assert "metadata" in table_names
+
+    # Check if schema_versions has expected schema
+    schema_versions_schema = db["schema_versions"].columns_dict
+    assert "table_name" in schema_versions_schema
+    assert "version" in schema_versions_schema
+    assert "updated_at" in schema_versions_schema
+
+    # Check if headlines table has expected schema
+    headlines_schema = db["headlines"].columns_dict
+    assert "id" in headlines_schema
+    assert "category" in headlines_schema
+    assert "title" in headlines_schema
+    assert "source_link" in headlines_schema
+    assert "author" in headlines_schema
+    assert "date" in headlines_schema
+    assert "summary" in headlines_schema
+    assert "text" in headlines_schema
+    assert "imported_on" in headlines_schema
+
+    # Check if metadata has expected schema
+    metadata_schema = db["metadata"].columns_dict
+    assert "key" in metadata_schema
+    assert "value" in metadata_schema
+
+    # Verify the database was created with the fixed name
+    assert os.path.exists(os.path.join(temp_dir, DB_FILENAME))
+
+
+def test_database_manager_save(db_manager):
+    """Test DatabaseManager.save method."""
+    # Mock the storage save method
+    db_manager.storage.save = MagicMock(return_value="saved/path")
+
+    # Call save
+    result = db_manager.save()
+
+    # Verify the mock was called correctly
+    db_manager.storage.save.assert_called_once_with(db_manager.local_path)
+    assert result == "saved/path"
+
+
+def test_register_table_version(db_manager):
+    """Test that _register_table_version adds entries to schema_versions."""
+    db = db_manager.get_database()
+
+    # First clear any existing entries for test table
+    db["schema_versions"].delete_where("table_name = ?", ["test_table"])
+
+    # Register a new version
+    db_manager._register_table_version("test_table", 2)
+
+    # Check if entry exists
+    entry = db["schema_versions"].get("test_table")
+    assert entry["table_name"] == "test_table"
+    assert entry["version"] == 2
+
+    # Parse date to ensure it's a valid ISO format
+    try:
+        datetime.fromisoformat(entry["updated_at"])
+        valid_date = True
+    except ValueError:
+        valid_date = False
+
+    assert valid_date
+
+
+def test_get_last_updated_existing_key(db_manager):
+    """Test get_last_updated when the key already exists."""
+    db = db_manager.get_database()
+
+    # Setup test data
+    feed_type = "test_feed"
+    test_timestamp = datetime.now().isoformat()
+    db["metadata"].insert({"key": f"{feed_type}_last_updated", "value": test_timestamp})
+
+    # Get the value
+    result = db_manager.get_last_updated(feed_type)
+
+    # Check result
+    assert result == test_timestamp
+
+
+def test_get_last_updated_new_key(db_manager):
+    """Test get_last_updated when the key doesn't exist."""
+    db = db_manager.get_database()
+
+    # Setup test data - Make sure the key doesn't exist
+    feed_type = "nonexistent_feed"
+    db["metadata"].delete_where("key = ?", [f"{feed_type}_last_updated"])
+
+    # Get the value
+    result = db_manager.get_last_updated(feed_type)
+
+    # Check result - Should be empty string and a new entry should be created
+    assert result == ""
+
+    # Verify new entry was created
+    entry = db["metadata"].get(f"{feed_type}_last_updated")
+    assert entry["key"] == f"{feed_type}_last_updated"
+    assert entry["value"] == ""
+
+
+def test_update_last_updated(db_manager):
+    """Test update_last_updated function."""
+    db = db_manager.get_database()
+
+    # Test the function
+    db_manager.update_last_updated("headlines", "2025-05-10T12:34:56")
+
+    # Verify the value was updated
+    entry = db["metadata"].get("headlines_last_updated")
+    assert entry["value"] == "2025-05-10T12:34:56"
+
+
+@patch("sglawwatch_to_sqlite.storage.S3Storage")
+def test_database_manager_s3(mock_s3_storage, temp_dir):
+    """Test DatabaseManager with S3 URI."""
+    # Setup mock
+    mock_instance = MagicMock()
+    mock_instance.get_local_path.return_value = os.path.join(temp_dir, DB_FILENAME)
+    mock_s3_storage.return_value = mock_instance
+
+    # Create DatabaseManager with S3 URI
+    db_manager = DatabaseManager("s3://test-bucket/path/")
+
+    # Verify the mock was created and used
+    mock_s3_storage.assert_called_once_with("s3://test-bucket/path/")
+    mock_instance.get_local_path.assert_called_once()
+
+    # Verify the database manager has the correct storage
+    assert db_manager.storage == mock_instance
+</document_content>
+</document>
+<document index="8">
+<source>./tests/test_headlines.py</source>
+<document_content>
+import datetime
+import hashlib
+from unittest.mock import patch, MagicMock
+
+import pytest
+
+from sglawwatch_to_sqlite.resources.headlines import (
+    get_hash_id,
+    convert_date_to_iso,
+    get_jina_reader_content,
+    get_summary,
+    process_entry,
+    fetch_headlines
+)
+
+
+# Test get_hash_id function
+def test_get_hash_id():
+    # Given
+    entry_date = datetime.datetime(2025, 5, 8, 0, 1, 0).isoformat()
+    entry_title = "Test Case Headline"
+
+    # When
+    hash_id = get_hash_id(entry_date, entry_title)
+
+    # Then - create the expected hash manually to verify
+    expected = hashlib.md5(f"{entry_date}|{entry_title}".encode()).hexdigest()
+    assert hash_id == expected
+
+    # Verify different inputs produce different hashes
+    assert get_hash_id(entry_date, "Different Title") != hash_id
+
+
+# Test convert_date_to_iso function
+def test_convert_date_to_iso():
+    # Test standard format
+    assert convert_date_to_iso("08 May 2025 00:01:00") == "2025-05-08T00:01:00"
+
+    # Test abbreviated month format
+    assert convert_date_to_iso("08 May 2025 00:01:00") == "2025-05-08T00:01:00"
+
+    mock_now = datetime.datetime(2025, 5, 8, 0, 1, 0)
+
+    # Test error handling with mock datetime.now
+    with patch('sglawwatch_to_sqlite.resources.headlines.datetime') as mock_datetime:
+        mock_datetime.now.return_value = mock_now
+        mock_datetime.strptime.side_effect = ValueError("Invalid date format")
+        mock_datetime.fromisoformat = datetime.datetime.fromisoformat  # Keep this method working
+
+        # Should return current date in ISO format when parsing fails
+        assert convert_date_to_iso("invalid date") == "2025-05-08T00:01:00"
+
+
+# Test get_jina_reader_content function with fixtures
+@pytest.mark.asyncio
+async def test_get_jina_reader_content(mock_httpx_client, mock_env_vars):
+    with patch('httpx.AsyncClient', return_value=mock_httpx_client):
+        # Test
+        content = await get_jina_reader_content("https://example.com/article")
+
+        # Verify
+        assert content == "<article>Sample article content</article>"
+        # Verify correct URL and headers were used
+        mock_httpx_client.__aenter__.return_value.get.assert_called_once()
+
+
+# Test get_summary function with fixtures
+@pytest.mark.asyncio
+async def test_get_summary(mock_openai_client):
+    with patch.dict('os.environ', {'OPENAI_API_KEY': 'fake-api-key'}):
+        with patch('openai.AsyncOpenAI', return_value=mock_openai_client):
+            # Test
+            summary = await get_summary("This is a long article text that needs summarizing.")
+
+            # Verify
+            assert summary == "This is a concise legal summary."
+            # Verify OpenAI was called with correct parameters
+            mock_openai_client.responses.create.assert_called_once()
+
+
+# Test process_entry function
+@pytest.mark.asyncio
+async def test_process_entry_new_entry():
+    # Create mock DatabaseManager
+    mock_db_manager = MagicMock()
+    mock_db = MagicMock()
+    mock_db_manager.get_database.return_value = mock_db
+
+    # Mock entry
+    entry = {
+        'published': '08 May 2025 00:01:00',
+        'title': 'Test Article',
+        'category': 'Legal',
+        'link': 'https://example.com/article',
+        'author': 'John Doe'
+    }
+
+    # Mock external functions
+    with patch('sglawwatch_to_sqlite.resources.headlines.get_jina_reader_content',
+               return_value="Article content"):
+        with patch('sglawwatch_to_sqlite.resources.headlines.get_summary',
+                   return_value="Article summary"):
+            # Test with a last_updated timestamp before the entry date
+            timestamp, is_new, entry_data = await process_entry(mock_db_manager, entry, "2025-05-07T00:00:00")
+
+            # Verify
+            assert timestamp.isoformat() == "2025-05-08T00:01:00"
+            assert is_new is True
+            assert entry_data is not None
+            assert entry_data["title"] == "Test Article"
+
+            # Verify database interaction
+            mock_db_manager.get_database.assert_called_once()
+            mock_db["headlines"].insert.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_process_entry_existing_entry():
+    # Create mock DatabaseManager
+    mock_db_manager = MagicMock()
+
+    # Mock entry
+    entry = {
+        'published': '08 May 2025 00:01:00',
+        'title': 'Test Article'
+    }
+
+    # Test with a last_updated timestamp after the entry date (should skip)
+    timestamp, is_new, entry_data = await process_entry(mock_db_manager, entry, "2025-05-09T00:00:00")
+
+    # Verify
+    assert timestamp.isoformat() == "2025-05-08T00:01:00"
+    assert is_new is False
+    assert entry_data is None
+
+    # Verify DB interaction was NOT performed
+    mock_db_manager.get_database.assert_not_called()
+
+
+# Test fetch_headlines with mock feed
+@pytest.mark.asyncio
+async def test_fetch_headlines(mock_feed):
+    # Create mock DatabaseManager
+    mock_db_manager = MagicMock()
+    mock_db_manager.get_last_updated.return_value = "2025-05-07T00:00:00"
+
+    with patch('feedparser.parse', return_value=mock_feed):
+        with patch('sglawwatch_to_sqlite.resources.headlines.process_entry',
+                   side_effect=lambda db, entry, last_updated: (
+                           datetime.datetime(2025, 5, 8, 0, 1), True, {"id": "123"})):
+            # Test
+            result = await fetch_headlines(mock_db_manager, "https://example.com/feed")
+
+            # Verify
+            assert len(result) > 0
+            mock_db_manager.get_last_updated.assert_called_once_with("headlines")
+            mock_db_manager.update_last_updated.assert_called_once()
+
+
+# Test fetch_headlines with no entries
+@pytest.mark.asyncio
+async def test_fetch_headlines_no_entries():
+    # Create mock DatabaseManager
+    mock_db_manager = MagicMock()
+
+    # Create a feed with no entries
+    empty_feed = MagicMock()
+    empty_feed.bozo = False
+    empty_feed.entries = []
+
+    with patch('feedparser.parse', return_value=empty_feed):
+        # Test
+        result = await fetch_headlines(mock_db_manager, "https://example.com/feed")
+
+        # Verify
+        assert result == []
+
+
+# Test fetch_headlines with feed error
+@pytest.mark.asyncio
+async def test_fetch_headlines_feed_error(mock_feed_error):
+    # Create mock DatabaseManager
+    mock_db_manager = MagicMock()
+
+    with patch('feedparser.parse', return_value=mock_feed_error):
+        with patch('click.echo') as mock_echo:
+            # Test
+            result = await fetch_headlines(mock_db_manager, "https://example.com/feed")
+
+            # Verify error is logged and empty result is returned
+            mock_echo.assert_called_with(
+                "No entries found in the feed.",
+            )
+            assert result == []
+
+
+@pytest.mark.asyncio
+async def test_fetch_headlines_skip_advertisements():
+    """Test that headlines with titles starting with 'ADV:' are skipped."""
+    # Create mock DatabaseManager
+    mock_db_manager = MagicMock()
+    mock_db_manager.get_last_updated.return_value = "2025-05-07T00:00:00"
+
+    # Create a mock feed with regular and advertisement entries
+    mock_feed = MagicMock()
+    mock_feed.bozo = False
+    mock_feed.entries = [
+        {
+            'title': 'Normal Article Title',
+            'published': '08 May 2025 00:01:00',
+            'link': 'https://example.com/normal'
+        },
+        {
+            'title': 'ADV: Advertisement Article',
+            'published': '08 May 2025 00:01:00',
+            'link': 'https://example.com/adv'
+        },
+        {
+            'title': 'Another Normal Article',
+            'published': '08 May 2025 00:01:00',
+            'link': 'https://example.com/another'
+        }
+    ]
+
+    # Track which entries are processed
+    processed_entries = []
+
+    # Mock process_entry to track which entries get processed
+    async def mock_process_entry(db, entry, last_updated):
+        processed_entries.append(entry['title'])
+        return datetime.datetime(2025, 5, 8, 0, 1), True, {"id": "123"}
+
+    with patch('feedparser.parse', return_value=mock_feed):
+        with patch('sglawwatch_to_sqlite.resources.headlines.process_entry',
+                   side_effect=mock_process_entry):
+            with patch('click.echo'):  # To silence output during tests
+                # Test
+                result = await fetch_headlines(mock_db_manager, "https://example.com/feed")
+
+                # Verify
+                assert len(processed_entries) == 2  # Only the non-ADV entries
+                assert 'Normal Article Title' in processed_entries
+                assert 'Another Normal Article' in processed_entries
+                assert 'ADV: Advertisement Article' not in processed_entries
+
+</document_content>
+</document>
+<document index="9">
+<source>./tests/test_sglawwatch_to_sqlite.py</source>
+<document_content>
+import os
+from unittest.mock import patch, MagicMock
+
+from click.testing import CliRunner
+
+from sglawwatch_to_sqlite.cli import cli
+from sglawwatch_to_sqlite.storage import DB_FILENAME
+
+
+def test_version():
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        result = runner.invoke(cli, ["--version"])
+        assert result.exit_code == 0
+        assert result.output.startswith("cli, version ")
+
+
+@patch("sglawwatch_to_sqlite.cli.DatabaseManager")
+@patch("sglawwatch_to_sqlite.cli.asyncio.run")
+def test_headlines_command_local(mock_run, mock_db_manager_class):
+    """Test headlines command with local storage."""
+    # Setup mocks
+    mock_db_manager = MagicMock()
+    mock_db_manager.save.return_value = "./data/sglawwatch.db"
+    mock_db_manager_class.return_value = mock_db_manager
+
+    # Run command
+    runner = CliRunner()
+    result = runner.invoke(cli, ["fetch", "headlines", "./data"])
+
+    # Check result
+    assert result.exit_code == 0
+
+    # Verify mocks were called correctly
+    mock_db_manager_class.assert_called_once_with("./data")
+    mock_run.assert_called_once()
+    mock_db_manager.save.assert_called_once()
+
+    # Check output
+    assert "Database saved to" in result.output
+
+
+@patch("sglawwatch_to_sqlite.cli.DatabaseManager")
+@patch("sglawwatch_to_sqlite.cli.asyncio.run")
+def test_headlines_command_s3(mock_run, mock_db_manager_class):
+    """Test headlines command with S3 storage."""
+    # Setup mocks
+    mock_db_manager = MagicMock()
+    mock_db_manager.save.return_value = "s3://test-bucket/path/sglawwatch.db"
+    mock_db_manager_class.return_value = mock_db_manager
+
+    # Run command
+    runner = CliRunner()
+    result = runner.invoke(cli, ["fetch", "headlines", "s3://test-bucket/path/"])
+
+    # Check result
+    assert result.exit_code == 0
+
+    # Verify mocks were called correctly
+    mock_db_manager_class.assert_called_once_with("s3://test-bucket/path/")
+    mock_run.assert_called_once()
+    mock_db_manager.save.assert_called_once()
+
+    # Check output
+    assert "Database saved to s3://test-bucket/path/sglawwatch.db" in result.output
+
+
+@patch("sglawwatch_to_sqlite.cli.DatabaseManager")
+@patch("sglawwatch_to_sqlite.cli.asyncio.run")
+def test_fetch_all_command(mock_run, mock_db_manager_class):
+    """Test fetch all command."""
+    # Setup mocks
+    mock_db_manager = MagicMock()
+    mock_db_manager.save.return_value = "./data/sglawwatch.db"
+    mock_db_manager_class.return_value = mock_db_manager
+
+    # Run command
+    runner = CliRunner()
+    result = runner.invoke(cli, ["fetch", "all", "./data", "--reset"])
+
+    # Check result
+    assert result.exit_code == 0
+
+    # Verify mocks were called correctly
+    mock_db_manager_class.assert_called_once_with("./data")
+    mock_run.assert_called_once()
+
+    # Check output
+    assert "All feeds have been processed" in result.output
+
+
+def test_headlines_command_integration():
+    """Integration test for headlines command with actual filesystem."""
+    runner = CliRunner()
+    with runner.isolated_filesystem() as temp_dir:
+        # Create a directory for the database
+        data_dir = os.path.join(temp_dir, "data")
+        os.makedirs(data_dir)
+
+        # Mock the fetch_headlines function to avoid actual network calls
+        with patch("sglawwatch_to_sqlite.resources.headlines.fetch_headlines") as mock_fetch:
+            # Run the command
+            result = runner.invoke(cli, ["fetch", "headlines", data_dir])
+
+            # Check the result
+            assert result.exit_code == 0
+
+            # Verify the database file was created
+            assert os.path.exists(os.path.join(data_dir, DB_FILENAME))
+
+            # Verify fetch_headlines was called
+            mock_fetch.assert_called_once()
+</document_content>
+</document>
+<document index="10">
+<source>./tests/test_storage.py</source>
+<document_content>
+import os
+import tempfile
+from unittest.mock import patch, MagicMock
+
+import click
+import pytest
+from botocore.exceptions import ClientError
+
+from sglawwatch_to_sqlite.storage import Storage, LocalStorage, S3Storage, DB_FILENAME
+
+
+@pytest.fixture
+def temp_dir():
+    """Create a temporary directory for testing."""
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        yield tmpdirname
+
+
+def test_storage_factory_local():
+    """Test Storage.create factory method with local path."""
+    storage = Storage.create("./data")
+    assert isinstance(storage, LocalStorage)
+    assert storage.directory == "./data"
+    assert storage.path.endswith(DB_FILENAME)
+
+
+def test_storage_factory_s3():
+    """Test Storage.create factory method with S3 URI."""
+    storage = Storage.create("s3://my-bucket/path/")
+    assert isinstance(storage, S3Storage)
+    assert storage.bucket == "my-bucket"
+    assert storage.key == f"path/{DB_FILENAME}"
+
+
+def test_local_storage_init():
+    """Test LocalStorage initialization."""
+    # With directory path
+    storage = LocalStorage("./data")
+    assert storage.directory == "./data"
+    assert storage.path == f"./data/{DB_FILENAME}"
+
+    # With file path
+    storage = LocalStorage("./data/mydb.db")
+    assert storage.directory == "./data"
+    assert storage.path == f"./data/{DB_FILENAME}"
+
+    # With current directory
+    storage = LocalStorage(".")
+    assert storage.directory == "."
+    assert storage.path == f"./{DB_FILENAME}"
+
+
+def test_local_storage_get_local_path(temp_dir):
+    """Test LocalStorage.get_local_path with a temporary directory."""
+    sub_dir = os.path.join(temp_dir, "data")
+    storage = LocalStorage(sub_dir)
+
+    # Directory shouldn't exist yet
+    assert not os.path.exists(sub_dir)
+
+    # get_local_path should create the directory
+    path = storage.get_local_path()
+    assert os.path.exists(sub_dir)
+    assert path == os.path.join(sub_dir, DB_FILENAME)
+
+
+def test_local_storage_save(temp_dir):
+    """Test LocalStorage.save method."""
+    # Create a source file
+    source_path = os.path.join(temp_dir, "source.db")
+    with open(source_path, "w") as f:
+        f.write("test data")
+
+    # Setup storage in a subdirectory
+    dest_dir = os.path.join(temp_dir, "dest")
+    storage = LocalStorage(dest_dir)
+
+    # Save the file
+    result = storage.save(source_path)
+
+    # Check the result
+    assert result == os.path.join(dest_dir, DB_FILENAME)
+    assert os.path.exists(result)
+
+    # Check the content was copied
+    with open(result, "r") as f:
+        assert f.read() == "test data"
+
+
+def test_s3_storage_init():
+    """Test S3Storage initialization with various URI formats."""
+    # With bucket and path
+    storage = S3Storage("s3://my-bucket/path/to/data/")
+    assert storage.bucket == "my-bucket"
+    assert storage.key == f"path/to/data/{DB_FILENAME}"
+
+    # With bucket but no path
+    storage = S3Storage("s3://my-bucket")
+    assert storage.bucket == "my-bucket"
+    assert storage.key == DB_FILENAME
+
+    # With bucket and file
+    storage = S3Storage("s3://my-bucket/path/to/data/custom.db")
+    assert storage.bucket == "my-bucket"
+    assert storage.key == "path/to/data/custom.db"
+
+
+def test_s3_storage_from_env():
+    """Test S3Storage initialization with bucket from environment."""
+    # Set environment variable
+    with patch.dict(os.environ, {"S3_BUCKET_NAME": "env-bucket"}):
+        # Without bucket in URI
+        storage = S3Storage("s3:///path/to/data/")
+        assert storage.bucket == "env-bucket"
+        assert storage.key == f"path/to/data/{DB_FILENAME}"
+
+
+def test_s3_storage_missing_bucket():
+    """Test S3Storage initialization with missing bucket."""
+    # Clear environment variable
+    with patch.dict(os.environ, {"S3_BUCKET_NAME": ""}):
+        # Without bucket in URI
+        with pytest.raises(click.exceptions.Abort):
+            with patch("click.echo") as mock_echo:
+                S3Storage("s3:///path/to/data/")
+                # This will be called but we won't get here because of the exception
+                mock_echo.assert_called_with(
+                    "Error: S3 bucket name must be specified either in the URI or via S3_BUCKET_NAME environment variable",
+                    err=True
+                )
+
+
+@patch("boto3.client")
+def test_s3_storage_get_local_path_new_file(mock_boto3_client):
+    """Test S3Storage.get_local_path when the file doesn't exist in S3."""
+    # Mock S3 client
+    mock_s3 = MagicMock()
+    mock_boto3_client.return_value = mock_s3
+
+    # Setup mock to simulate file not found
+    mock_error = ClientError(
+        error_response={"Error": {"Code": "404"}},
+        operation_name="download_file"
+    )
+    mock_s3.download_file.side_effect = mock_error
+
+    # Test the method
+    storage = S3Storage("s3://test-bucket/path/")
+    local_path = storage.get_local_path()
+
+    # Check the result
+    assert local_path.endswith(".db")
+    assert os.path.exists(local_path)
+
+    # Verify the mock was called correctly
+    mock_s3.download_file.assert_called_once_with(
+        "test-bucket", f"path/{DB_FILENAME}", local_path
+    )
+
+
+@patch("boto3.client")
+def test_s3_storage_get_local_path_existing_file(mock_boto3_client):
+    """Test S3Storage.get_local_path when the file exists in S3."""
+    # Mock S3 client
+    mock_s3 = MagicMock()
+    mock_boto3_client.return_value = mock_s3
+
+    # Setup mock to write a test file when download_file is called
+    def side_effect(bucket, key, filename):
+        with open(filename, "w") as f:
+            f.write("test data from s3")
+
+    mock_s3.download_file.side_effect = side_effect
+
+    # Test the method
+    storage = S3Storage("s3://test-bucket/path/")
+    local_path = storage.get_local_path()
+
+    # Check the result
+    assert local_path.endswith(".db")
+    assert os.path.exists(local_path)
+
+    # Check the content
+    with open(local_path, "r") as f:
+        assert f.read() == "test data from s3"
+
+    # Verify the mock was called correctly
+    mock_s3.download_file.assert_called_once_with(
+        "test-bucket", f"path/{DB_FILENAME}", local_path
+    )
+
+
+@patch("boto3.client")
+def test_s3_storage_save(mock_boto3_client):
+    """Test S3Storage.save method."""
+    # Create a temporary file
+    with tempfile.NamedTemporaryFile(delete=False) as tmp:
+        tmp.write(b"test data to upload")
+        tmp_path = tmp.name
+
+    try:
+        # Mock S3 client
+        mock_s3 = MagicMock()
+        mock_boto3_client.return_value = mock_s3
+
+        # Test the method
+        storage = S3Storage("s3://test-bucket/path/")
+        result = storage.save(tmp_path)
+
+        # Check the result
+        assert result == f"s3://test-bucket/path/{DB_FILENAME}"
+
+        # Verify the mock was called correctly
+        mock_s3.upload_file.assert_called_once_with(
+            tmp_path, "test-bucket", f"path/{DB_FILENAME}"
+        )
+    finally:
+        # Clean up
+        if os.path.exists(tmp_path):
+            os.unlink(tmp_path)
+</document_content>
+</document>
+<document index="11">
+<source>./sglawwatch_to_sqlite/__init__.py</source>
+<document_content>
+__version__ = "0.1"
+
+</document_content>
+</document>
+<document index="12">
+<source>./sglawwatch_to_sqlite/__main__.py</source>
+<document_content>
+from .cli import cli
+
+if __name__ == "__main__":
+    cli()
+
+</document_content>
+</document>
+<document index="13">
+<source>./sglawwatch_to_sqlite/cli.py</source>
+<document_content>
+import asyncio
+import click
+import os
+
+from sglawwatch_to_sqlite.db_manager import DatabaseManager
+from sglawwatch_to_sqlite.storage import DB_FILENAME
+
+
+@click.group()
+@click.version_option()
+def cli():
+    """Track Singapore's legal developments by importing Singapore Law Watch's RSS feed into a searchable SQLite database"""
+
+
+@cli.group(name="fetch")
+def fetch():
+    """Fetch entries from Singapore Law Watch RSS feeds into a SQLite database."""
+    pass
+
+
+@fetch.command(name="headlines")
+@click.argument(
+    "location",
+    type=str,
+    required=False,
+    default=".",
+)
+@click.option(
+    "--url",
+    default="https://www.singaporelawwatch.sg/Portals/0/RSS/Headlines.xml",
+    help="URL of the Singapore Law Watch Headlines RSS feed",
+)
+@click.option(
+    "--all",
+    is_flag=True,
+    help="Fetch all entries regardless of last run state",
+)
+def headlines_command(location, url, all):
+    """Fetch headline entries from Singapore Law Watch RSS feed.
+
+    LOCATION can be a local directory or an S3 path (s3://bucket/path/).
+    The database will always be named 'sglawwatch.db'.
+
+    If LOCATION is not specified, the current directory is used.
+
+    For S3 storage, you can also set the S3_BUCKET_NAME environment variable
+    instead of including it in the path.
+    """
+    # Create a database manager
+    db_manager = DatabaseManager(location)
+
+    # Import here to avoid circular imports
+    from sglawwatch_to_sqlite.resources.headlines import fetch_headlines
+
+    # Run the fetch operation asynchronously
+    asyncio.run(fetch_headlines(db_manager, url, all))
+
+    # Save the database (this will upload to S3 if needed)
+    saved_location = db_manager.save()
+
+    if location.startswith('s3://'):
+        click.echo(f"Database saved to {saved_location}")
+    else:
+        # For local storage, make the path more user-friendly
+        rel_path = os.path.join(location, DB_FILENAME)
+        if os.path.isabs(rel_path):
+            click.echo(f"Database saved to {rel_path}")
+        else:
+            # Convert to relative path for better readability
+            click.echo(f"Database saved to ./{rel_path}")
+
+
+# Add a command to fetch all feed types at once
+@fetch.command(name="all")
+@click.argument(
+    "location",
+    type=str,
+    required=False,
+    default=".",
+)
+@click.option(
+    "--reset",
+    is_flag=True,
+    help="Reset and fetch all entries from scratch",
+)
+def fetch_all(location, reset):
+    """Fetch all available feeds (headlines and judgments).
+
+    LOCATION can be a local directory or an S3 path (s3://bucket/path/).
+    The database will always be named 'sglawwatch.db'.
+
+    If LOCATION is not specified, the current directory is used.
+
+    For S3 storage, you can also set the S3_BUCKET_NAME environment variable
+    instead of including it in the path.
+    """
+    click.echo("Fetching all Singapore Law Watch feeds...")
+
+    ctx = click.get_current_context()
+
+    # Fetch headlines
+    ctx.invoke(headlines_command, location=location, all=reset)
+
+    click.echo("All feeds have been processed")
+</document_content>
+</document>
+<document index="14">
+<source>./sglawwatch_to_sqlite/db_manager.py</source>
+<document_content>
+from datetime import datetime
+
+import click
+import sqlite_utils
+
+from sglawwatch_to_sqlite.storage import Storage
+
+# Current table versions
+TABLE_VERSIONS = {
+    "headlines": 1,
+    "metadata": 1
+}
+
+
+class DatabaseManager:
+    """
+    A class that manages both the database and its storage.
+    """
+
+    def __init__(self, database_uri):
+        """
+        Initialize a DatabaseManager with a database URI.
+
+        Args:
+            database_uri: Either a local file path or an S3 URI (s3://bucket/path)
+        """
+        try:
+            # Create the appropriate storage
+            self.storage = Storage.create(database_uri)
+
+            # Get the local path (will download from S3 if needed)
+            self.local_path = self.storage.get_local_path()
+
+            # Connect to the database
+            self.db = sqlite_utils.Database(self.local_path)
+
+            # Set up tables if needed
+            self._setup_tables()
+        except Exception as e:
+            click.echo(f"Error connecting to database at {database_uri}: {e}", err=True)
+            raise click.Abort()
+
+    def _setup_tables(self):
+        """Set up the necessary tables in the database."""
+        try:
+            # Check/create schema_versions table first
+            if "schema_versions" not in self.db.table_names():
+                self.db["schema_versions"].create({
+                    "table_name": str,
+                    "version": int,
+                    "updated_at": str
+                }, pk="table_name")
+                click.echo("Created schema version tracking table")
+
+            # Create the headlines table if it doesn't exist
+            if "headlines" not in self.db.table_names():
+                self.db["headlines"].create({
+                    "id": str,  # Unique identifier for each article
+                    "category": str,  # The category of the news article
+                    "title": str,  # The title of the article
+                    "source_link": str,  # URL to the source article
+                    "author": str,  # Author of the article
+                    "date": str,  # Publication date in ISO format
+                    "summary": str,  # Summary text
+                    "text": str,  # Full text content
+                    "imported_on": str  # When the article was imported
+                }, pk="id")
+
+                # Create indexes for common query patterns
+                self.db["headlines"].create_index(["date"])
+                self.db["headlines"].create_index(["author"])
+
+                self.db["headlines"].enable_fts(["title", "summary"], create_triggers=True)
+
+                self._register_table_version("headlines", TABLE_VERSIONS["headlines"])
+
+            # Create the metadata table if it doesn't exist
+            if "metadata" not in self.db.table_names():
+                self.db["metadata"].create({
+                    "key": str,
+                    "value": str
+                }, pk="key")
+                self._register_table_version("metadata", TABLE_VERSIONS["metadata"])
+
+        except Exception as e:
+            click.echo(f"Error creating table: {e}", err=True)
+            raise click.Abort()
+
+    def _register_table_version(self, table_name, version):
+        """Register a new table version in the schema_versions table"""
+        self.db["schema_versions"].insert({
+            "table_name": table_name,
+            "version": version,
+            "updated_at": datetime.now().isoformat()
+        })
+        click.echo(f"Registered {table_name} table with schema version {version}")
+
+    def get_database(self):
+        """Get the sqlite_utils Database object."""
+        return self.db
+
+    def save(self):
+        """Save the database, handling S3 upload if needed."""
+        return self.storage.save(self.local_path)
+
+    def get_last_updated(self, feed_type):
+        """Get the last updated timestamp for a specific feed type"""
+        metadata_key = f"{feed_type}_last_updated"
+        try:
+            return self.db["metadata"].get(metadata_key)["value"]
+        except sqlite_utils.db.NotFoundError:
+            self.db["metadata"].insert({"key": metadata_key, "value": ""})
+            return ""
+
+    def update_last_updated(self, feed_type, timestamp):
+        """Update the last updated timestamp for a specific feed type"""
+        metadata_key = f"{feed_type}_last_updated"
+        self.db["metadata"].upsert({"key": metadata_key, "value": timestamp}, pk="key")
+
+</document_content>
+</document>
+<document index="15">
+<source>./sglawwatch_to_sqlite/storage.py</source>
+<document_content>
+import os
+import tempfile
+from urllib.parse import urlparse
+
+import click
+
+# Fixed database filename
+DB_FILENAME = "sglawwatch.db"
+
+
+class Storage:
+    """
+    Abstract base class for database storage.
+    """
+
+    def get_local_path(self):
+        """Get the local path to the database"""
+        raise NotImplementedError()
+
+    def save(self, local_path=None):
+        """Save the database"""
+        raise NotImplementedError()
+
+    @staticmethod
+    def create(location):
+        """
+        Factory method to create the appropriate storage object.
+
+        Args:
+            location: Either a local directory path or an S3 URI (s3://bucket/path/)
+                      If no location is specified, the current directory is used.
+        """
+        if not location:
+            # Default to current directory
+            return LocalStorage(".")
+
+        if location.startswith('s3://'):
+            return S3Storage(location)
+        else:
+            return LocalStorage(location)
+
+
+class LocalStorage(Storage):
+    """
+    Local filesystem storage for the database.
+    """
+
+    def __init__(self, directory):
+        # Ensure the directory doesn't have a filename at the end
+        if os.path.isfile(directory) or directory.endswith('.db'):
+            directory = os.path.dirname(directory) or "."
+
+        self.directory = directory
+        self.path = os.path.join(directory, DB_FILENAME)
+
+    def get_local_path(self):
+        # Ensure the directory exists
+        if self.directory and not os.path.exists(self.directory):
+            os.makedirs(self.directory)
+        return self.path
+
+    def save(self, local_path=None):
+        """
+        Save a database file to the storage location.
+
+        Args:
+            local_path: Path to the local database file to save.
+                       If None, assumes the database is already at self.path.
+
+        Returns:
+            The final path where the database was saved.
+        """
+        # For local storage, nothing needs to be done if the path is the same
+        if local_path and local_path != self.path:
+            import shutil
+
+            # Make sure the target directory exists
+            if not os.path.exists(self.directory):
+                os.makedirs(self.directory)
+
+            shutil.copy2(local_path, self.path)
+        return self.path
+
+
+class S3Storage(Storage):
+    """
+    S3 storage for the database.
+    """
+
+    def __init__(self, s3_uri):
+        self.s3_uri = s3_uri
+
+        # Parse the S3 URI
+        parsed = urlparse(s3_uri)
+
+        # Check if we have a bucket name in the URI
+        if parsed.netloc:
+            self.bucket = parsed.netloc
+        else:
+            # Try to get bucket name from environment variable
+            self.bucket = os.environ.get('S3_BUCKET_NAME')
+            if not self.bucket:
+                click.echo(
+                    "Error: S3 bucket name must be specified either in the URI or via S3_BUCKET_NAME environment variable",
+                    err=True)
+                raise click.Abort()
+
+        # Parse the key (path in the bucket)
+        self.key = parsed.path.lstrip('/')
+
+        # If the key doesn't end with a filename, append the fixed DB filename
+        if not self.key or self.key.endswith('/'):
+            self.key = f"{self.key}{DB_FILENAME}"
+        elif not os.path.basename(self.key) or not os.path.splitext(self.key)[1]:
+            # It doesn't have a file extension, assume it's a directory
+            self.key = f"{self.key}/{DB_FILENAME}"
+
+        self._temp_file = None
+
+    def _verify_boto3(self):
+        """Import boto3 and check if it's available."""
+        try:
+            import boto3  # noqa: F401
+            return True
+        except ImportError:
+            click.echo("boto3 is required for S3 storage. Install it with 'uv install boto3'.", err=True)
+            raise click.Abort()
+
+    def get_local_path(self):
+        self._verify_boto3()
+
+        # Create a temporary file
+        temp_fd, temp_path = tempfile.mkstemp(suffix='.db')
+        os.close(temp_fd)
+        self._temp_file = temp_path
+
+        # Download the file from S3 if it exists
+        try:
+            import boto3
+            from botocore.exceptions import ClientError
+
+            s3_client = boto3.client('s3')
+            try:
+                click.echo(f"Downloading database from s3://{self.bucket}/{self.key}")
+                s3_client.download_file(self.bucket, self.key, temp_path)
+            except ClientError as e:
+                if e.response['Error']['Code'] == '404':
+                    click.echo(
+                        f"No existing database found at s3://{self.bucket}/{self.key}. A new one will be created.")
+                else:
+                    click.echo(f"Error downloading from S3: {e}", err=True)
+                    raise click.Abort()
+        except Exception as e:
+            click.echo(f"Error accessing S3: {e}", err=True)
+            raise click.Abort()
+
+        return temp_path
+
+    def save(self, local_path=None):
+        self._verify_boto3()
+
+        if not local_path:
+            local_path = self._temp_file
+
+        if not local_path or not os.path.exists(local_path):
+            click.echo(f"Error: Local database file not found: {local_path}", err=True)
+            raise click.Abort()
+
+        try:
+            import boto3
+
+            s3_client = boto3.client('s3')
+            click.echo(f"Uploading database to s3://{self.bucket}/{self.key}")
+            s3_client.upload_file(local_path, self.bucket, self.key)
+            click.echo("Database successfully uploaded to S3")
+            return f"s3://{self.bucket}/{self.key}"
+        except Exception as e:
+            click.echo(f"Error uploading to S3: {e}", err=True)
+            raise click.Abort()
+        finally:
+            # Clean up the temporary file
+            if self._temp_file and os.path.exists(self._temp_file):
+                os.unlink(self._temp_file)
+</document_content>
+</document>
+<document index="16">
+<source>./sglawwatch_to_sqlite/resources/__init__.py</source>
+<document_content>
+
+</document_content>
+</document>
+<document index="17">
+<source>./sglawwatch_to_sqlite/resources/headlines.py</source>
+<document_content>
+import asyncio
+import os
+from datetime import datetime
+
+import click
+import feedparser
+import httpx
+from tenacity import retry, stop_after_attempt, wait_exponential
+
+from sglawwatch_to_sqlite.db_manager import DatabaseManager
+
+SYSTEM_PROMPT_TEXT = "As an AI expert in legal affairs, your task is to provide concise, yet comprehensive " \
+                     "summaries of legal news articles for time-constrained attorneys. These summaries " \
+                     "should highlight the critical legal aspects, relevant precedents, and implications of " \
+                     "the issues discussed in the articles.\n\nDespite their complexity, the summaries " \
+                     "should be accessible and digestible, written in an engaging and conversational style. " \
+                     "Accuracy and attention to detail are essential, as the readers will be legal " \
+                     "professionals who may use these summaries to inform their practice.\n\n" \
+                     "### Instructions: \n1. Begin the summary with a brief introduction of the topic of " \
+                     "the article.\n2. Outline the main legal aspects, implications, and precedents " \
+                     "highlighted in the article. \n3. End the summary with a succinct conclusion or " \
+                     "takeaway.\n\nThe summaries should not be longer than 100 words, but ensure they " \
+                     "efficiently deliver the key legal insights, making them beneficial for quick " \
+                     "comprehension. The end goal is to help the lawyers understand the crux of the " \
+                     "articles without having to read them in their entirety."
+
+
+def get_hash_id(entry_date: str, entry_title: str) -> str:
+    """Generate a hash ID for the entry."""
+    import hashlib
+    return hashlib.md5(f"{entry_date}|{entry_title}".encode()).hexdigest()
+
+
+def convert_date_to_iso(date_str: str) -> str:
+    """Convert date string like '08 May 2025 00:01:00' to ISO format."""
+    try:
+        parsed_date = datetime.strptime(date_str, '%d %B %Y %H:%M:%S')
+        return parsed_date.isoformat()  # Returns '2025-05-08T00:01:00'
+    except ValueError:
+        # Handle potential parsing errors
+        try:
+            # Try alternative format with abbreviated month name
+            parsed_date = datetime.strptime(date_str, '%d %b %Y %H:%M:%S')
+            return parsed_date.isoformat()
+        except ValueError:
+            # If all parsing attempts fail, return original or a default
+            return datetime.now().isoformat()
+
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=2, min=1, max=10))
+async def get_jina_reader_content(link: str) -> str:
+    """Fetch content from the Jina reader link."""
+    jina_token = os.environ.get('JINA_API_TOKEN')
+    if not jina_token:
+        click.echo("JINA_API_TOKEN environment variable not set", err=True)
+        return ""
+    jina_link = f"https://r.jina.ai/{link}"
+    headers = {
+        "Authorization": f"Bearer {jina_token}",
+        "X-Retain-Images": "none",
+        "X-Target-Selector": "article"
+    }
+    try:
+        async with httpx.AsyncClient(timeout=90) as client:
+            r = await client.get(jina_link, headers=headers)
+        return r.text
+    except httpx.RequestError as e:
+        click.echo(f"Error fetching content from Jina reader: {e}", err=True)
+        return ""
+
+
+async def get_summary(text: str) -> str:
+    """Generate a summary of the article text using OpenAI."""
+    if not os.environ.get('OPENAI_API_KEY'):
+        click.echo("OPENAI_API_KEY environment variable not set", err=True)
+        return ""
+    from openai import AsyncOpenAI
+    client = AsyncOpenAI(max_retries=3, timeout=60)
+    try:
+        response = await client.responses.create(
+            model="gpt-4.1-mini",
+            input=[
+                {
+                    "role": "system",
+                    "content": [
+                        {
+                            "type": "input_text",
+                            "text": SYSTEM_PROMPT_TEXT
+                        }
+                    ]
+                },
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "input_text",
+                            "text": f"Here is an article to summarise:\n {text}"
+                        }
+                    ]
+                }
+            ],
+            text={
+                "format": {
+                    "type": "text"
+                }
+            },
+            temperature=0.42,
+            max_output_tokens=2048,
+            top_p=1,
+            store=False
+        )
+        return response.output_text
+    except Exception as e:
+        click.echo(f"Error generating summary from OpenAI: {e}", err=True)
+        return ""
+
+
+async def process_entry(db_manager: DatabaseManager, entry: dict, last_updated: str) -> tuple[datetime, bool, dict]:
+    """Process a single feed entry."""
+    entry_date = datetime.fromisoformat(convert_date_to_iso(entry['published']))
+    last_updated_date = datetime.fromisoformat(last_updated) if last_updated else None
+
+    # Check if the entry is newer than the last updated date
+    is_new_entry = True
+    if last_updated_date:
+        is_new_entry = entry_date > last_updated_date
+
+    # Prepare the entry data
+    entry_data = {
+        "id": get_hash_id(entry_date.isoformat(), entry['title']),
+        "category": entry.get("category", ""),
+        "title": entry.get("title", ""),
+        "source_link": entry.get("link", ""),
+        "author": entry.get("author", ""),
+        "date": entry_date.isoformat(),
+        "imported_on": datetime.now().isoformat()
+    }
+
+    # Echo information about the entry being processed
+    click.echo(f"Processing: {entry_data['title']} from {entry_data['date']}")
+
+    if is_new_entry:
+        click.echo(f"  → Fetching content for: {entry_data['title']}")
+        entry_data["text"] = await get_jina_reader_content(entry_data["source_link"])
+
+        click.echo(f"  → Generating summary for: {entry_data['title']}")
+        entry_data["summary"] = await get_summary(entry_data["text"])
+
+        # Get the database and insert the new entry
+        db = db_manager.get_database()
+        db["headlines"].insert(entry_data, pk="id")
+        click.echo(f"  ✓ Added to database: {entry_data['title']}")
+    else:
+        click.echo(f"  → Skipping (already processed): {entry_data['title']}")
+
+    return entry_date, is_new_entry, entry_data if is_new_entry else None
+
+
+async def fetch_headlines(db_manager: DatabaseManager, url: str, all_entries=False) -> list:
+    """Fetch headline entries from Singapore Law Watch RSS feed."""
+    click.echo(f"Fetching headlines from {url}")
+
+    # Get the last updated timestamp
+    last_updated = None if all_entries else db_manager.get_last_updated("headlines")
+
+    # Parse the RSS feed
+    feed = feedparser.parse(url)
+
+    if feed.bozo:
+        click.echo(f"Warning: RSS feed parsing error - {feed.bozo_exception}", err=True)
+
+    if not feed.entries:
+        click.echo("No entries found in the feed.")
+        return []
+
+    # Track the most recent entry timestamp
+    most_recent_timestamp: None | datetime = None
+    new_entries_count = 0
+    new_entries = []
+    skipped_adv_count = 0
+
+    tasks = []
+    for entry in feed.entries:
+        # Skip entries with titles starting with "ADV"
+        if entry.get('title', '').startswith('ADV:'):
+            skipped_adv_count += 1
+            click.echo(f"Skipping advertisement: {entry.get('title', '')}")
+            continue
+
+        task = asyncio.create_task(process_entry(db_manager, entry, last_updated))
+        tasks.append(task)
+
+    # Wait for all tasks to complete
+    results = await asyncio.gather(*tasks)
+
+    # Process results
+    for timestamp, is_new, entry_data in results:
+        if is_new:
+            new_entries_count += 1
+            if entry_data:
+                new_entries.append(entry_data)
+
+        if not most_recent_timestamp or timestamp > most_recent_timestamp:
+            most_recent_timestamp = timestamp
+
+    if most_recent_timestamp:
+        db_manager.update_last_updated("headlines", datetime.isoformat(most_recent_timestamp))
+
+    click.echo(f"Added {new_entries_count} new headlines")
+    if skipped_adv_count > 0:
+        click.echo(f"Skipped {skipped_adv_count} advertisements")
+
+    return new_entries
+</document_content>
+</document>
+</documents>
