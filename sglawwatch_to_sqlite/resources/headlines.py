@@ -157,7 +157,7 @@ async def process_entry(db_manager: DatabaseManager, entry: Dict, last_updated: 
     return entry_date, is_new_entry, entry_data if is_new_entry else None
 
 
-async def fetch_headlines(db_manager: DatabaseManager, url: str, all_entries=False) -> list:
+async def fetch_headlines(db_manager: DatabaseManager, url: str, all_entries=False, max_age_limit=60) -> list:
     """Fetch headline entries from Singapore Law Watch RSS feed."""
     click.echo(f"Fetching headlines from {url}")
 
@@ -179,6 +179,8 @@ async def fetch_headlines(db_manager: DatabaseManager, url: str, all_entries=Fal
     new_entries_count = 0
     new_entries = []
     skipped_adv_count = 0
+    skipped_old_count = 0
+    current_date = datetime.now()
 
     tasks = []
     for entry in feed.entries:
@@ -186,6 +188,14 @@ async def fetch_headlines(db_manager: DatabaseManager, url: str, all_entries=Fal
         if entry.get('title', '').startswith('ADV:'):
             skipped_adv_count += 1
             click.echo(f"Skipping advertisement: {entry.get('title', '')}")
+            continue
+
+        # Skip entries older than max_age_days
+        entry_date = datetime.fromisoformat(convert_date_to_iso(entry.get('published', '')))
+        days_old = (current_date - entry_date).days
+        if days_old > max_age_limit:
+            skipped_old_count += 1
+            click.echo(f"Skipping old headline ({days_old} days): {entry.get('title', '')}")
             continue
 
         task = asyncio.create_task(process_entry(db_manager, entry, last_updated))
@@ -210,5 +220,7 @@ async def fetch_headlines(db_manager: DatabaseManager, url: str, all_entries=Fal
     click.echo(f"Added {new_entries_count} new headlines")
     if skipped_adv_count > 0:
         click.echo(f"Skipped {skipped_adv_count} advertisements")
+    if skipped_old_count > 0:
+        click.echo(f"Skipped {skipped_old_count} headlines older than {max_age_limit} days")
 
     return new_entries
