@@ -1,6 +1,7 @@
 import asyncio
 import os
 from datetime import datetime
+from typing import Tuple, Dict
 
 import click
 import feedparser
@@ -115,7 +116,7 @@ async def get_summary(text: str) -> str:
         return ""
 
 
-async def process_entry(db_manager: DatabaseManager, entry: dict, last_updated: str) -> tuple[datetime, bool, dict]:
+async def process_entry(db_manager: DatabaseManager, entry: Dict, last_updated: str) -> Tuple[datetime, bool, Dict]:
     """Process a single feed entry."""
     entry_date = datetime.fromisoformat(convert_date_to_iso(entry['published']))
     last_updated_date = datetime.fromisoformat(last_updated) if last_updated else None
