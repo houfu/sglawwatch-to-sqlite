@@ -4,7 +4,7 @@ version = "0.1"
 description = "Track Singapore's legal developments by importing Singapore Law Watch's RSS feed into a searchable SQLite database"
 readme = "README.md"
 authors = [{ name = "Ang Hou Fu" }]
-license = "Apache-2.0"
+license = { file = "LICENSE" }
 requires-python = ">=3.8"
 classifiers = []
 dependencies = [
