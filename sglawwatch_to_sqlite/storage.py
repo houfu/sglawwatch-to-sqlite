@@ -115,7 +115,23 @@ class S3Storage(Storage):
             # It doesn't have a file extension, assume it's a directory
             self.key = f"{self.key}/{DB_FILENAME}"
 
+        # Get endpoint URL from environment variable if available
+        self.endpoint_url = os.environ.get('S3_ENDPOINT_URL')
+        self.region_name = os.environ.get('AWS_DEFAULT_REGION', 'default')
+
         self._temp_file = None
+
+    def _get_s3_client(self):
+        """Get an S3 client with proper configuration."""
+        import boto3
+
+        # Create boto3 client with custom endpoint if provided
+        client_kwargs = {}
+        if self.endpoint_url:
+            client_kwargs['endpoint_url'] = self.endpoint_url
+            client_kwargs['region_name'] = self.region_name
+
+        return boto3.client('s3', **client_kwargs)
 
     def _verify_boto3(self):
         """Import boto3 and check if it's available."""
@@ -136,10 +152,9 @@ class S3Storage(Storage):
 
         # Download the file from S3 if it exists
         try:
-            import boto3
             from botocore.exceptions import ClientError
 
-            s3_client = boto3.client('s3')
+            s3_client = self._get_s3_client()
             try:
                 click.echo(f"Downloading database from s3://{self.bucket}/{self.key}")
                 s3_client.download_file(self.bucket, self.key, temp_path)
@@ -167,9 +182,7 @@ class S3Storage(Storage):
             raise click.Abort()
 
         try:
-            import boto3
-
-            s3_client = boto3.client('s3')
+            s3_client = self._get_s3_client()
             click.echo(f"Uploading database to s3://{self.bucket}/{self.key}")
             s3_client.upload_file(local_path, self.bucket, self.key)
             click.echo("Database successfully uploaded to S3")
