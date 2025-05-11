@@ -1,0 +1,71 @@
+name: Fetch
+
+on:
+  schedule:
+    # Run at 8:00 AM UTC (4:00 PM Singapore time) every day
+    - cron: '0 3 * * *'
+  workflow_dispatch:  # Allow manual triggering as well
+
+jobs:
+  fetch-and-upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install boto3
+
+      - name: Fetch headlines and upload to Contabo Object Storage
+        env:
+          JINA_API_TOKEN: ${{ secrets.JINA_API_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          S3_ENDPOINT_URL: ${{ secrets.S3_ENDPOINT_URL }}
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+        run: |
+          # Create date-based path
+          DATE_PATH=$(date +"%Y/%m/%d")
+          S3_PATH="s3://$S3_BUCKET_NAME/sglawwatch/$DATE_PATH/"
+          
+          echo "Fetching headlines and storing to $S3_PATH"
+          # Use S3_ENDPOINT_URL environment variable for Contabo endpoint
+          sglawwatch-to-sqlite fetch all "$S3_PATH"
+          
+          # Copy to latest path at top level
+          echo "Copying to latest path"
+          python - <<EOF
+          import boto3
+          import os
+          
+          # Create S3 client with Contabo endpoint
+          s3_client = boto3.client(
+              's3',
+              endpoint_url=os.environ['S3_ENDPOINT_URL'],
+              aws_access_key_id=os.environ['AWS_ACCESS_KEY_ID'],
+              aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY'],
+              region_name='default'  # Contabo uses 'default' as region
+          )
+          
+          # Copy from dated path to latest path
+          source_path = f"sglawwatch/{DATE_PATH}/sglawwatch.db"
+          dest_path = "latest/sglawwatch.db"
+          
+          s3_client.copy_object(
+              Bucket=os.environ['S3_BUCKET_NAME'],
+              CopySource={'Bucket': os.environ['S3_BUCKET_NAME'], 'Key': source_path},
+              Key=dest_path
+          )
+          
+          print(f"Successfully copied to {dest_path}")
+          EOF
+          
+          echo "Successfully fetched headlines and uploaded to Object Storage"

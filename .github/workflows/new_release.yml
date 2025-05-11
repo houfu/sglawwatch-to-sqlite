@@ -1,0 +1,197 @@
+name: Version Bump and Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Type of version bump'
+        required: true
+        default: 'patch'
+        type: 'choice'
+        options:
+          - patch
+          - minor
+          - major
+      schema_update:
+        description: 'Update schema versions'
+        type: 'boolean'
+        default: false
+      schema_tables:
+        description: 'Tables to bump schema versions (comma-separated)'
+        required: false
+        default: ''
+      create_release:
+        description: 'Create GitHub release'
+        type: 'boolean'
+        default: true
+      release_notes:
+        description: 'Release notes (enter the changes for this version)'
+        required: false
+        default: ''
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.bump_version.outputs.new_version }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install toml
+
+      - name: Bump package version
+        id: bump_version
+        run: |
+          python - <<EOF
+          import toml
+          import re
+          import os
+          
+          # Read current version from pyproject.toml
+          with open('pyproject.toml', 'r') as f:
+              config = toml.load(f)
+          
+          current_version = config['project']['version']
+          version_parts = list(map(int, current_version.split('.')))
+          
+          # Bump version according to input
+          version_type = "${{ github.event.inputs.version_type }}"
+          if version_type == 'major':
+              version_parts[0] += 1
+              version_parts[1] = 0
+              version_parts[2] = 0
+          elif version_type == 'minor':
+              version_parts[1] += 1
+              version_parts[2] = 0
+          else:  # patch
+              version_parts[2] += 1
+          
+          new_version = '.'.join(map(str, version_parts))
+          
+          # Update pyproject.toml
+          config['project']['version'] = new_version
+          with open('pyproject.toml', 'w') as f:
+              toml.dump(config, f)
+          
+          # Update __init__.py
+          with open('sglawwatch_to_sqlite/__init__.py', 'r') as f:
+              init_content = f.read()
+          
+          new_init_content = re.sub(r'__version__ = ".*"', f'__version__ = "{new_version}"', init_content)
+          
+          with open('sglawwatch_to_sqlite/__init__.py', 'w') as f:
+              f.write(new_init_content)
+          
+          # Set output for GitHub Actions
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f"new_version={new_version}\n")
+          EOF
+          echo "Bumped version to $(grep -oP '__version__ = "\K[^"]+' sglawwatch_to_sqlite/__init__.py)"
+
+      - name: Update schema versions
+        if: ${{ github.event.inputs.schema_update == 'true' }}
+        run: |
+          python - <<EOF
+          import re
+          
+          tables = "${{ github.event.inputs.schema_tables }}".split(',')
+          tables = [t.strip() for t in tables if t.strip()]
+          
+          if not tables:
+              print("No tables specified for schema version update. Using default tables.")
+              tables = ["headlines", "metadata"]
+          
+          with open('sglawwatch_to_sqlite/db_manager.py', 'r') as f:
+              content = f.read()
+          
+          # Extract TABLE_VERSIONS dictionary
+          table_versions_match = re.search(r'TABLE_VERSIONS = {([^}]+)}', content, re.DOTALL)
+          if not table_versions_match:
+              print("Could not find TABLE_VERSIONS dictionary. Exiting.")
+              exit(1)
+          
+          table_versions_str = table_versions_match.group(1)
+          
+          # Update version for each specified table
+          for table in tables:
+              table_pattern = rf'"{table}":\s*(\d+)'
+              version_match = re.search(table_pattern, table_versions_str)
+              if version_match:
+                  current_version = int(version_match.group(1))
+                  new_version = current_version + 1
+                  table_versions_str = re.sub(
+                      table_pattern, 
+                      f'"{table}": {new_version}', 
+                      table_versions_str
+                  )
+                  print(f"Bumped schema version for {table} from {current_version} to {new_version}")
+              else:
+                  print(f"Table {table} not found in TABLE_VERSIONS")
+          
+          # Update the content with new TABLE_VERSIONS
+          new_content = content.replace(
+              table_versions_match.group(0), 
+              f"TABLE_VERSIONS = {{{table_versions_str}}}"
+          )
+          
+          with open('sglawwatch_to_sqlite/db_manager.py', 'w') as f:
+              f.write(new_content)
+          EOF
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add pyproject.toml sglawwatch_to_sqlite/__init__.py sglawwatch_to_sqlite/db_manager.py
+          git commit -m "Bump version to ${{ steps.bump_version.outputs.new_version }}"
+          git tag -a "v${{ steps.bump_version.outputs.new_version }}" -m "Version ${{ steps.bump_version.outputs.new_version }}"
+          git push && git push --tags
+
+  create-release:
+    needs: bump-version
+    if: ${{ github.event.inputs.create_release == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: "v${{ needs.bump-version.outputs.new_version }}"
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+
+      - name: Build package
+        run: |
+          python -m build
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: "v${{ needs.bump-version.outputs.new_version }}"
+          name: "Release v${{ needs.bump-version.outputs.new_version }}"
+          body: |
+            ${{ github.event.inputs.release_notes || format('Version {0}', needs.bump-version.outputs.new_version) }}
+          files: |
+            dist/*
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

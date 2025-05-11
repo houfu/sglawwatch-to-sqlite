@@ -1,0 +1,52 @@
+name: update-llms-doc.yml
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'sglawwatch_to_sqlite/**'
+      - 'pyproject.toml'
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies with uv
+        run: |
+          uv pip install -e .
+
+      - name: Update llms.md
+        run: uvx files-to-prompt . -c --ignore llms.md --ignore uv.lock > llms.md
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet llms.md; then
+            echo "No changes to llms.md"
+            echo "changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "Changes detected in llms.md"
+            echo "changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit changes
+        if: steps.check_changes.outputs.changes == 'true'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: Update llms.md [skip ci]"
+          file_pattern: llms.md
+          commit_author: GitHub Action <github-actions@github.com>

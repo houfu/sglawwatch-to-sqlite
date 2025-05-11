@@ -211,7 +211,6 @@
 <document_content>
 # sglawwatch-to-sqlite
 
-[![PyPI](https://img.shields.io/pypi/v/sglawwatch-to-sqlite.svg)](https://pypi.org/project/sglawwatch-to-sqlite/)
 [![Changelog](https://img.shields.io/github/v/release/houfu/sglawwatch-to-sqlite?include_prereleases&label=changelog)](https://github.com/houfu/sglawwatch-to-sqlite/releases)
 [![Tests](https://github.com/houfu/sglawwatch-to-sqlite/actions/workflows/test.yml/badge.svg)](https://github.com/houfu/sglawwatch-to-sqlite/actions/workflows/test.yml)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/houfu/sglawwatch-to-sqlite/blob/master/LICENSE)
@@ -1780,7 +1779,23 @@ class S3Storage(Storage):
             # It doesn't have a file extension, assume it's a directory
             self.key = f"{self.key}/{DB_FILENAME}"
 
+        # Get endpoint URL from environment variable if available
+        self.endpoint_url = os.environ.get('S3_ENDPOINT_URL')
+        self.region_name = os.environ.get('AWS_DEFAULT_REGION', 'default')
+
         self._temp_file = None
+
+    def _get_s3_client(self):
+        """Get an S3 client with proper configuration."""
+        import boto3
+
+        # Create boto3 client with custom endpoint if provided
+        client_kwargs = {}
+        if self.endpoint_url:
+            client_kwargs['endpoint_url'] = self.endpoint_url
+            client_kwargs['region_name'] = self.region_name
+
+        return boto3.client('s3', **client_kwargs)
 
     def _verify_boto3(self):
         """Import boto3 and check if it's available."""
@@ -1801,10 +1816,9 @@ class S3Storage(Storage):
 
         # Download the file from S3 if it exists
         try:
-            import boto3
             from botocore.exceptions import ClientError
 
-            s3_client = boto3.client('s3')
+            s3_client = self._get_s3_client()
             try:
                 click.echo(f"Downloading database from s3://{self.bucket}/{self.key}")
                 s3_client.download_file(self.bucket, self.key, temp_path)
@@ -1832,9 +1846,7 @@ class S3Storage(Storage):
             raise click.Abort()
 
         try:
-            import boto3
-
-            s3_client = boto3.client('s3')
+            s3_client = self._get_s3_client()
             click.echo(f"Uploading database to s3://{self.bucket}/{self.key}")
             s3_client.upload_file(local_path, self.bucket, self.key)
             click.echo("Database successfully uploaded to S3")
@@ -1846,6 +1858,7 @@ class S3Storage(Storage):
             # Clean up the temporary file
             if self._temp_file and os.path.exists(self._temp_file):
                 os.unlink(self._temp_file)
+
 </document_content>
 </document>
 <document index="14">
@@ -1860,6 +1873,7 @@ class S3Storage(Storage):
 import asyncio
 import os
 from datetime import datetime
+from typing import Tuple, Dict
 
 import click
 import feedparser
@@ -1974,7 +1988,7 @@ async def get_summary(text: str) -> str:
         return ""
 
 
-async def process_entry(db_manager: DatabaseManager, entry: dict, last_updated: str) -> tuple[datetime, bool, dict]:
+async def process_entry(db_manager: DatabaseManager, entry: Dict, last_updated: str) -> Tuple[datetime, bool, Dict]:
     """Process a single feed entry."""
     entry_date = datetime.fromisoformat(convert_date_to_iso(entry['published']))
     last_updated_date = datetime.fromisoformat(last_updated) if last_updated else None
@@ -2015,7 +2029,7 @@ async def process_entry(db_manager: DatabaseManager, entry: dict, last_updated: 
     return entry_date, is_new_entry, entry_data if is_new_entry else None
 
 
-async def fetch_headlines(db_manager: DatabaseManager, url: str, all_entries=False) -> list:
+async def fetch_headlines(db_manager: DatabaseManager, url: str, all_entries=False, max_age_limit=60) -> list:
     """Fetch headline entries from Singapore Law Watch RSS feed."""
     click.echo(f"Fetching headlines from {url}")
 
@@ -2037,6 +2051,8 @@ async def fetch_headlines(db_manager: DatabaseManager, url: str, all_entries=Fal
     new_entries_count = 0
     new_entries = []
     skipped_adv_count = 0
+    skipped_old_count = 0
+    current_date = datetime.now()
 
     tasks = []
     for entry in feed.entries:
@@ -2044,6 +2060,14 @@ async def fetch_headlines(db_manager: DatabaseManager, url: str, all_entries=Fal
         if entry.get('title', '').startswith('ADV:'):
             skipped_adv_count += 1
             click.echo(f"Skipping advertisement: {entry.get('title', '')}")
+            continue
+
+        # Skip entries older than max_age_days
+        entry_date = datetime.fromisoformat(convert_date_to_iso(entry.get('published', '')))
+        days_old = (current_date - entry_date).days
+        if days_old > max_age_limit:
+            skipped_old_count += 1
+            click.echo(f"Skipping old headline ({days_old} days): {entry.get('title', '')}")
             continue
 
         task = asyncio.create_task(process_entry(db_manager, entry, last_updated))
@@ -2068,6 +2092,8 @@ async def fetch_headlines(db_manager: DatabaseManager, url: str, all_entries=Fal
     click.echo(f"Added {new_entries_count} new headlines")
     if skipped_adv_count > 0:
         click.echo(f"Skipped {skipped_adv_count} advertisements")
+    if skipped_old_count > 0:
+        click.echo(f"Skipped {skipped_old_count} headlines older than {max_age_limit} days")
 
     return new_entries
 </document_content>
