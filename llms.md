@@ -505,11 +505,39 @@ def mock_feed_entries():
 
 
 @pytest.fixture
-def mock_feed(mock_feed_entries):
+def mock_feed():
     """Fixture providing a mock feedparser result."""
     mock = MagicMock(spec=feedparser.FeedParserDict)
     mock.bozo = False
-    mock.entries = mock_feed_entries
+
+    # Create a list of entry dictionaries instead of using XML string
+    mock.entries = [
+        {
+            'title': 'Law don argues in inmates\' appeal that parts of Misuse of Drugs Act are unconstitutional',
+            'link': 'https://www.singaporelawwatch.sg/Headlines/Law-don-argues-in-inmates-appeal-that-parts-of-Misuse-of-Drugs-Act-are-unconstitutional',
+            'description': '<p>Deputy A-G counters that presumption of innocence not provided for in Constitution.</p>',
+            'author': 'Straits Times: Selina Lum',
+            'category': 'Straits Times',
+            'published': '08 May 2025 00:01:00',
+        },
+        {
+            'title': 'Singapore and EU sign digital trade pact, deepening cooperation amid global uncertainties',
+            'link': 'https://www.singaporelawwatch.sg/Headlines/Singapore-and-EU-sign-digital-trade-pact-deepening-cooperation-amid-global-uncertainties',
+            'description': '<p>The agreement supplements the EU-Singapore Free Trade Agreement (EUSFTA) that entered into force in 2019.</p>',
+            'author': 'Straits Times: Angela Tan',
+            'category': 'Straits Times',
+            'published': '08 May 2025 00:01:00',
+        },
+        {
+            'title': 'ADV: Law & Technology in Singapore book launch - 23 May',
+            'link': 'https://store.lawnet.com/law-and-technology-in-singapore-navigating-the-future-of-legal-practice-in-a-digital-age.html',
+            'description': '<p>This seminar marks the release of the second edition...</p>',
+            'author': 'Academy Publishing',
+            'category': 'Academy Publishing',
+            'published': '08 May 2025 00:01:00',
+        }
+    ]
+
     mock.feed = {
         'title': 'Singapore Law Watch Headlines',
         'updated': 'Fri, 09 May 2025 12:00:00 GMT'
