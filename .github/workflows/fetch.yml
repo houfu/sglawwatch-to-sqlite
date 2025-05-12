@@ -1,30 +1,25 @@
 name: Fetch
-
 on:
   schedule:
-    # Run at 8:00 AM UTC (4:00 PM Singapore time) every day
+    # Run at 3:00 AM UTC (11:00 AM Singapore time) every day
     - cron: '0 3 * * *'
   workflow_dispatch:  # Allow manual triggering as well
-
 jobs:
   fetch-and-upload:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -e .
           pip install boto3
-          pip install awscli
-
-      - name: Fetch headlines and upload to Contabo Object Storage
+          pip install awscli  # Install AWS CLI
+      - name: Fetch headlines and update latest database
         env:
           JINA_API_TOKEN: ${{ secrets.JINA_API_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -35,19 +30,19 @@ jobs:
           AWS_REQUEST_CHECKSUM_CALCULATION: when_required
           AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
         run: |
-          # Create date-based path
-          DATE_PATH=$(date +"%Y/%m/%d")
-          S3_PATH="s3://$S3_BUCKET_NAME/sglawwatch/$DATE_PATH/"
-
-          echo "Fetching headlines and storing to $S3_PATH"
-          # Use S3_ENDPOINT_URL environment variable for Contabo endpoint
-          sglawwatch-to-sqlite fetch all "$S3_PATH"
-
-          # Copy to latest path at top level using AWS CLI
-          echo "Copying to latest path"
-          aws s3 cp "$S3_PATH/sglawwatch.db" "s3://$S3_BUCKET_NAME/latest/sglawwatch.db" \
-          --endpoint-url "$S3_ENDPOINT_URL" \
-          --region default
-
-          echo "Successfully fetched headlines and uploaded to Object Storage"
+          # First, update the "latest" version directly
+          echo "Fetching headlines and updating latest database"
+          sglawwatch-to-sqlite fetch all "s3://$S3_BUCKET_NAME/latest/"
           
+          # Then create a backup copy in a date-based folder
+          DATE_PATH=$(date +"%Y/%m/%d")
+          BACKUP_PATH="sglawwatch/$DATE_PATH/"
+          echo "Creating backup copy at $BACKUP_PATH"
+          
+          # Copy from latest to dated backup location
+          aws s3 cp "s3://$S3_BUCKET_NAME/latest/sglawwatch.db" \
+            "s3://$S3_BUCKET_NAME/$BACKUP_PATH/sglawwatch.db" \
+            --endpoint-url "$S3_ENDPOINT_URL" \
+            --region default
+          
+          echo "Successfully fetched headlines and created backup"
