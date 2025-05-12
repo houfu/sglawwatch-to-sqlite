@@ -22,6 +22,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .
           pip install boto3
+          pip install awscli
 
       - name: Fetch headlines and upload to Contabo Object Storage
         env:
@@ -37,37 +38,16 @@ jobs:
           # Create date-based path
           DATE_PATH=$(date +"%Y/%m/%d")
           S3_PATH="s3://$S3_BUCKET_NAME/sglawwatch/$DATE_PATH/"
-          
+
           echo "Fetching headlines and storing to $S3_PATH"
           # Use S3_ENDPOINT_URL environment variable for Contabo endpoint
           sglawwatch-to-sqlite fetch all "$S3_PATH"
-          
-          # Copy to latest path at top level
+
+          # Copy to latest path at top level using AWS CLI
           echo "Copying to latest path"
-          python - <<EOF
-          import boto3
-          import os
-          
-          # Create S3 client with Contabo endpoint
-          s3_client = boto3.client(
-              's3',
-              endpoint_url=os.environ['S3_ENDPOINT_URL'],
-              aws_access_key_id=os.environ['AWS_ACCESS_KEY_ID'],
-              aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY'],
-              region_name='default'  # Contabo uses 'default' as region
-          )
-          
-          # Copy from dated path to latest path
-          source_path = f"sglawwatch/{DATE_PATH}/sglawwatch.db"
-          dest_path = "latest/sglawwatch.db"
-          
-          s3_client.copy_object(
-              Bucket=os.environ['S3_BUCKET_NAME'],
-              CopySource={'Bucket': os.environ['S3_BUCKET_NAME'], 'Key': source_path},
-              Key=dest_path
-          )
-          
-          print(f"Successfully copied to {dest_path}")
-          EOF
-          
+          aws s3 cp "$S3_PATH/sglawwatch.db" "s3://$S3_BUCKET_NAME/latest/sglawwatch.db" \
+          --endpoint-url "$S3_ENDPOINT_URL" \
+          --region default
+
           echo "Successfully fetched headlines and uploaded to Object Storage"
+          
