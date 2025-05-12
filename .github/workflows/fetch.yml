@@ -31,6 +31,8 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           S3_ENDPOINT_URL: ${{ secrets.S3_ENDPOINT_URL }}
           S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+          AWS_REQUEST_CHECKSUM_CALCULATION: when-required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when-required
         run: |
           # Create date-based path
           DATE_PATH=$(date +"%Y/%m/%d")
