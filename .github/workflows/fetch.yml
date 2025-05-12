@@ -36,8 +36,13 @@ jobs:
           
           # Then create a backup copy in a date-based folder
           DATE_PATH=$(date +"%Y/%m/%d")
-          BACKUP_PATH="sglawwatch/$DATE_PATH/"
+          BACKUP_PATH="sglawwatch/$DATE_PATH"
           echo "Creating backup copy at $BACKUP_PATH"
+          
+          # Debug output
+          echo "Source: s3://$S3_BUCKET_NAME/latest/sglawwatch.db"
+          echo "Destination: s3://$S3_BUCKET_NAME/$BACKUP_PATH/sglawwatch.db"
+          echo "Endpoint URL: $S3_ENDPOINT_URL"
           
           # Copy from latest to dated backup location
           aws s3 cp "s3://$S3_BUCKET_NAME/latest/sglawwatch.db" \
