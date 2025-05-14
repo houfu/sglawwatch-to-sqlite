@@ -18,9 +18,19 @@ A tool to track Singapore's legal developments by importing Singapore Law Watch'
 
 ## Installation
 
-Install this tool using `pip`:
+Clone this repository from GitHub:
+
 ```bash
-pip install sglawwatch-to-sqlite
+git clone https://github.com/houfu/sglawwatch-to-sqlite.git
+cd sglawwatch-to-sqlite
+```
+
+Install the package and its dependencies using `uv`:
+
+```bash
+uv venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+uv pip install -e .
 ```
 
 ## Usage
@@ -80,14 +90,6 @@ To reset and fetch all entries from scratch:
 sglawwatch-to-sqlite fetch all --reset
 ```
 
-### Custom Feed URL
-
-You can specify a custom feed URL:
-
-```bash
-sglawwatch-to-sqlite fetch headlines --url https://example.com/feed.xml
-```
-
 ### Help
 
 For help on available commands:
@@ -118,6 +120,34 @@ The tool creates the following tables:
 - `schema_versions`: Tracks database schema versions
 
 The headlines table includes full-text search capabilities on title and summary fields.
+
+```sql
+-- Search for headlines containing specific keywords
+SELECT title, date, author, summary 
+FROM headlines_fts 
+WHERE headlines_fts MATCH 'digital trade' 
+ORDER BY date DESC;
+
+-- Search with multiple terms across both title and summary
+SELECT title, date, author, summary 
+FROM headlines_fts 
+WHERE headlines_fts MATCH 'constitution rights privacy' 
+ORDER BY rank;
+```
+
+## Using with Datasette
+For an interactive web interface to explore your legal headlines database, Datasette is an excellent companion tool:
+```bash
+# Install Datasette
+pip install datasette
+
+# Start Datasette with your database
+datasette sglawwatch.db
+
+# Or publish to a Datasette hosting service
+datasette publish vercel sglawwatch.db --project=singapore-law-watch
+```
+Datasette provides a user-friendly interface for browsing tables, running custom queries, and even sharing your legal database with colleagues.
 
 ## Development
 
