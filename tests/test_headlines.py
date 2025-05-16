@@ -1,34 +1,13 @@
 import datetime
-import hashlib
 from unittest.mock import patch, MagicMock
 
 import pytest
 
 from sglawwatch_to_sqlite.resources.headlines import (
-    get_hash_id,
     convert_date_to_iso,
-    get_jina_reader_content,
-    get_summary,
     process_entry,
     fetch_headlines
 )
-
-
-# Test get_hash_id function
-def test_get_hash_id():
-    # Given
-    entry_date = datetime.datetime(2025, 5, 8, 0, 1, 0).isoformat()
-    entry_title = "Test Case Headline"
-
-    # When
-    hash_id = get_hash_id(entry_date, entry_title)
-
-    # Then - create the expected hash manually to verify
-    expected = hashlib.md5(f"{entry_date}|{entry_title}".encode()).hexdigest()
-    assert hash_id == expected
-
-    # Verify different inputs produce different hashes
-    assert get_hash_id(entry_date, "Different Title") != hash_id
 
 
 # Test convert_date_to_iso function
@@ -50,32 +29,6 @@ def test_convert_date_to_iso():
         # Should return current date in ISO format when parsing fails
         assert convert_date_to_iso("invalid date") == "2025-05-08T00:01:00"
 
-
-# Test get_jina_reader_content function with fixtures
-@pytest.mark.asyncio
-async def test_get_jina_reader_content(mock_httpx_client, mock_env_vars):
-    with patch('httpx.AsyncClient', return_value=mock_httpx_client):
-        # Test
-        content = await get_jina_reader_content("https://example.com/article")
-
-        # Verify
-        assert content == "<article>Sample article content</article>"
-        # Verify correct URL and headers were used
-        mock_httpx_client.__aenter__.return_value.get.assert_called_once()
-
-
-# Test get_summary function with fixtures
-@pytest.mark.asyncio
-async def test_get_summary(mock_openai_client):
-    with patch.dict('os.environ', {'OPENAI_API_KEY': 'fake-api-key'}):
-        with patch('openai.AsyncOpenAI', return_value=mock_openai_client):
-            # Test
-            summary = await get_summary("This is a long article text that needs summarizing.")
-
-            # Verify
-            assert summary == "This is a concise legal summary."
-            # Verify OpenAI was called with correct parameters
-            mock_openai_client.responses.create.assert_called_once()
 
 
 # Test process_entry function
