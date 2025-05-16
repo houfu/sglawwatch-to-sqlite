@@ -36,7 +36,7 @@ jobs:
           
           # Then create a backup copy in a date-based folder
           DATE_PATH=$(date +"%Y/%m/%d")
-          BACKUP_PATH="sglawwatch/$DATE_PATH"
+          BACKUP_PATH="archives/$DATE_PATH"
           echo "Creating backup copy at $BACKUP_PATH"
           
           # Debug output
