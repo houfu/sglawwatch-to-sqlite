@@ -229,6 +229,9 @@ A tool to track Singapore's legal developments by importing Singapore Law Watch'
 
 ## Installation
 
+**Requirements:**
+- Python 3.9 or higher
+
 Clone this repository from GitHub:
 
 ```bash
@@ -397,7 +400,7 @@ description = "Track Singapore's legal developments by importing Singapore Law W
 readme = "README.md"
 authors = [{ name = "Ang Hou Fu" }]
 license = { file = "LICENSE" }
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 classifiers = []
 dependencies = [
     "click",
