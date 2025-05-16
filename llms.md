@@ -229,9 +229,19 @@ A tool to track Singapore's legal developments by importing Singapore Law Watch'
 
 ## Installation
 
-Install this tool using `pip`:
+Clone this repository from GitHub:
+
 ```bash
-pip install sglawwatch-to-sqlite
+git clone https://github.com/houfu/sglawwatch-to-sqlite.git
+cd sglawwatch-to-sqlite
+```
+
+Install the package and its dependencies using `uv`:
+
+```bash
+uv venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+uv pip install -e .
 ```
 
 ## Usage
@@ -291,14 +301,6 @@ To reset and fetch all entries from scratch:
 sglawwatch-to-sqlite fetch all --reset
 ```
 
-### Custom Feed URL
-
-You can specify a custom feed URL:
-
-```bash
-sglawwatch-to-sqlite fetch headlines --url https://example.com/feed.xml
-```
-
 ### Help
 
 For help on available commands:
@@ -329,6 +331,34 @@ The tool creates the following tables:
 - `schema_versions`: Tracks database schema versions
 
 The headlines table includes full-text search capabilities on title and summary fields.
+
+```sql
+-- Search for headlines containing specific keywords
+SELECT title, date, author, summary 
+FROM headlines_fts 
+WHERE headlines_fts MATCH 'digital trade' 
+ORDER BY date DESC;
+
+-- Search with multiple terms across both title and summary
+SELECT title, date, author, summary 
+FROM headlines_fts 
+WHERE headlines_fts MATCH 'constitution rights privacy' 
+ORDER BY rank;
+```
+
+## Using with Datasette
+For an interactive web interface to explore your legal headlines database, Datasette is an excellent companion tool:
+```bash
+# Install Datasette
+pip install datasette
+
+# Start Datasette with your database
+datasette sglawwatch.db
+
+# Or publish to a Datasette hosting service
+datasette publish vercel sglawwatch.db --project=singapore-law-watch
+```
+Datasette provides a user-friendly interface for browsing tables, running custom queries, and even sharing your legal database with colleagues.
 
 ## Development
 
@@ -362,7 +392,7 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](https:
 <document_content>
 [project]
 name = "sglawwatch-to-sqlite"
-version = "0.1"
+version = "0.1.0"
 description = "Track Singapore's legal developments by importing Singapore Law Watch's RSS feed into a searchable SQLite database"
 readme = "README.md"
 authors = [{ name = "Ang Hou Fu" }]
@@ -406,6 +436,724 @@ test = ["pytest"]
 </document_content>
 </document>
 <document index="4">
+<source>./sglawwatch_to_sqlite/__init__.py</source>
+<document_content>
+__version__ = "0.1"
+
+</document_content>
+</document>
+<document index="5">
+<source>./sglawwatch_to_sqlite/__main__.py</source>
+<document_content>
+from .cli import cli
+
+if __name__ == "__main__":
+    cli()
+
+</document_content>
+</document>
+<document index="6">
+<source>./sglawwatch_to_sqlite/cli.py</source>
+<document_content>
+import asyncio
+import click
+import os
+
+from sglawwatch_to_sqlite.db_manager import DatabaseManager
+from sglawwatch_to_sqlite.storage import DB_FILENAME
+
+
+@click.group()
+@click.version_option()
+def cli():
+    """Track Singapore's legal developments by importing Singapore Law Watch's RSS feed into a searchable SQLite database"""
+
+
+@cli.group(name="fetch")
+def fetch():
+    """Fetch entries from Singapore Law Watch RSS feeds into a SQLite database."""
+    pass
+
+
+@fetch.command(name="headlines")
+@click.argument(
+    "location",
+    type=str,
+    required=False,
+    default=".",
+)
+@click.option(
+    "--url",
+    default="https://www.singaporelawwatch.sg/Portals/0/RSS/Headlines.xml",
+    help="URL of the Singapore Law Watch Headlines RSS feed",
+)
+@click.option(
+    "--all",
+    is_flag=True,
+    help="Fetch all entries regardless of last run state",
+)
+def headlines_command(location, url, all):
+    """Fetch headline entries from Singapore Law Watch RSS feed.
+
+    LOCATION can be a local directory or an S3 path (s3://bucket/path/).
+    The database will always be named 'sglawwatch.db'.
+
+    If LOCATION is not specified, the current directory is used.
+
+    For S3 storage, you can also set the S3_BUCKET_NAME environment variable
+    instead of including it in the path.
+    """
+    # Create a database manager
+    db_manager = DatabaseManager(location)
+
+    # Import here to avoid circular imports
+    from sglawwatch_to_sqlite.resources.headlines import fetch_headlines
+
+    # Run the fetch operation asynchronously
+    asyncio.run(fetch_headlines(db_manager, url, all))
+
+    # Save the database (this will upload to S3 if needed)
+    saved_location = db_manager.save()
+
+    if location.startswith('s3://'):
+        click.echo(f"Database saved to {saved_location}")
+    else:
+        # For local storage, make the path more user-friendly
+        rel_path = os.path.join(location, DB_FILENAME)
+        if os.path.isabs(rel_path):
+            click.echo(f"Database saved to {rel_path}")
+        else:
+            # Convert to relative path for better readability
+            click.echo(f"Database saved to ./{rel_path}")
+
+
+# Add a command to fetch all feed types at once
+@fetch.command(name="all")
+@click.argument(
+    "location",
+    type=str,
+    required=False,
+    default=".",
+)
+@click.option(
+    "--reset",
+    is_flag=True,
+    help="Reset and fetch all entries from scratch",
+)
+def fetch_all(location, reset):
+    """Fetch all available feeds (headlines and judgments).
+
+    LOCATION can be a local directory or an S3 path (s3://bucket/path/).
+    The database will always be named 'sglawwatch.db'.
+
+    If LOCATION is not specified, the current directory is used.
+
+    For S3 storage, you can also set the S3_BUCKET_NAME environment variable
+    instead of including it in the path.
+    """
+    click.echo("Fetching all Singapore Law Watch feeds...")
+
+    ctx = click.get_current_context()
+
+    # Fetch headlines
+    ctx.invoke(headlines_command, location=location, all=reset)
+
+    click.echo("All feeds have been processed")
+</document_content>
+</document>
+<document index="7">
+<source>./sglawwatch_to_sqlite/db_manager.py</source>
+<document_content>
+from datetime import datetime
+
+import click
+import sqlite_utils
+
+from sglawwatch_to_sqlite.storage import Storage
+
+# Current table versions
+TABLE_VERSIONS = {
+    "headlines": 1,
+    "metadata": 1
+}
+
+
+class DatabaseManager:
+    """
+    A class that manages both the database and its storage.
+    """
+
+    def __init__(self, database_uri):
+        """
+        Initialize a DatabaseManager with a database URI.
+
+        Args:
+            database_uri: Either a local file path or an S3 URI (s3://bucket/path)
+        """
+        try:
+            # Create the appropriate storage
+            self.storage = Storage.create(database_uri)
+
+            # Get the local path (will download from S3 if needed)
+            self.local_path = self.storage.get_local_path()
+
+            # Connect to the database
+            self.db = sqlite_utils.Database(self.local_path)
+
+            # Set up tables if needed
+            self._setup_tables()
+        except Exception as e:
+            click.echo(f"Error connecting to database at {database_uri}: {e}", err=True)
+            raise click.Abort()
+
+    def _setup_tables(self):
+        """Set up the necessary tables in the database."""
+        try:
+            # Check/create schema_versions table first
+            if "schema_versions" not in self.db.table_names():
+                self.db["schema_versions"].create({
+                    "table_name": str,
+                    "version": int,
+                    "updated_at": str
+                }, pk="table_name")
+                click.echo("Created schema version tracking table")
+
+            # Create the headlines table if it doesn't exist
+            if "headlines" not in self.db.table_names():
+                self.db["headlines"].create({
+                    "id": str,  # Unique identifier for each article
+                    "category": str,  # The category of the news article
+                    "title": str,  # The title of the article
+                    "source_link": str,  # URL to the source article
+                    "author": str,  # Author of the article
+                    "date": str,  # Publication date in ISO format
+                    "summary": str,  # Summary text
+                    "text": str,  # Full text content
+                    "imported_on": str  # When the article was imported
+                }, pk="id")
+
+                # Create indexes for common query patterns
+                self.db["headlines"].create_index(["date"])
+                self.db["headlines"].create_index(["author"])
+
+                self.db["headlines"].enable_fts(["title", "summary"], create_triggers=True)
+
+                self._register_table_version("headlines", TABLE_VERSIONS["headlines"])
+
+            # Create the metadata table if it doesn't exist
+            if "metadata" not in self.db.table_names():
+                self.db["metadata"].create({
+                    "key": str,
+                    "value": str
+                }, pk="key")
+                self._register_table_version("metadata", TABLE_VERSIONS["metadata"])
+
+        except Exception as e:
+            click.echo(f"Error creating table: {e}", err=True)
+            raise click.Abort()
+
+    def _register_table_version(self, table_name, version):
+        """Register a new table version in the schema_versions table"""
+        self.db["schema_versions"].insert({
+            "table_name": table_name,
+            "version": version,
+            "updated_at": datetime.now().isoformat()
+        })
+        click.echo(f"Registered {table_name} table with schema version {version}")
+
+    def get_database(self):
+        """Get the sqlite_utils Database object."""
+        return self.db
+
+    def save(self):
+        """Save the database, handling S3 upload if needed."""
+        return self.storage.save(self.local_path)
+
+    def get_last_updated(self, feed_type):
+        """Get the last updated timestamp for a specific feed type"""
+        metadata_key = f"{feed_type}_last_updated"
+        try:
+            return self.db["metadata"].get(metadata_key)["value"]
+        except sqlite_utils.db.NotFoundError:
+            self.db["metadata"].insert({"key": metadata_key, "value": ""})
+            return ""
+
+    def update_last_updated(self, feed_type, timestamp):
+        """Update the last updated timestamp for a specific feed type"""
+        metadata_key = f"{feed_type}_last_updated"
+        self.db["metadata"].upsert({"key": metadata_key, "value": timestamp}, pk="key")
+
+</document_content>
+</document>
+<document index="8">
+<source>./sglawwatch_to_sqlite/storage.py</source>
+<document_content>
+import os
+import tempfile
+from urllib.parse import urlparse
+
+import click
+
+# Fixed database filename
+DB_FILENAME = "sglawwatch.db"
+
+
+class Storage:
+    """
+    Abstract base class for database storage.
+    """
+
+    def get_local_path(self):
+        """Get the local path to the database"""
+        raise NotImplementedError()
+
+    def save(self, local_path=None):
+        """Save the database"""
+        raise NotImplementedError()
+
+    @staticmethod
+    def create(location):
+        """
+        Factory method to create the appropriate storage object.
+
+        Args:
+            location: Either a local directory path or an S3 URI (s3://bucket/path/)
+                      If no location is specified, the current directory is used.
+        """
+        if not location:
+            # Default to current directory
+            return LocalStorage(".")
+
+        if location.startswith('s3://'):
+            return S3Storage(location)
+        else:
+            return LocalStorage(location)
+
+
+class LocalStorage(Storage):
+    """
+    Local filesystem storage for the database.
+    """
+
+    def __init__(self, directory):
+        # Ensure the directory doesn't have a filename at the end
+        if os.path.isfile(directory) or directory.endswith('.db'):
+            directory = os.path.dirname(directory) or "."
+
+        self.directory = directory
+        self.path = os.path.join(directory, DB_FILENAME)
+
+    def get_local_path(self):
+        # Ensure the directory exists
+        if self.directory and not os.path.exists(self.directory):
+            os.makedirs(self.directory)
+        return self.path
+
+    def save(self, local_path=None):
+        """
+        Save a database file to the storage location.
+
+        Args:
+            local_path: Path to the local database file to save.
+                       If None, assumes the database is already at self.path.
+
+        Returns:
+            The final path where the database was saved.
+        """
+        # For local storage, nothing needs to be done if the path is the same
+        if local_path and local_path != self.path:
+            import shutil
+
+            # Make sure the target directory exists
+            if not os.path.exists(self.directory):
+                os.makedirs(self.directory)
+
+            shutil.copy2(local_path, self.path)
+        return self.path
+
+
+class S3Storage(Storage):
+    """
+    S3 storage for the database.
+    """
+
+    def __init__(self, s3_uri):
+        self.s3_uri = s3_uri
+
+        # Parse the S3 URI
+        parsed = urlparse(s3_uri)
+
+        # Check if we have a bucket name in the URI
+        if parsed.netloc:
+            self.bucket = parsed.netloc
+        else:
+            # Try to get bucket name from environment variable
+            self.bucket = os.environ.get('S3_BUCKET_NAME')
+            if not self.bucket:
+                click.echo(
+                    "Error: S3 bucket name must be specified either in the URI or via S3_BUCKET_NAME environment variable",
+                    err=True)
+                raise click.Abort()
+
+        # Parse the key (path in the bucket)
+        self.key = parsed.path.lstrip('/')
+
+        # If the key doesn't end with a filename, append the fixed DB filename
+        if not self.key or self.key.endswith('/'):
+            self.key = f"{self.key}{DB_FILENAME}"
+        elif not os.path.basename(self.key) or not os.path.splitext(self.key)[1]:
+            # It doesn't have a file extension, assume it's a directory
+            self.key = f"{self.key}/{DB_FILENAME}"
+
+        # Get endpoint URL from environment variable if available
+        self.endpoint_url = os.environ.get('S3_ENDPOINT_URL')
+        self.region_name = os.environ.get('AWS_DEFAULT_REGION', 'default')
+
+        self._temp_file = None
+
+    def _get_s3_client(self):
+        """Get an S3 client with proper configuration."""
+        import boto3
+
+        # Create boto3 client with custom endpoint if provided
+        client_kwargs = {}
+        if self.endpoint_url:
+            client_kwargs['endpoint_url'] = self.endpoint_url
+            client_kwargs['region_name'] = self.region_name
+
+        return boto3.client('s3', **client_kwargs)
+
+    def _verify_boto3(self):
+        """Import boto3 and check if it's available."""
+        try:
+            import boto3  # noqa: F401
+            return True
+        except ImportError:
+            click.echo("boto3 is required for S3 storage. Install it with 'uv install boto3'.", err=True)
+            raise click.Abort()
+
+    def get_local_path(self):
+        self._verify_boto3()
+
+        # Create a temporary file
+        temp_fd, temp_path = tempfile.mkstemp(suffix='.db')
+        os.close(temp_fd)
+        self._temp_file = temp_path
+
+        # Download the file from S3 if it exists
+        try:
+            from botocore.exceptions import ClientError
+
+            s3_client = self._get_s3_client()
+            try:
+                click.echo(f"Downloading database from s3://{self.bucket}/{self.key}")
+                s3_client.download_file(self.bucket, self.key, temp_path)
+            except ClientError as e:
+                if e.response['Error']['Code'] == '404':
+                    click.echo(
+                        f"No existing database found at s3://{self.bucket}/{self.key}. A new one will be created.")
+                else:
+                    click.echo(f"Error downloading from S3: {e}", err=True)
+                    raise click.Abort()
+        except Exception as e:
+            click.echo(f"Error accessing S3: {e}", err=True)
+            raise click.Abort()
+
+        return temp_path
+
+    def save(self, local_path=None):
+        self._verify_boto3()
+
+        if not local_path:
+            local_path = self._temp_file
+
+        if not local_path or not os.path.exists(local_path):
+            click.echo(f"Error: Local database file not found: {local_path}", err=True)
+            raise click.Abort()
+
+        try:
+            s3_client = self._get_s3_client()
+            click.echo(f"Uploading database to s3://{self.bucket}/{self.key}")
+            s3_client.upload_file(local_path, self.bucket, self.key)
+            click.echo("Database successfully uploaded to S3")
+            return f"s3://{self.bucket}/{self.key}"
+        except Exception as e:
+            click.echo(f"Error uploading to S3: {e}", err=True)
+            raise click.Abort()
+        finally:
+            # Clean up the temporary file
+            if self._temp_file and os.path.exists(self._temp_file):
+                os.unlink(self._temp_file)
+
+</document_content>
+</document>
+<document index="9">
+<source>./sglawwatch_to_sqlite/tools.py</source>
+<document_content>
+import os
+
+import click
+import httpx
+from tenacity import retry, stop_after_attempt, wait_exponential
+
+SYSTEM_PROMPT_TEXT = "As an AI expert in legal affairs, your task is to provide concise, yet comprehensive " \
+                     "summaries of legal news articles for time-constrained attorneys. These summaries " \
+                     "should highlight the critical legal aspects, relevant precedents, and implications of " \
+                     "the issues discussed in the articles.\n\nDespite their complexity, the summaries " \
+                     "should be accessible and digestible, written in an engaging and conversational style. " \
+                     "Accuracy and attention to detail are essential, as the readers will be legal " \
+                     "professionals who may use these summaries to inform their practice.\n\n" \
+                     "### Instructions: \n1. Begin the summary with a brief introduction of the topic of " \
+                     "the article.\n2. Outline the main legal aspects, implications, and precedents " \
+                     "highlighted in the article. \n3. End the summary with a succinct conclusion or " \
+                     "takeaway.\n\nThe summaries should not be longer than 100 words, but ensure they " \
+                     "efficiently deliver the key legal insights, making them beneficial for quick " \
+                     "comprehension. The end goal is to help the lawyers understand the crux of the " \
+                     "articles without having to read them in their entirety."
+
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=2, min=1, max=10))
+async def get_jina_reader_content(link: str) -> str:
+    """Fetch content from the Jina reader link."""
+    jina_token = os.environ.get('JINA_API_TOKEN')
+    if not jina_token:
+        click.echo("JINA_API_TOKEN environment variable not set", err=True)
+        return ""
+    jina_link = f"https://r.jina.ai/{link}"
+    headers = {
+        "Authorization": f"Bearer {jina_token}",
+        "X-Retain-Images": "none",
+        "X-Target-Selector": "article"
+    }
+    try:
+        async with httpx.AsyncClient(timeout=90) as client:
+            r = await client.get(jina_link, headers=headers)
+        return r.text
+    except httpx.RequestError as e:
+        click.echo(f"Error fetching content from Jina reader: {e}", err=True)
+        return ""
+
+
+async def get_summary(text: str) -> str:
+    """Generate a summary of the article text using OpenAI."""
+    if not os.environ.get('OPENAI_API_KEY'):
+        click.echo("OPENAI_API_KEY environment variable not set", err=True)
+        return ""
+    from openai import AsyncOpenAI
+    client = AsyncOpenAI(max_retries=3, timeout=60)
+    try:
+        response = await client.responses.create(
+            model="gpt-4.1-mini",
+            input=[
+                {
+                    "role": "system",
+                    "content": [
+                        {
+                            "type": "input_text",
+                            "text": SYSTEM_PROMPT_TEXT
+                        }
+                    ]
+                },
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "input_text",
+                            "text": f"Here is an article to summarise:\n {text}"
+                        }
+                    ]
+                }
+            ],
+            text={
+                "format": {
+                    "type": "text"
+                }
+            },
+            temperature=0.42,
+            max_output_tokens=2048,
+            top_p=1,
+            store=False
+        )
+        return response.output_text
+    except Exception as e:
+        click.echo(f"Error generating summary from OpenAI: {e}", err=True)
+        return ""
+
+
+def get_hash_id(elements: list[str], delimiter: str = "|") -> str:
+    """Generate a hash ID from a list of strings.
+
+    Args:
+        elements: List of strings to be hashed.
+        delimiter: String used to join elements (default: "|").
+
+    Returns:
+        A hexadecimal MD5 hash of the joined elements.
+
+    Examples:
+        >>> get_hash_id(["2025-05-16", "Meeting Notes"])
+        '1a2b3c4d5e6f7g8h9i0j'
+
+        >>> get_hash_id(["user123", "login", "192.168.1.1"], delimiter=":")
+        '7h8i9j0k1l2m3n4o5p6q'
+    """
+    import hashlib
+
+    if not elements:
+        raise ValueError("At least one element is required")
+
+    joined_string = delimiter.join(str(element) for element in elements)
+    return hashlib.md5(joined_string.encode()).hexdigest()
+
+</document_content>
+</document>
+<document index="10">
+<source>./sglawwatch_to_sqlite/resources/__init__.py</source>
+<document_content>
+
+</document_content>
+</document>
+<document index="11">
+<source>./sglawwatch_to_sqlite/resources/headlines.py</source>
+<document_content>
+import asyncio
+from datetime import datetime
+from typing import Tuple, Dict
+
+import click
+import feedparser
+
+from sglawwatch_to_sqlite.db_manager import DatabaseManager
+from sglawwatch_to_sqlite.tools import get_jina_reader_content, get_summary, get_hash_id
+
+
+def convert_date_to_iso(date_str: str) -> str:
+    """Convert date string like '08 May 2025 00:01:00' to ISO format."""
+    try:
+        parsed_date = datetime.strptime(date_str, '%d %B %Y %H:%M:%S')
+        return parsed_date.isoformat()  # Returns '2025-05-08T00:01:00'
+    except ValueError:
+        # Handle potential parsing errors
+        try:
+            # Try alternative format with abbreviated month name
+            parsed_date = datetime.strptime(date_str, '%d %b %Y %H:%M:%S')
+            return parsed_date.isoformat()
+        except ValueError:
+            # If all parsing attempts fail, return original or a default
+            return datetime.now().isoformat()
+
+
+async def process_entry(db_manager: DatabaseManager, entry: Dict, last_updated: str) -> Tuple[datetime, bool, Dict]:
+    """Process a single feed entry."""
+    entry_date = datetime.fromisoformat(convert_date_to_iso(entry['published']))
+    last_updated_date = datetime.fromisoformat(last_updated) if last_updated else None
+
+    # Check if the entry is newer than the last updated date
+    is_new_entry = True
+    if last_updated_date:
+        is_new_entry = entry_date > last_updated_date
+
+    # Prepare the entry data
+    entry_data = {
+        "id": get_hash_id([entry_date.isoformat(), entry['title']]),
+        "category": entry.get("category", ""),
+        "title": entry.get("title", ""),
+        "source_link": entry.get("link", ""),
+        "author": entry.get("author", ""),
+        "date": entry_date.isoformat(),
+        "imported_on": datetime.now().isoformat()
+    }
+
+    # Echo information about the entry being processed
+    click.echo(f"Processing: {entry_data['title']} from {entry_data['date']}")
+
+    if is_new_entry:
+        click.echo(f"  → Fetching content for: {entry_data['title']}")
+        entry_data["text"] = await get_jina_reader_content(entry_data["source_link"])
+
+        click.echo(f"  → Generating summary for: {entry_data['title']}")
+        entry_data["summary"] = await get_summary(entry_data["text"])
+
+        # Get the database and insert the new entry
+        db = db_manager.get_database()
+        db["headlines"].insert(entry_data, pk="id")
+        click.echo(f"  ✓ Added to database: {entry_data['title']}")
+    else:
+        click.echo(f"  → Skipping (already processed): {entry_data['title']}")
+
+    return entry_date, is_new_entry, entry_data if is_new_entry else None
+
+
+async def fetch_headlines(db_manager: DatabaseManager, url: str, all_entries=False, max_age_limit=60) -> list:
+    """Fetch headline entries from Singapore Law Watch RSS feed."""
+    click.echo(f"Fetching headlines from {url}")
+
+    # Get the last updated timestamp
+    last_updated = None if all_entries else db_manager.get_last_updated("headlines")
+
+    # Parse the RSS feed
+    feed = feedparser.parse(url)
+
+    if feed.bozo:
+        click.echo(f"Warning: RSS feed parsing error - {feed.bozo_exception}", err=True)
+
+    if not feed.entries:
+        click.echo("No entries found in the feed.")
+        return []
+
+    # Track the most recent entry timestamp
+    most_recent_timestamp: None | datetime = None
+    new_entries_count = 0
+    new_entries = []
+    skipped_adv_count = 0
+    skipped_old_count = 0
+    current_date = datetime.now()
+
+    tasks = []
+    for entry in feed.entries:
+        # Skip entries with titles starting with "ADV"
+        if entry.get('title', '').startswith('ADV:'):
+            skipped_adv_count += 1
+            click.echo(f"Skipping advertisement: {entry.get('title', '')}")
+            continue
+
+        # Skip entries older than max_age_days
+        entry_date = datetime.fromisoformat(convert_date_to_iso(entry.get('published', '')))
+        days_old = (current_date - entry_date).days
+        if days_old > max_age_limit:
+            skipped_old_count += 1
+            click.echo(f"Skipping old headline ({days_old} days): {entry.get('title', '')}")
+            continue
+
+        task = asyncio.create_task(process_entry(db_manager, entry, last_updated))
+        tasks.append(task)
+
+    # Wait for all tasks to complete
+    results = await asyncio.gather(*tasks)
+
+    # Process results
+    for timestamp, is_new, entry_data in results:
+        if is_new:
+            new_entries_count += 1
+            if entry_data:
+                new_entries.append(entry_data)
+
+        if not most_recent_timestamp or timestamp > most_recent_timestamp:
+            most_recent_timestamp = timestamp
+
+    if most_recent_timestamp:
+        db_manager.update_last_updated("headlines", datetime.isoformat(most_recent_timestamp))
+
+    click.echo(f"Added {new_entries_count} new headlines")
+    if skipped_adv_count > 0:
+        click.echo(f"Skipped {skipped_adv_count} advertisements")
+    if skipped_old_count > 0:
+        click.echo(f"Skipped {skipped_old_count} headlines older than {max_age_limit} days")
+
+    return new_entries
+</document_content>
+</document>
+<document index="12">
 <source>./tests/conftest.py</source>
 <document_content>
 import asyncio
@@ -675,7 +1423,7 @@ def mock_s3_env():
 
 </document_content>
 </document>
-<document index="5">
+<document index="13">
 <source>./tests/test_db_manager.py</source>
 <document_content>
 import os
@@ -845,40 +1593,19 @@ def test_database_manager_s3(mock_s3_storage, temp_dir):
     assert db_manager.storage == mock_instance
 </document_content>
 </document>
-<document index="6">
+<document index="14">
 <source>./tests/test_headlines.py</source>
 <document_content>
 import datetime
-import hashlib
 from unittest.mock import patch, MagicMock
 
 import pytest
 
 from sglawwatch_to_sqlite.resources.headlines import (
-    get_hash_id,
     convert_date_to_iso,
-    get_jina_reader_content,
-    get_summary,
     process_entry,
     fetch_headlines
 )
-
-
-# Test get_hash_id function
-def test_get_hash_id():
-    # Given
-    entry_date = datetime.datetime(2025, 5, 8, 0, 1, 0).isoformat()
-    entry_title = "Test Case Headline"
-
-    # When
-    hash_id = get_hash_id(entry_date, entry_title)
-
-    # Then - create the expected hash manually to verify
-    expected = hashlib.md5(f"{entry_date}|{entry_title}".encode()).hexdigest()
-    assert hash_id == expected
-
-    # Verify different inputs produce different hashes
-    assert get_hash_id(entry_date, "Different Title") != hash_id
 
 
 # Test convert_date_to_iso function
@@ -900,32 +1627,6 @@ def test_convert_date_to_iso():
         # Should return current date in ISO format when parsing fails
         assert convert_date_to_iso("invalid date") == "2025-05-08T00:01:00"
 
-
-# Test get_jina_reader_content function with fixtures
-@pytest.mark.asyncio
-async def test_get_jina_reader_content(mock_httpx_client, mock_env_vars):
-    with patch('httpx.AsyncClient', return_value=mock_httpx_client):
-        # Test
-        content = await get_jina_reader_content("https://example.com/article")
-
-        # Verify
-        assert content == "<article>Sample article content</article>"
-        # Verify correct URL and headers were used
-        mock_httpx_client.__aenter__.return_value.get.assert_called_once()
-
-
-# Test get_summary function with fixtures
-@pytest.mark.asyncio
-async def test_get_summary(mock_openai_client):
-    with patch.dict('os.environ', {'OPENAI_API_KEY': 'fake-api-key'}):
-        with patch('openai.AsyncOpenAI', return_value=mock_openai_client):
-            # Test
-            summary = await get_summary("This is a long article text that needs summarizing.")
-
-            # Verify
-            assert summary == "This is a concise legal summary."
-            # Verify OpenAI was called with correct parameters
-            mock_openai_client.responses.create.assert_called_once()
 
 
 # Test process_entry function
@@ -1095,7 +1796,7 @@ async def test_fetch_headlines_skip_advertisements():
 
 </document_content>
 </document>
-<document index="7">
+<document index="15">
 <source>./tests/test_sglawwatch_to_sqlite.py</source>
 <document_content>
 import os
@@ -1212,7 +1913,7 @@ def test_headlines_command_integration():
             mock_fetch.assert_called_once()
 </document_content>
 </document>
-<document index="8">
+<document index="16">
 <source>./tests/test_storage.py</source>
 <document_content>
 import os
@@ -1437,693 +2138,104 @@ def test_s3_storage_save(mock_boto3_client):
             os.unlink(tmp_path)
 </document_content>
 </document>
-<document index="9">
-<source>./sglawwatch_to_sqlite/__init__.py</source>
+<document index="17">
+<source>./tests/test_tools.py</source>
 <document_content>
-__version__ = "0.1"
-
-</document_content>
-</document>
-<document index="10">
-<source>./sglawwatch_to_sqlite/__main__.py</source>
-<document_content>
-from .cli import cli
-
-if __name__ == "__main__":
-    cli()
-
-</document_content>
-</document>
-<document index="11">
-<source>./sglawwatch_to_sqlite/cli.py</source>
-<document_content>
-import asyncio
-import click
-import os
-
-from sglawwatch_to_sqlite.db_manager import DatabaseManager
-from sglawwatch_to_sqlite.storage import DB_FILENAME
-
-
-@click.group()
-@click.version_option()
-def cli():
-    """Track Singapore's legal developments by importing Singapore Law Watch's RSS feed into a searchable SQLite database"""
-
-
-@cli.group(name="fetch")
-def fetch():
-    """Fetch entries from Singapore Law Watch RSS feeds into a SQLite database."""
-    pass
-
-
-@fetch.command(name="headlines")
-@click.argument(
-    "location",
-    type=str,
-    required=False,
-    default=".",
-)
-@click.option(
-    "--url",
-    default="https://www.singaporelawwatch.sg/Portals/0/RSS/Headlines.xml",
-    help="URL of the Singapore Law Watch Headlines RSS feed",
-)
-@click.option(
-    "--all",
-    is_flag=True,
-    help="Fetch all entries regardless of last run state",
-)
-def headlines_command(location, url, all):
-    """Fetch headline entries from Singapore Law Watch RSS feed.
-
-    LOCATION can be a local directory or an S3 path (s3://bucket/path/).
-    The database will always be named 'sglawwatch.db'.
-
-    If LOCATION is not specified, the current directory is used.
-
-    For S3 storage, you can also set the S3_BUCKET_NAME environment variable
-    instead of including it in the path.
-    """
-    # Create a database manager
-    db_manager = DatabaseManager(location)
-
-    # Import here to avoid circular imports
-    from sglawwatch_to_sqlite.resources.headlines import fetch_headlines
-
-    # Run the fetch operation asynchronously
-    asyncio.run(fetch_headlines(db_manager, url, all))
-
-    # Save the database (this will upload to S3 if needed)
-    saved_location = db_manager.save()
-
-    if location.startswith('s3://'):
-        click.echo(f"Database saved to {saved_location}")
-    else:
-        # For local storage, make the path more user-friendly
-        rel_path = os.path.join(location, DB_FILENAME)
-        if os.path.isabs(rel_path):
-            click.echo(f"Database saved to {rel_path}")
-        else:
-            # Convert to relative path for better readability
-            click.echo(f"Database saved to ./{rel_path}")
-
-
-# Add a command to fetch all feed types at once
-@fetch.command(name="all")
-@click.argument(
-    "location",
-    type=str,
-    required=False,
-    default=".",
-)
-@click.option(
-    "--reset",
-    is_flag=True,
-    help="Reset and fetch all entries from scratch",
-)
-def fetch_all(location, reset):
-    """Fetch all available feeds (headlines and judgments).
-
-    LOCATION can be a local directory or an S3 path (s3://bucket/path/).
-    The database will always be named 'sglawwatch.db'.
-
-    If LOCATION is not specified, the current directory is used.
-
-    For S3 storage, you can also set the S3_BUCKET_NAME environment variable
-    instead of including it in the path.
-    """
-    click.echo("Fetching all Singapore Law Watch feeds...")
-
-    ctx = click.get_current_context()
-
-    # Fetch headlines
-    ctx.invoke(headlines_command, location=location, all=reset)
-
-    click.echo("All feeds have been processed")
-</document_content>
-</document>
-<document index="12">
-<source>./sglawwatch_to_sqlite/db_manager.py</source>
-<document_content>
-from datetime import datetime
-
-import click
-import sqlite_utils
-
-from sglawwatch_to_sqlite.storage import Storage
-
-# Current table versions
-TABLE_VERSIONS = {
-    "headlines": 1,
-    "metadata": 1
-}
-
-
-class DatabaseManager:
-    """
-    A class that manages both the database and its storage.
-    """
-
-    def __init__(self, database_uri):
-        """
-        Initialize a DatabaseManager with a database URI.
-
-        Args:
-            database_uri: Either a local file path or an S3 URI (s3://bucket/path)
-        """
-        try:
-            # Create the appropriate storage
-            self.storage = Storage.create(database_uri)
-
-            # Get the local path (will download from S3 if needed)
-            self.local_path = self.storage.get_local_path()
-
-            # Connect to the database
-            self.db = sqlite_utils.Database(self.local_path)
-
-            # Set up tables if needed
-            self._setup_tables()
-        except Exception as e:
-            click.echo(f"Error connecting to database at {database_uri}: {e}", err=True)
-            raise click.Abort()
-
-    def _setup_tables(self):
-        """Set up the necessary tables in the database."""
-        try:
-            # Check/create schema_versions table first
-            if "schema_versions" not in self.db.table_names():
-                self.db["schema_versions"].create({
-                    "table_name": str,
-                    "version": int,
-                    "updated_at": str
-                }, pk="table_name")
-                click.echo("Created schema version tracking table")
-
-            # Create the headlines table if it doesn't exist
-            if "headlines" not in self.db.table_names():
-                self.db["headlines"].create({
-                    "id": str,  # Unique identifier for each article
-                    "category": str,  # The category of the news article
-                    "title": str,  # The title of the article
-                    "source_link": str,  # URL to the source article
-                    "author": str,  # Author of the article
-                    "date": str,  # Publication date in ISO format
-                    "summary": str,  # Summary text
-                    "text": str,  # Full text content
-                    "imported_on": str  # When the article was imported
-                }, pk="id")
-
-                # Create indexes for common query patterns
-                self.db["headlines"].create_index(["date"])
-                self.db["headlines"].create_index(["author"])
-
-                self.db["headlines"].enable_fts(["title", "summary"], create_triggers=True)
-
-                self._register_table_version("headlines", TABLE_VERSIONS["headlines"])
-
-            # Create the metadata table if it doesn't exist
-            if "metadata" not in self.db.table_names():
-                self.db["metadata"].create({
-                    "key": str,
-                    "value": str
-                }, pk="key")
-                self._register_table_version("metadata", TABLE_VERSIONS["metadata"])
-
-        except Exception as e:
-            click.echo(f"Error creating table: {e}", err=True)
-            raise click.Abort()
-
-    def _register_table_version(self, table_name, version):
-        """Register a new table version in the schema_versions table"""
-        self.db["schema_versions"].insert({
-            "table_name": table_name,
-            "version": version,
-            "updated_at": datetime.now().isoformat()
-        })
-        click.echo(f"Registered {table_name} table with schema version {version}")
-
-    def get_database(self):
-        """Get the sqlite_utils Database object."""
-        return self.db
-
-    def save(self):
-        """Save the database, handling S3 upload if needed."""
-        return self.storage.save(self.local_path)
-
-    def get_last_updated(self, feed_type):
-        """Get the last updated timestamp for a specific feed type"""
-        metadata_key = f"{feed_type}_last_updated"
-        try:
-            return self.db["metadata"].get(metadata_key)["value"]
-        except sqlite_utils.db.NotFoundError:
-            self.db["metadata"].insert({"key": metadata_key, "value": ""})
-            return ""
-
-    def update_last_updated(self, feed_type, timestamp):
-        """Update the last updated timestamp for a specific feed type"""
-        metadata_key = f"{feed_type}_last_updated"
-        self.db["metadata"].upsert({"key": metadata_key, "value": timestamp}, pk="key")
-
-</document_content>
-</document>
-<document index="13">
-<source>./sglawwatch_to_sqlite/storage.py</source>
-<document_content>
-import os
-import tempfile
-from urllib.parse import urlparse
-
-import click
-
-# Fixed database filename
-DB_FILENAME = "sglawwatch.db"
-
-
-class Storage:
-    """
-    Abstract base class for database storage.
-    """
-
-    def get_local_path(self):
-        """Get the local path to the database"""
-        raise NotImplementedError()
-
-    def save(self, local_path=None):
-        """Save the database"""
-        raise NotImplementedError()
-
-    @staticmethod
-    def create(location):
-        """
-        Factory method to create the appropriate storage object.
-
-        Args:
-            location: Either a local directory path or an S3 URI (s3://bucket/path/)
-                      If no location is specified, the current directory is used.
-        """
-        if not location:
-            # Default to current directory
-            return LocalStorage(".")
-
-        if location.startswith('s3://'):
-            return S3Storage(location)
-        else:
-            return LocalStorage(location)
-
-
-class LocalStorage(Storage):
-    """
-    Local filesystem storage for the database.
-    """
-
-    def __init__(self, directory):
-        # Ensure the directory doesn't have a filename at the end
-        if os.path.isfile(directory) or directory.endswith('.db'):
-            directory = os.path.dirname(directory) or "."
-
-        self.directory = directory
-        self.path = os.path.join(directory, DB_FILENAME)
-
-    def get_local_path(self):
-        # Ensure the directory exists
-        if self.directory and not os.path.exists(self.directory):
-            os.makedirs(self.directory)
-        return self.path
-
-    def save(self, local_path=None):
-        """
-        Save a database file to the storage location.
-
-        Args:
-            local_path: Path to the local database file to save.
-                       If None, assumes the database is already at self.path.
-
-        Returns:
-            The final path where the database was saved.
-        """
-        # For local storage, nothing needs to be done if the path is the same
-        if local_path and local_path != self.path:
-            import shutil
-
-            # Make sure the target directory exists
-            if not os.path.exists(self.directory):
-                os.makedirs(self.directory)
-
-            shutil.copy2(local_path, self.path)
-        return self.path
-
-
-class S3Storage(Storage):
-    """
-    S3 storage for the database.
-    """
-
-    def __init__(self, s3_uri):
-        self.s3_uri = s3_uri
-
-        # Parse the S3 URI
-        parsed = urlparse(s3_uri)
-
-        # Check if we have a bucket name in the URI
-        if parsed.netloc:
-            self.bucket = parsed.netloc
-        else:
-            # Try to get bucket name from environment variable
-            self.bucket = os.environ.get('S3_BUCKET_NAME')
-            if not self.bucket:
-                click.echo(
-                    "Error: S3 bucket name must be specified either in the URI or via S3_BUCKET_NAME environment variable",
-                    err=True)
-                raise click.Abort()
-
-        # Parse the key (path in the bucket)
-        self.key = parsed.path.lstrip('/')
-
-        # If the key doesn't end with a filename, append the fixed DB filename
-        if not self.key or self.key.endswith('/'):
-            self.key = f"{self.key}{DB_FILENAME}"
-        elif not os.path.basename(self.key) or not os.path.splitext(self.key)[1]:
-            # It doesn't have a file extension, assume it's a directory
-            self.key = f"{self.key}/{DB_FILENAME}"
-
-        # Get endpoint URL from environment variable if available
-        self.endpoint_url = os.environ.get('S3_ENDPOINT_URL')
-        self.region_name = os.environ.get('AWS_DEFAULT_REGION', 'default')
-
-        self._temp_file = None
-
-    def _get_s3_client(self):
-        """Get an S3 client with proper configuration."""
-        import boto3
-
-        # Create boto3 client with custom endpoint if provided
-        client_kwargs = {}
-        if self.endpoint_url:
-            client_kwargs['endpoint_url'] = self.endpoint_url
-            client_kwargs['region_name'] = self.region_name
-
-        return boto3.client('s3', **client_kwargs)
-
-    def _verify_boto3(self):
-        """Import boto3 and check if it's available."""
-        try:
-            import boto3  # noqa: F401
-            return True
-        except ImportError:
-            click.echo("boto3 is required for S3 storage. Install it with 'uv install boto3'.", err=True)
-            raise click.Abort()
-
-    def get_local_path(self):
-        self._verify_boto3()
-
-        # Create a temporary file
-        temp_fd, temp_path = tempfile.mkstemp(suffix='.db')
-        os.close(temp_fd)
-        self._temp_file = temp_path
-
-        # Download the file from S3 if it exists
-        try:
-            from botocore.exceptions import ClientError
-
-            s3_client = self._get_s3_client()
-            try:
-                click.echo(f"Downloading database from s3://{self.bucket}/{self.key}")
-                s3_client.download_file(self.bucket, self.key, temp_path)
-            except ClientError as e:
-                if e.response['Error']['Code'] == '404':
-                    click.echo(
-                        f"No existing database found at s3://{self.bucket}/{self.key}. A new one will be created.")
-                else:
-                    click.echo(f"Error downloading from S3: {e}", err=True)
-                    raise click.Abort()
-        except Exception as e:
-            click.echo(f"Error accessing S3: {e}", err=True)
-            raise click.Abort()
-
-        return temp_path
-
-    def save(self, local_path=None):
-        self._verify_boto3()
-
-        if not local_path:
-            local_path = self._temp_file
-
-        if not local_path or not os.path.exists(local_path):
-            click.echo(f"Error: Local database file not found: {local_path}", err=True)
-            raise click.Abort()
-
-        try:
-            s3_client = self._get_s3_client()
-            click.echo(f"Uploading database to s3://{self.bucket}/{self.key}")
-            s3_client.upload_file(local_path, self.bucket, self.key)
-            click.echo("Database successfully uploaded to S3")
-            return f"s3://{self.bucket}/{self.key}"
-        except Exception as e:
-            click.echo(f"Error uploading to S3: {e}", err=True)
-            raise click.Abort()
-        finally:
-            # Clean up the temporary file
-            if self._temp_file and os.path.exists(self._temp_file):
-                os.unlink(self._temp_file)
-
-</document_content>
-</document>
-<document index="14">
-<source>./sglawwatch_to_sqlite/resources/__init__.py</source>
-<document_content>
-
-</document_content>
-</document>
-<document index="15">
-<source>./sglawwatch_to_sqlite/resources/headlines.py</source>
-<document_content>
-import asyncio
-import os
-from datetime import datetime
-from typing import Tuple, Dict
-
-import click
-import feedparser
-import httpx
-from tenacity import retry, stop_after_attempt, wait_exponential
-
-from sglawwatch_to_sqlite.db_manager import DatabaseManager
-
-SYSTEM_PROMPT_TEXT = "As an AI expert in legal affairs, your task is to provide concise, yet comprehensive " \
-                     "summaries of legal news articles for time-constrained attorneys. These summaries " \
-                     "should highlight the critical legal aspects, relevant precedents, and implications of " \
-                     "the issues discussed in the articles.\n\nDespite their complexity, the summaries " \
-                     "should be accessible and digestible, written in an engaging and conversational style. " \
-                     "Accuracy and attention to detail are essential, as the readers will be legal " \
-                     "professionals who may use these summaries to inform their practice.\n\n" \
-                     "### Instructions: \n1. Begin the summary with a brief introduction of the topic of " \
-                     "the article.\n2. Outline the main legal aspects, implications, and precedents " \
-                     "highlighted in the article. \n3. End the summary with a succinct conclusion or " \
-                     "takeaway.\n\nThe summaries should not be longer than 100 words, but ensure they " \
-                     "efficiently deliver the key legal insights, making them beneficial for quick " \
-                     "comprehension. The end goal is to help the lawyers understand the crux of the " \
-                     "articles without having to read them in their entirety."
-
-
-def get_hash_id(entry_date: str, entry_title: str) -> str:
-    """Generate a hash ID for the entry."""
-    import hashlib
-    return hashlib.md5(f"{entry_date}|{entry_title}".encode()).hexdigest()
-
-
-def convert_date_to_iso(date_str: str) -> str:
-    """Convert date string like '08 May 2025 00:01:00' to ISO format."""
-    try:
-        parsed_date = datetime.strptime(date_str, '%d %B %Y %H:%M:%S')
-        return parsed_date.isoformat()  # Returns '2025-05-08T00:01:00'
-    except ValueError:
-        # Handle potential parsing errors
-        try:
-            # Try alternative format with abbreviated month name
-            parsed_date = datetime.strptime(date_str, '%d %b %Y %H:%M:%S')
-            return parsed_date.isoformat()
-        except ValueError:
-            # If all parsing attempts fail, return original or a default
-            return datetime.now().isoformat()
-
-
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=2, min=1, max=10))
-async def get_jina_reader_content(link: str) -> str:
-    """Fetch content from the Jina reader link."""
-    jina_token = os.environ.get('JINA_API_TOKEN')
-    if not jina_token:
-        click.echo("JINA_API_TOKEN environment variable not set", err=True)
-        return ""
-    jina_link = f"https://r.jina.ai/{link}"
-    headers = {
-        "Authorization": f"Bearer {jina_token}",
-        "X-Retain-Images": "none",
-        "X-Target-Selector": "article"
-    }
-    try:
-        async with httpx.AsyncClient(timeout=90) as client:
-            r = await client.get(jina_link, headers=headers)
-        return r.text
-    except httpx.RequestError as e:
-        click.echo(f"Error fetching content from Jina reader: {e}", err=True)
-        return ""
-
-
-async def get_summary(text: str) -> str:
-    """Generate a summary of the article text using OpenAI."""
-    if not os.environ.get('OPENAI_API_KEY'):
-        click.echo("OPENAI_API_KEY environment variable not set", err=True)
-        return ""
-    from openai import AsyncOpenAI
-    client = AsyncOpenAI(max_retries=3, timeout=60)
-    try:
-        response = await client.responses.create(
-            model="gpt-4.1-mini",
-            input=[
-                {
-                    "role": "system",
-                    "content": [
-                        {
-                            "type": "input_text",
-                            "text": SYSTEM_PROMPT_TEXT
-                        }
-                    ]
-                },
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "input_text",
-                            "text": f"Here is an article to summarise:\n {text}"
-                        }
-                    ]
-                }
-            ],
-            text={
-                "format": {
-                    "type": "text"
-                }
-            },
-            temperature=0.42,
-            max_output_tokens=2048,
-            top_p=1,
-            store=False
-        )
-        return response.output_text
-    except Exception as e:
-        click.echo(f"Error generating summary from OpenAI: {e}", err=True)
-        return ""
-
-
-async def process_entry(db_manager: DatabaseManager, entry: Dict, last_updated: str) -> Tuple[datetime, bool, Dict]:
-    """Process a single feed entry."""
-    entry_date = datetime.fromisoformat(convert_date_to_iso(entry['published']))
-    last_updated_date = datetime.fromisoformat(last_updated) if last_updated else None
-
-    # Check if the entry is newer than the last updated date
-    is_new_entry = True
-    if last_updated_date:
-        is_new_entry = entry_date > last_updated_date
-
-    # Prepare the entry data
-    entry_data = {
-        "id": get_hash_id(entry_date.isoformat(), entry['title']),
-        "category": entry.get("category", ""),
-        "title": entry.get("title", ""),
-        "source_link": entry.get("link", ""),
-        "author": entry.get("author", ""),
-        "date": entry_date.isoformat(),
-        "imported_on": datetime.now().isoformat()
-    }
-
-    # Echo information about the entry being processed
-    click.echo(f"Processing: {entry_data['title']} from {entry_data['date']}")
-
-    if is_new_entry:
-        click.echo(f"  → Fetching content for: {entry_data['title']}")
-        entry_data["text"] = await get_jina_reader_content(entry_data["source_link"])
-
-        click.echo(f"  → Generating summary for: {entry_data['title']}")
-        entry_data["summary"] = await get_summary(entry_data["text"])
-
-        # Get the database and insert the new entry
-        db = db_manager.get_database()
-        db["headlines"].insert(entry_data, pk="id")
-        click.echo(f"  ✓ Added to database: {entry_data['title']}")
-    else:
-        click.echo(f"  → Skipping (already processed): {entry_data['title']}")
-
-    return entry_date, is_new_entry, entry_data if is_new_entry else None
-
-
-async def fetch_headlines(db_manager: DatabaseManager, url: str, all_entries=False, max_age_limit=60) -> list:
-    """Fetch headline entries from Singapore Law Watch RSS feed."""
-    click.echo(f"Fetching headlines from {url}")
-
-    # Get the last updated timestamp
-    last_updated = None if all_entries else db_manager.get_last_updated("headlines")
-
-    # Parse the RSS feed
-    feed = feedparser.parse(url)
-
-    if feed.bozo:
-        click.echo(f"Warning: RSS feed parsing error - {feed.bozo_exception}", err=True)
-
-    if not feed.entries:
-        click.echo("No entries found in the feed.")
-        return []
-
-    # Track the most recent entry timestamp
-    most_recent_timestamp: None | datetime = None
-    new_entries_count = 0
-    new_entries = []
-    skipped_adv_count = 0
-    skipped_old_count = 0
-    current_date = datetime.now()
-
-    tasks = []
-    for entry in feed.entries:
-        # Skip entries with titles starting with "ADV"
-        if entry.get('title', '').startswith('ADV:'):
-            skipped_adv_count += 1
-            click.echo(f"Skipping advertisement: {entry.get('title', '')}")
-            continue
-
-        # Skip entries older than max_age_days
-        entry_date = datetime.fromisoformat(convert_date_to_iso(entry.get('published', '')))
-        days_old = (current_date - entry_date).days
-        if days_old > max_age_limit:
-            skipped_old_count += 1
-            click.echo(f"Skipping old headline ({days_old} days): {entry.get('title', '')}")
-            continue
-
-        task = asyncio.create_task(process_entry(db_manager, entry, last_updated))
-        tasks.append(task)
-
-    # Wait for all tasks to complete
-    results = await asyncio.gather(*tasks)
-
-    # Process results
-    for timestamp, is_new, entry_data in results:
-        if is_new:
-            new_entries_count += 1
-            if entry_data:
-                new_entries.append(entry_data)
-
-        if not most_recent_timestamp or timestamp > most_recent_timestamp:
-            most_recent_timestamp = timestamp
-
-    if most_recent_timestamp:
-        db_manager.update_last_updated("headlines", datetime.isoformat(most_recent_timestamp))
-
-    click.echo(f"Added {new_entries_count} new headlines")
-    if skipped_adv_count > 0:
-        click.echo(f"Skipped {skipped_adv_count} advertisements")
-    if skipped_old_count > 0:
-        click.echo(f"Skipped {skipped_old_count} headlines older than {max_age_limit} days")
-
-    return new_entries
+import datetime
+import hashlib
+from unittest.mock import patch
+
+import pytest
+
+from sglawwatch_to_sqlite.tools import get_jina_reader_content, get_summary, get_hash_id
+
+
+@pytest.mark.asyncio
+async def test_get_jina_reader_content(mock_httpx_client, mock_env_vars):
+    with patch('httpx.AsyncClient', return_value=mock_httpx_client):
+        # Test
+        content = await get_jina_reader_content("https://example.com/article")
+
+        # Verify
+        assert content == "<article>Sample article content</article>"
+        # Verify correct URL and headers were used
+        mock_httpx_client.__aenter__.return_value.get.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_get_summary(mock_openai_client):
+    with patch.dict('os.environ', {'OPENAI_API_KEY': 'fake-api-key'}):
+        with patch('openai.AsyncOpenAI', return_value=mock_openai_client):
+            # Test
+            summary = await get_summary("This is a long article text that needs summarizing.")
+
+            # Verify
+            assert summary == "This is a concise legal summary."
+            # Verify OpenAI was called with correct parameters
+            mock_openai_client.responses.create.assert_called_once()
+
+
+class TestGetHashId:
+    def test_basic_functionality(self):
+        """Test the function with basic string inputs."""
+        result = get_hash_id(["2025-05-16", "Meeting Notes"])
+        expected = hashlib.md5("2025-05-16|Meeting Notes".encode()).hexdigest()
+        assert result == expected
+
+    def test_single_element(self):
+        """Test the function with a single element."""
+        result = get_hash_id(["single_element"])
+        expected = hashlib.md5("single_element".encode()).hexdigest()
+        assert result == expected
+
+    def test_custom_delimiter(self):
+        """Test the function with a custom delimiter."""
+        result = get_hash_id(["user", "login", "192.168.1.1"], delimiter=":")
+        expected = hashlib.md5("user:login:192.168.1.1".encode()).hexdigest()
+        assert result == expected
+
+    def test_non_string_elements(self):
+        """Test the function with non-string elements."""
+        result = get_hash_id([123, True, 3.14])
+        expected = hashlib.md5("123|True|3.14".encode()).hexdigest()
+        assert result == expected
+
+    def test_empty_list_raises_error(self):
+        """Test that an empty list raises a ValueError."""
+        with pytest.raises(ValueError, match="At least one element is required"):
+            get_hash_id([])
+
+    @pytest.mark.parametrize(
+        "elements,delimiter,expected",
+        [
+            (
+                ["2025-05-16", "Meeting Notes"],
+                "|",
+                hashlib.md5("2025-05-16|Meeting Notes".encode()).hexdigest(),
+            ),
+            (
+                ["user", "login", "192.168.1.1"],
+                ":",
+                hashlib.md5("user:login:192.168.1.1".encode()).hexdigest(),
+            ),
+            (
+                [123, "test"],
+                "-",
+                hashlib.md5("123-test".encode()).hexdigest(),
+            ),
+        ],
+    )
+    def test_parametrized_inputs(self, elements, delimiter, expected):
+        """Test various input combinations."""
+        result = get_hash_id(elements, delimiter)
+        assert result == expected
+
+    def test_consistency(self):
+        """Test that the same input always produces the same output."""
+        elements = ["2025-05-16", "Meeting Notes", "Confidential"]
+        first_result = get_hash_id(elements)
+        second_result = get_hash_id(elements)
+        assert first_result == second_result
 </document_content>
 </document>
 </documents>
