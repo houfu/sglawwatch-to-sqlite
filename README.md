@@ -18,6 +18,9 @@ A tool to track Singapore's legal developments by importing Singapore Law Watch'
 
 ## Installation
 
+**Requirements:**
+- Python 3.9 or higher
+
 Clone this repository from GitHub:
 
 ```bash
