@@ -1,8 +1,10 @@
 import asyncio
-import click
 import os
 
+import click
+
 from sglawwatch_to_sqlite.db_manager import DatabaseManager
+from sglawwatch_to_sqlite.metadata_manager import MetadataManager
 from sglawwatch_to_sqlite.storage import DB_FILENAME
 
 
@@ -35,7 +37,8 @@ def fetch():
     is_flag=True,
     help="Fetch all entries regardless of last run state",
 )
-def headlines_command(location, url, all):
+@click.option("--update-metadata", is_flag=True, help="Update Datasette metadata.json after fetching")
+def headlines_command(location, url, all, update_metadata):
     """Fetch headline entries from Singapore Law Watch RSS feed.
 
     LOCATION can be a local directory or an S3 path (s3://bucket/path/).
@@ -69,6 +72,14 @@ def headlines_command(location, url, all):
             # Convert to relative path for better readability
             click.echo(f"Database saved to ./{rel_path}")
 
+    if update_metadata:
+        try:
+            metadata_manager = MetadataManager(location)
+            changes_made, message = metadata_manager.update_metadata()
+            click.echo(message)
+        except Exception as e:
+            click.echo(f"Warning: Failed to update metadata: {e}", err=True)
+
 
 # Add a command to fetch all feed types at once
 @fetch.command(name="all")
@@ -83,7 +94,8 @@ def headlines_command(location, url, all):
     is_flag=True,
     help="Reset and fetch all entries from scratch",
 )
-def fetch_all(location, reset):
+@click.option("--update-metadata", is_flag=True, help="Update Datasette metadata.json after fetching")
+def fetch_all(location, reset, update_metadata):
     """Fetch all available feeds (headlines and judgments).
 
     LOCATION can be a local directory or an S3 path (s3://bucket/path/).
@@ -99,6 +111,38 @@ def fetch_all(location, reset):
     ctx = click.get_current_context()
 
     # Fetch headlines
-    ctx.invoke(headlines_command, location=location, all=reset)
+    ctx.invoke(headlines_command, location=location, all=reset, update_metadata=False)
+
+    if update_metadata:
+        try:
+            metadata_manager = MetadataManager(location)
+            changes_made, message = metadata_manager.update_metadata()
+            click.echo(message)
+        except Exception as e:
+            click.echo(f"Warning: Failed to update metadata: {e}", err=True)
 
     click.echo("All feeds have been processed")
+
+
+@cli.group(name="metadata")
+def metadata():
+    """Manage Datasette metadata for the Singapore Law Watch database."""
+    pass
+
+
+@metadata.command(name="update")
+@click.argument("location", type=str, required=False, default=".")
+@click.option("--dry-run", is_flag=True, help="Show changes without applying them")
+def metadata_update(location, dry_run):
+    """Update Datasette metadata.json with Singapore Law Watch database metadata.
+
+    LOCATION can be a local directory or an S3 path (s3://bucket/path/).
+    If LOCATION is not specified, the current directory is used.
+    """
+    try:
+        metadata_manager = MetadataManager(location)
+        changes_made, message = metadata_manager.update_metadata(dry_run)
+        click.echo(message)
+    except Exception as e:
+        click.echo(f"Error updating metadata: {e}", err=True)
+        raise click.Abort()

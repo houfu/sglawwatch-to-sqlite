@@ -112,3 +112,13 @@ def get_hash_id(elements: list[str], delimiter: str = "|") -> str:
 
     joined_string = delimiter.join(str(element) for element in elements)
     return hashlib.md5(joined_string.encode()).hexdigest()
+
+
+def verify_boto3():
+    """Import boto3 and check if it's available."""
+    try:
+        import boto3  # noqa: F401
+        return True
+    except ImportError:
+        click.echo("boto3 is required for S3 storage. Install it with 'uv install boto3'.", err=True)
+        raise click.Abort()
