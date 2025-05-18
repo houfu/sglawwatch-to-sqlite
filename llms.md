@@ -1116,11 +1116,57 @@ def sample_project_metadata():
     """Create a sample project metadata content."""
     return {
         "title": "Singapore Law Watch Headlines",
-        "description": "A database of legal news headlines",
+        "description": "A database of legal news headlines from Singapore Law Watch",
+        "license": "Apache License 2.0",
+        "license_url": "https://github.com/houfu/sglawwatch-to-sqlite/blob/master/LICENSE",
+        "source": "Singapore Law Watch",
+        "source_url": "https://www.singaporelawwatch.sg/",
+        "about": "This database contains legal news headlines imported from Singapore Law Watch's RSS feed.",
+        "about_url": "https://github.com/houfu/sglawwatch-to-sqlite",
         "tables": {
             "headlines": {
                 "title": "Legal Headlines",
-                "sortable_columns": ["date"]
+                "description": "Headlines from Singapore Law Watch's RSS feed",
+                "sortable_columns": ["date", "author"],
+                "facets": ["category", "author", "date"],
+                "columns": {
+                    "id": {
+                        "title": "ID",
+                        "description": "Unique identifier for each headline"
+                    },
+                    "category": {
+                        "title": "Category",
+                        "description": "The category of the news article"
+                    },
+                    "title": {
+                        "title": "Title",
+                        "description": "The headline title"
+                    },
+                    "source_link": {
+                        "title": "Source",
+                        "description": "URL to the original article"
+                    },
+                    "author": {
+                        "title": "Author",
+                        "description": "The author or publication"
+                    },
+                    "date": {
+                        "title": "Date",
+                        "description": "Publication date in ISO format"
+                    },
+                    "summary": {
+                        "title": "Summary",
+                        "description": "AI-generated summary of the article"
+                    },
+                    "text": {
+                        "title": "Content",
+                        "description": "Full text content of the article"
+                    },
+                    "imported_on": {
+                        "title": "Imported On",
+                        "description": "When the article was imported into the database"
+                    }
+                }
             }
         }
     }
@@ -2132,16 +2178,18 @@ class MetadataManager:
         if "databases" not in self.metadata:
             self.metadata["databases"] = {}
 
+        # Check if the database section needs to be created or updated
+        changes_needed = False
+
         if db_name not in self.metadata["databases"]:
-            self.metadata["databases"][db_name] = {}
+            # Database entry doesn't exist at all
             changes_needed = True
         else:
-            # Get current database metadata
+            # Database entry exists, check if it's different from project metadata
             current_db_metadata = self.metadata["databases"][db_name]
-
-            # Direct dictionary comparison instead of hash comparison
-            # This is more reliable than hashing for detecting changes
-            changes_needed = current_db_metadata != self.project_metadata
+            # Sort both dictionaries to ensure consistent comparison
+            changes_needed = json.dumps(current_db_metadata, sort_keys=True) != json.dumps(self.project_metadata,
+                                                                                           sort_keys=True)
 
         if not changes_needed:
             message = "No changes needed - metadata is already up to date"
