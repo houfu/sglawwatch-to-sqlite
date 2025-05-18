@@ -4,6 +4,8 @@ from urllib.parse import urlparse
 
 import click
 
+from sglawwatch_to_sqlite.tools import verify_boto3
+
 # Fixed database filename
 DB_FILENAME = "sglawwatch.db"
 
@@ -13,12 +15,12 @@ class Storage:
     Abstract base class for database storage.
     """
 
-    def get_local_path(self):
-        """Get the local path to the database"""
+    def get_local_path(self, filename=DB_FILENAME):
+        """Get the local path to the file"""
         raise NotImplementedError()
 
-    def save(self, local_path=None):
-        """Save the database"""
+    def save(self, local_path=None, filename=DB_FILENAME):
+        """Save the file"""
         raise NotImplementedError()
 
     @staticmethod
@@ -53,33 +55,36 @@ class LocalStorage(Storage):
         self.directory = directory
         self.path = os.path.join(directory, DB_FILENAME)
 
-    def get_local_path(self):
+    def get_local_path(self, filename=DB_FILENAME):
         # Ensure the directory exists
         if self.directory and not os.path.exists(self.directory):
-            os.makedirs(self.directory)
-        return self.path
+            os.makedirs(self.directory, exist_ok=True)
+        return os.path.join(self.directory, filename)
 
-    def save(self, local_path=None):
+    def save(self, local_path=None, filename=DB_FILENAME):
         """
-        Save a database file to the storage location.
+        Save a file to the storage location.
 
         Args:
-            local_path: Path to the local database file to save.
-                       If None, assumes the database is already at self.path.
+            local_path: Path to the local file to save.
+                       If None, assumes the file is already at self.path.
+            filename: Name of the file to save.
 
         Returns:
-            The final path where the database was saved.
+            The final path where the file was saved.
         """
+        target_path = os.path.join(self.directory, filename)
+
         # For local storage, nothing needs to be done if the path is the same
-        if local_path and local_path != self.path:
+        if local_path and local_path != target_path:
             import shutil
 
             # Make sure the target directory exists
             if not os.path.exists(self.directory):
                 os.makedirs(self.directory)
 
-            shutil.copy2(local_path, self.path)
-        return self.path
+            shutil.copy2(local_path, target_path)
+        return target_path
 
 
 class S3Storage(Storage):
@@ -120,6 +125,7 @@ class S3Storage(Storage):
         self.region_name = os.environ.get('AWS_DEFAULT_REGION', 'default')
 
         self._temp_file = None
+        self._temp_files = {}
 
     def _get_s3_client(self):
         """Get an S3 client with proper configuration."""
@@ -133,64 +139,78 @@ class S3Storage(Storage):
 
         return boto3.client('s3', **client_kwargs)
 
-    def _verify_boto3(self):
-        """Import boto3 and check if it's available."""
-        try:
-            import boto3  # noqa: F401
-            return True
-        except ImportError:
-            click.echo("boto3 is required for S3 storage. Install it with 'uv install boto3'.", err=True)
-            raise click.Abort()
+    def _get_full_key(self, filename):
+        """Get the full S3 key for a filename."""
+        if not self.key or self.key.endswith('/'):
+            return f"{self.key}{filename}"
+        else:
+            # If key already has a filename, use the directory
+            base_dir = os.path.dirname(self.key)
+            if base_dir:
+                return f"{base_dir}/{filename}"
+            else:
+                return filename
 
-    def get_local_path(self):
-        self._verify_boto3()
+    def get_local_path(self, filename=DB_FILENAME):
+        verify_boto3()
 
         # Create a temporary file
-        temp_fd, temp_path = tempfile.mkstemp(suffix='.db')
+        temp_fd, temp_path = tempfile.mkstemp(suffix=os.path.splitext(filename)[1])
         os.close(temp_fd)
-        self._temp_file = temp_path
+        self._temp_files[filename] = temp_path
 
         # Download the file from S3 if it exists
         try:
             from botocore.exceptions import ClientError
 
             s3_client = self._get_s3_client()
+            full_key = self._get_full_key(filename)
+
             try:
-                click.echo(f"Downloading database from s3://{self.bucket}/{self.key}")
-                s3_client.download_file(self.bucket, self.key, temp_path)
+                click.echo(f"Downloading {filename} from s3://{self.bucket}/{full_key}")
+                s3_client.download_file(self.bucket, full_key, temp_path)
             except ClientError as e:
                 if e.response['Error']['Code'] == '404':
-                    click.echo(
-                        f"No existing database found at s3://{self.bucket}/{self.key}. A new one will be created.")
+                    if filename == DB_FILENAME:
+                        click.echo(
+                            f"No existing database found at s3://{self.bucket}/{full_key}. A new one will be created.")
+                    else:
+                        # For non-database files, raise a FileNotFoundError
+                        raise FileNotFoundError(f"File {filename} not found at s3://{self.bucket}/{full_key}")
                 else:
                     click.echo(f"Error downloading from S3: {e}", err=True)
                     raise click.Abort()
         except Exception as e:
+            if isinstance(e, FileNotFoundError):
+                raise  # Re-raise FileNotFoundError for non-DB files
             click.echo(f"Error accessing S3: {e}", err=True)
             raise click.Abort()
 
         return temp_path
 
-    def save(self, local_path=None):
-        self._verify_boto3()
+    def save(self, local_path=None, filename=DB_FILENAME):
+        verify_boto3()
 
         if not local_path:
-            local_path = self._temp_file
+            local_path = self._temp_files.get(filename)
 
         if not local_path or not os.path.exists(local_path):
-            click.echo(f"Error: Local database file not found: {local_path}", err=True)
+            click.echo(f"Error: Local file not found: {local_path}", err=True)
             raise click.Abort()
 
         try:
             s3_client = self._get_s3_client()
-            click.echo(f"Uploading database to s3://{self.bucket}/{self.key}")
-            s3_client.upload_file(local_path, self.bucket, self.key)
-            click.echo("Database successfully uploaded to S3")
-            return f"s3://{self.bucket}/{self.key}"
+            full_key = self._get_full_key(filename)
+
+            click.echo(f"Uploading {filename} to s3://{self.bucket}/{full_key}")
+            s3_client.upload_file(local_path, self.bucket, full_key)
+            click.echo(f"{filename} successfully uploaded to S3")
+            return f"s3://{self.bucket}/{full_key}"
         except Exception as e:
             click.echo(f"Error uploading to S3: {e}", err=True)
             raise click.Abort()
         finally:
             # Clean up the temporary file
-            if self._temp_file and os.path.exists(self._temp_file):
-                os.unlink(self._temp_file)
+            if filename in self._temp_files and os.path.exists(self._temp_files[filename]):
+                os.unlink(self._temp_files[filename])
+                del self._temp_files[filename]
