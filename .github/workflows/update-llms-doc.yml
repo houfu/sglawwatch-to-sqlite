@@ -1,7 +1,6 @@
 name: update-llms-doc.yml
 on:
   push:
-    branches: [ main ]
     paths:
       - 'sglawwatch_to_sqlite/**'
       - 'pyproject.toml'
@@ -23,6 +22,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Update lockfile
+        run: uv lock
+    
       - name: Install the project
         run: uv sync --locked --all-extras --dev
 
