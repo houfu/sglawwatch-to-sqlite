@@ -5,7 +5,7 @@ This module manages Datasette metadata integration for the sglawwatch-to-sqlite 
 
 How it works:
 - Loads existing metadata.json from local or S3 storage
-- Updates it with project-specific configuration from repository metadata.json
+- Updates it with project-specific configuration from repository project_metadata.json
 - Preserves other database configs in the same file
 - Calculates hash to determine if updates are needed
 
@@ -21,12 +21,12 @@ CLI usage:
     sglawwatch-to-sqlite metadata update s3://bucket/path/ [--dry-run]
 
 Customization:
-- Edit repository metadata.json to change how database appears in Datasette
+- Edit repository project_metadata.json to change how database appears in Datasette
 - Configure tables, columns, facets, and database-level metadata
 - Run update command to apply changes
 
 Requirements:
-- metadata.json must exist in target location
+- project_metadata.json must exist in target location
 - S3 storage requires proper read/write permissions
 - Database name is always "sglawwatch" (without .db extension)
 
@@ -35,6 +35,7 @@ See: https://docs.datasette.io/en/stable/metadata.html for Datasette metadata op
 
 import json
 import os
+import importlib.resources as pkg_resources
 
 import click
 
@@ -42,6 +43,7 @@ from sglawwatch_to_sqlite.storage import Storage
 from sglawwatch_to_sqlite.tools import get_hash_id
 
 DATABASE_NAME = "sglawwatch"
+
 
 # Filename constants
 METADATA_FILENAME = "metadata.json"
@@ -76,17 +78,12 @@ class MetadataManager:
                 click.echo(f"Error: {e}. Cannot update non-existent metadata file.", err=True)
                 raise click.Abort()
 
-            # Load project metadata template
-            project_metadata_path = os.path.join(
-                os.path.dirname(os.path.dirname(__file__)),
-                METADATA_FILENAME
+            # Load project metadata template (now using project_metadata.json)
+            project_data = pkg_resources.read_text(
+                'sglawwatch_to_sqlite',
+                'project_metadata.json'
             )
-            if not os.path.exists(project_metadata_path):
-                click.echo(f"Error: Project metadata template not found at {project_metadata_path}", err=True)
-                raise click.Abort()
-
-            with open(project_metadata_path, 'r') as f:
-                self.project_metadata = json.load(f)
+            self.project_metadata = json.loads(project_data)
 
         except json.JSONDecodeError as e:
             click.echo(f"Error parsing JSON: {e}", err=True)
@@ -112,18 +109,18 @@ class MetadataManager:
         if "databases" not in self.metadata:
             self.metadata["databases"] = {}
 
+        # Check if the database section needs to be created or updated
+        changes_needed = False
+
         if db_name not in self.metadata["databases"]:
-            self.metadata["databases"][db_name] = {}
+            # Database entry doesn't exist at all
             changes_needed = True
         else:
-            # Get current database metadata
+            # Database entry exists, check if it's different from project metadata
             current_db_metadata = self.metadata["databases"][db_name]
-
-            # Calculate hashes to check if update is needed
-            current_hash = get_hash_id([json.dumps(current_db_metadata, sort_keys=True)])
-            new_hash = get_hash_id([json.dumps(self.project_metadata, sort_keys=True)])
-
-            changes_needed = current_hash != new_hash
+            # Sort both dictionaries to ensure consistent comparison
+            changes_needed = json.dumps(current_db_metadata, sort_keys=True) != json.dumps(self.project_metadata,
+                                                                                           sort_keys=True)
 
         if not changes_needed:
             message = "No changes needed - metadata is already up to date"
@@ -146,7 +143,3 @@ class MetadataManager:
 
         message = f"Metadata updated and saved to {saved_location}"
         return True, message
-
-    def save(self):
-        """Save the metadata, handling S3 upload if needed."""
-        return self.storage.save(self.local_path, filename=METADATA_FILENAME)

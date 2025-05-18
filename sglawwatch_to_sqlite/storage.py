@@ -58,7 +58,7 @@ class LocalStorage(Storage):
     def get_local_path(self, filename=DB_FILENAME):
         # Ensure the directory exists
         if self.directory and not os.path.exists(self.directory):
-            os.makedirs(self.directory)
+            os.makedirs(self.directory, exist_ok=True)
         return os.path.join(self.directory, filename)
 
     def save(self, local_path=None, filename=DB_FILENAME):

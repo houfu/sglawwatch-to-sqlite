@@ -37,7 +37,7 @@ def fetch():
     is_flag=True,
     help="Fetch all entries regardless of last run state",
 )
-@click.option("--update-metadata", is_flag=True, help="Update Datasette metadata.json after fetching")
+@click.option("--update-metadata", is_flag=True, help="Update Datasette project_metadata.json after fetching")
 def headlines_command(location, url, all, update_metadata):
     """Fetch headline entries from Singapore Law Watch RSS feed.
 
@@ -94,7 +94,7 @@ def headlines_command(location, url, all, update_metadata):
     is_flag=True,
     help="Reset and fetch all entries from scratch",
 )
-@click.option("--update-metadata", is_flag=True, help="Update Datasette metadata.json after fetching")
+@click.option("--update-metadata", is_flag=True, help="Update Datasette project_metadata.json after fetching")
 def fetch_all(location, reset, update_metadata):
     """Fetch all available feeds (headlines and judgments).
 
@@ -134,7 +134,7 @@ def metadata():
 @click.argument("location", type=str, required=False, default=".")
 @click.option("--dry-run", is_flag=True, help="Show changes without applying them")
 def metadata_update(location, dry_run):
-    """Update Datasette metadata.json with Singapore Law Watch database metadata.
+    """Update Datasette project_metadata.json with Singapore Law Watch database metadata.
 
     LOCATION can be a local directory or an S3 path (s3://bucket/path/).
     If LOCATION is not specified, the current directory is used.
