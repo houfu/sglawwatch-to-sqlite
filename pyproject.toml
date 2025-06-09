@@ -5,16 +5,15 @@ description = "Track Singapore's legal developments by importing Singapore Law W
 readme = "README.md"
 requires-python = ">=3.9"
 classifiers = []
-dependencies = [ "click", "feedparser>=6.0.11", "httpx>=0.28.1", "openai>=1.78.0", "sqlite-utils>=3.38", "tenacity>=9.0.0", "boto3>=1.37.38",]
+dependencies = ["click", "feedparser>=6.0.11", "httpx>=0.28.1", "openai>=1.78.0", "sqlite-utils>=3.38", "tenacity>=9.0.0", "boto3>=1.37.38", ]
+license-files = ["LICENSE"]
+
 [[project.authors]]
 name = "Ang Hou Fu"
 
 [build-system]
-requires = [ "setuptools",]
+requires = ["setuptools", ]
 build-backend = "setuptools.build_meta"
-
-[project.license]
-file = "LICENSE"
 
 [project.urls]
 Homepage = "https://github.com/houfu/sglawwatch-to-sqlite"
@@ -26,10 +25,17 @@ CI = "https://github.com/houfu/sglawwatch-to-sqlite/actions"
 sglawwatch-to-sqlite = "sglawwatch_to_sqlite.cli:cli"
 
 [project.optional-dependencies]
-test = [ "pytest",]
+test = ["pytest", ]
 
-[tool.uv]
-dev-dependencies = [ "pytest-asyncio>=0.24.0", "pytest>=8.3.5",]
+[dependency-groups]
+dev = ["pytest-asyncio>=0.24.0", "pytest>=8.3.5", ]
 
 [tool.pytest.ini_options]
 asyncio_default_fixture_loop_scope = "function"
+
+[tool.setuptools.package-data]
+"sglawwatch_to_sqlite" = [
+    "project_metadata.json",
+    "templates/**/*.html",
+    "static/**/*"
+]
