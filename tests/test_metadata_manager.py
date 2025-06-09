@@ -104,7 +104,7 @@ def metadata_file(temp_dir, sample_metadata):
 
 @pytest.fixture
 def mock_project_metadata(sample_project_metadata):
-    """Mock the project_metadata.json file."""
+    """Mock the metadata.json file."""
     with patch('sglawwatch_to_sqlite.metadata_manager.pkg_resources.read_text',
                return_value=json.dumps(sample_project_metadata)):
         return sample_project_metadata
@@ -137,7 +137,7 @@ def test_metadata_manager_invalid_json(temp_dir):
     with open(metadata_path, 'w') as f:
         f.write("{invalid json")
 
-    # Mock project_metadata.json to exist
+    # Mock metadata.json to exist
     with patch('os.path.exists', return_value=True):
         with patch('builtins.open') as mock_open:
             def side_effect(path, *args, **kwargs):
@@ -145,7 +145,7 @@ def test_metadata_manager_invalid_json(temp_dir):
                     # Use the real file for metadata.json
                     return open.__enter__(path, *args, **kwargs)
                 else:
-                    # Mock for project_metadata.json
+                    # Mock for metadata.json
                     mock = MagicMock()
                     mock.__enter__.return_value.read.return_value = "{}"
                     return mock

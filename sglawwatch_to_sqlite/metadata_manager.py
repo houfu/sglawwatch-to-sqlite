@@ -5,7 +5,7 @@ This module manages Datasette metadata integration for the sglawwatch-to-sqlite 
 
 How it works:
 - Loads existing metadata.json from local or S3 storage
-- Updates it with project-specific configuration from repository project_metadata.json
+- Updates it with project-specific configuration from repository metadata.json
 - Preserves other database configs in the same file
 - Calculates hash to determine if updates are needed
 
@@ -21,12 +21,12 @@ CLI usage:
     sglawwatch-to-sqlite metadata update s3://bucket/path/ [--dry-run]
 
 Customization:
-- Edit repository project_metadata.json to change how database appears in Datasette
+- Edit repository metadata.json to change how database appears in Datasette
 - Configure tables, columns, facets, and database-level metadata
 - Run update command to apply changes
 
 Requirements:
-- project_metadata.json must exist in target location
+- metadata.json must exist in target location
 - S3 storage requires proper read/write permissions
 - Database name is always "sglawwatch" (without .db extension)
 
@@ -78,10 +78,10 @@ class MetadataManager:
                 click.echo(f"Error: {e}. Cannot update non-existent metadata file.", err=True)
                 raise click.Abort()
 
-            # Load project metadata template (now using project_metadata.json)
+            # Load project metadata template (now using metadata.json)
             project_data = pkg_resources.read_text(
                 'sglawwatch_to_sqlite',
-                'project_metadata.json'
+                'metadata.json'
             )
             self.project_metadata = json.loads(project_data)
 

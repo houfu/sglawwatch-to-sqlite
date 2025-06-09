@@ -1,0 +1,62 @@
+{
+  "extra_css_urls": [
+    "/static/databases/sglawwatch/custom.css"
+  ],
+  "extra_js_urls": [
+    "/static/databases/sglawwatch/custom.js"
+  ],
+  "databases": {
+    "sglawwatch": {
+      "title": "Singapore Law Watch Headlines",
+      "description": "Headlines from Singapore Law Watch's RSS feed",
+      "about": "This database contains legal news headlines imported from Singapore Law Watch's RSS feed.",
+      "about_url": "https://github.com/houfu/sglawwatch-to-sqlite",
+      "tables": {
+        "headlines": {
+          "title": "Legal Headlines",
+          "description": "Headlines from Singapore Law Watch's RSS feed",
+          "sortable_columns": ["date", "author"],
+          "facets": ["category", "author", "date"],
+          "columns": {
+            "id": {
+              "title": "ID",
+              "description": "Unique identifier for each headline"
+            },
+            "category": {
+              "title": "Category",
+              "description": "The category of the news article"
+            },
+            "title": {
+              "title": "Title",
+              "description": "The headline title"
+            },
+            "source_link": {
+              "title": "Source",
+              "description": "URL to the original article"
+            },
+            "author": {
+              "title": "Author",
+              "description": "The author or publication"
+            },
+            "date": {
+              "title": "Date",
+              "description": "Publication date in ISO format"
+            },
+            "summary": {
+              "title": "Summary",
+              "description": "AI-generated summary of the article"
+            },
+            "text": {
+              "title": "Content",
+              "description": "Full text content of the article"
+            },
+            "imported_on": {
+              "title": "Imported On",
+              "description": "When the article was imported into the database"
+            }
+          }
+        }
+      }
+    }
+  }
+}

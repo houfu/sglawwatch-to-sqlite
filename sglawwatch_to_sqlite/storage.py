@@ -23,6 +23,30 @@ class Storage:
         """Save the file"""
         raise NotImplementedError()
 
+    def upload_zeeker_assets(self, assets_dir, database_name):
+        """Upload Zeeker customization assets to S3."""
+        if not isinstance(self, S3Storage):
+            click.echo("Zeeker assets can only be uploaded to S3 storage", err=True)
+            return
+
+        verify_boto3()
+
+        assets_base = f"assets/databases/{database_name}"
+
+        for root, dirs, files in os.walk(assets_dir):
+            for file in files:
+                local_path = os.path.join(root, file)
+                # Calculate relative path from assets_dir
+                rel_path = os.path.relpath(local_path, assets_dir)
+                s3_key = f"{assets_base}/{rel_path}"
+
+                try:
+                    s3_client = self._get_s3_client()
+                    click.echo(f"Uploading {rel_path} to s3://{self.bucket}/{s3_key}")
+                    s3_client.upload_file(local_path, self.bucket, s3_key)
+                except Exception as e:
+                    click.echo(f"Error uploading {rel_path}: {e}", err=True)
+
     @staticmethod
     def create(location):
         """
@@ -214,3 +238,4 @@ class S3Storage(Storage):
             if filename in self._temp_files and os.path.exists(self._temp_files[filename]):
                 os.unlink(self._temp_files[filename])
                 del self._temp_files[filename]
+
