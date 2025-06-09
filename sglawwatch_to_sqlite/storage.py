@@ -29,6 +29,10 @@ class Storage:
             click.echo("Zeeker assets can only be uploaded to S3 storage", err=True)
             return
 
+        # Check if assets directory exists
+        if not os.path.exists(assets_dir):
+            raise FileNotFoundError(f"Assets directory not found: {assets_dir}")
+
         verify_boto3()
 
         assets_base = f"assets/databases/{database_name}"

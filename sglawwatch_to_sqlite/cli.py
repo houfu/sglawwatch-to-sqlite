@@ -261,8 +261,8 @@ def assets_validate(assets_dir):
 @click.option("--assets-dir", default="zeeker_assets", help="Directory containing Zeeker assets")
 @click.option("--database-name", default="sglawwatch", help="Database name for asset organization")
 @click.option("--update-metadata", is_flag=True, help="Also update metadata.json from assets directory")
-@click.option("--validate-first", is_flag=True, default=True, help="Validate assets before uploading")
-def assets_upload(s3_location, assets_dir, database_name, update_metadata, validate_first):
+@click.option("--skip-validation", is_flag=True, help="Skip validation before uploading")
+def assets_upload(s3_location, assets_dir, database_name, update_metadata, skip_validation):
     """Upload Zeeker customization assets to S3.
 
     S3_LOCATION should be the base S3 path (e.g., s3://bucket/path/)
@@ -280,7 +280,7 @@ def assets_upload(s3_location, assets_dir, database_name, update_metadata, valid
         raise click.Abort()
 
     # Validate first if requested
-    if validate_first:
+    if not skip_validation:
         click.echo("🔍 Validating assets before upload...")
         ctx = click.get_current_context()
         try:
