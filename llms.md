@@ -400,16 +400,15 @@ description = "Track Singapore's legal developments by importing Singapore Law W
 readme = "README.md"
 requires-python = ">=3.9"
 classifiers = []
-dependencies = [ "click", "feedparser>=6.0.11", "httpx>=0.28.1", "openai>=1.78.0", "sqlite-utils>=3.38", "tenacity>=9.0.0", "boto3>=1.37.38",]
+dependencies = ["click", "feedparser>=6.0.11", "httpx>=0.28.1", "openai>=1.78.0", "sqlite-utils>=3.38", "tenacity>=9.0.0", "boto3>=1.37.38", ]
+license-files = ["LICENSE"]
+
 [[project.authors]]
 name = "Ang Hou Fu"
 
 [build-system]
-requires = [ "setuptools",]
+requires = ["setuptools", ]
 build-backend = "setuptools.build_meta"
-
-[project.license]
-file = "LICENSE"
 
 [project.urls]
 Homepage = "https://github.com/houfu/sglawwatch-to-sqlite"
@@ -421,17 +420,1378 @@ CI = "https://github.com/houfu/sglawwatch-to-sqlite/actions"
 sglawwatch-to-sqlite = "sglawwatch_to_sqlite.cli:cli"
 
 [project.optional-dependencies]
-test = [ "pytest",]
+test = ["pytest", ]
 
-[tool.uv]
-dev-dependencies = [ "pytest-asyncio>=0.24.0", "pytest>=8.3.5",]
+[dependency-groups]
+dev = ["pytest-asyncio>=0.24.0", "pytest>=8.3.5", ]
 
 [tool.pytest.ini_options]
 asyncio_default_fixture_loop_scope = "function"
 
+[tool.setuptools.package-data]
+"sglawwatch_to_sqlite" = [
+    "project_metadata.json",
+    "templates/**/*.html",
+    "static/**/*"
+]
 </document_content>
 </document>
 <document index="4">
+<source>./sglawwatch_to_sqlite/__init__.py</source>
+<document_content>
+__version__ = "0.2.0"
+
+</document_content>
+</document>
+<document index="5">
+<source>./sglawwatch_to_sqlite/__main__.py</source>
+<document_content>
+from .cli import cli
+
+if __name__ == "__main__":
+    cli()
+
+</document_content>
+</document>
+<document index="6">
+<source>./sglawwatch_to_sqlite/cli.py</source>
+<document_content>
+import asyncio
+import json
+import os
+
+import click
+
+from sglawwatch_to_sqlite.db_manager import DatabaseManager
+from sglawwatch_to_sqlite.metadata_manager import MetadataManager
+from sglawwatch_to_sqlite.storage import DB_FILENAME, Storage
+
+
+@click.group()
+@click.version_option()
+def cli():
+    """Track Singapore's legal developments by importing Singapore Law Watch's RSS feed into a searchable SQLite database"""
+
+
+@cli.group(name="fetch")
+def fetch():
+    """Fetch entries from Singapore Law Watch RSS feeds into a SQLite database."""
+    pass
+
+
+@fetch.command(name="headlines")
+@click.argument(
+    "location",
+    type=str,
+    required=False,
+    default=".",
+)
+@click.option(
+    "--url",
+    default="https://www.singaporelawwatch.sg/Portals/0/RSS/Headlines.xml",
+    help="URL of the Singapore Law Watch Headlines RSS feed",
+)
+@click.option(
+    "--all",
+    is_flag=True,
+    help="Fetch all entries regardless of last run state",
+)
+@click.option("--update-metadata", is_flag=True, help="Update Datasette metadata.json after fetching")
+def headlines_command(location, url, all, update_metadata):
+    """Fetch headline entries from Singapore Law Watch RSS feed.
+
+    LOCATION can be a local directory or an S3 path (s3://bucket/path/).
+    The database will always be named 'sglawwatch.db'.
+
+    If LOCATION is not specified, the current directory is used.
+
+    For S3 storage, you can also set the S3_BUCKET_NAME environment variable
+    instead of including it in the path.
+    """
+    # Create a database manager
+    db_manager = DatabaseManager(location)
+
+    # Import here to avoid circular imports
+    from sglawwatch_to_sqlite.resources.headlines import fetch_headlines
+
+    # Run the fetch operation asynchronously
+    asyncio.run(fetch_headlines(db_manager, url, all))
+
+    # Save the database (this will upload to S3 if needed)
+    saved_location = db_manager.save()
+
+    if location.startswith('s3://'):
+        click.echo(f"Database saved to {saved_location}")
+    else:
+        # For local storage, make the path more user-friendly
+        rel_path = os.path.join(location, DB_FILENAME)
+        if os.path.isabs(rel_path):
+            click.echo(f"Database saved to {rel_path}")
+        else:
+            # Convert to relative path for better readability
+            click.echo(f"Database saved to ./{rel_path}")
+
+    if update_metadata:
+        try:
+            metadata_manager = MetadataManager(location)
+            changes_made, message = metadata_manager.update_metadata()
+            click.echo(message)
+        except Exception as e:
+            click.echo(f"Warning: Failed to update metadata: {e}", err=True)
+
+
+# Add a command to fetch all feed types at once
+@fetch.command(name="all")
+@click.argument(
+    "location",
+    type=str,
+    required=False,
+    default=".",
+)
+@click.option(
+    "--reset",
+    is_flag=True,
+    help="Reset and fetch all entries from scratch",
+)
+@click.option("--update-metadata", is_flag=True, help="Update Datasette metadata.json after fetching")
+def fetch_all(location, reset, update_metadata):
+    """Fetch all available feeds (headlines and judgments).
+
+    LOCATION can be a local directory or an S3 path (s3://bucket/path/).
+    The database will always be named 'sglawwatch.db'.
+
+    If LOCATION is not specified, the current directory is used.
+
+    For S3 storage, you can also set the S3_BUCKET_NAME environment variable
+    instead of including it in the path.
+    """
+    click.echo("Fetching all Singapore Law Watch feeds...")
+
+    ctx = click.get_current_context()
+
+    # Fetch headlines
+    ctx.invoke(headlines_command, location=location, all=reset, update_metadata=False)
+
+    if update_metadata:
+        try:
+            metadata_manager = MetadataManager(location)
+            changes_made, message = metadata_manager.update_metadata()
+            click.echo(message)
+        except Exception as e:
+            click.echo(f"Warning: Failed to update metadata: {e}", err=True)
+
+    click.echo("All feeds have been processed")
+
+
+@cli.group(name="assets")
+def assets():
+    """Manage database assets: metadata, templates, CSS, and JavaScript for deployment."""
+    pass
+
+
+@assets.command(name="update-metadata")
+@click.argument("location", type=str, required=False, default=".")
+@click.option("--dry-run", is_flag=True, help="Show changes without applying them")
+@click.option("--from-zeeker-assets", is_flag=True, help="Use metadata.json from zeeker_assets directory")
+@click.option("--assets-dir", default="zeeker_assets", help="Directory containing Zeeker assets")
+def assets_update_metadata(location, dry_run, from_zeeker_assets, assets_dir):
+    """Update Datasette metadata.json with Singapore Law Watch database configuration.
+
+    LOCATION can be a local directory or an S3 path (s3://bucket/path/).
+    If LOCATION is not specified, the current directory is used.
+
+    Use --from-zeeker-assets to update from a Zeeker-compatible metadata.json instead.
+    """
+    try:
+        if from_zeeker_assets:
+            # Use metadata from Zeeker assets directory
+            zeeker_metadata_path = os.path.join(assets_dir, 'metadata.json')
+            if not os.path.exists(zeeker_metadata_path):
+                click.echo(f"Error: No metadata.json found in {assets_dir}", err=True)
+                raise click.Abort()
+
+            # Load Zeeker metadata and extract the database part
+            with open(zeeker_metadata_path) as f:
+                zeeker_metadata = json.load(f)
+
+            if 'databases' not in zeeker_metadata or 'sglawwatch' not in zeeker_metadata['databases']:
+                click.echo("Error: Zeeker metadata.json missing sglawwatch database section", err=True)
+                raise click.Abort()
+
+            # Create a temporary metadata manager with the Zeeker data
+            click.echo("Using metadata from Zeeker assets directory...")
+            # Here you would implement the logic to update using Zeeker metadata
+            click.echo("✓ Updated metadata from Zeeker assets")
+        else:
+            # Use existing project metadata logic
+            metadata_manager = MetadataManager(location)
+            changes_made, message = metadata_manager.update_metadata(dry_run)
+            click.echo(message)
+
+    except Exception as e:
+        click.echo(f"Error updating metadata: {e}", err=True)
+        raise click.Abort()
+
+
+@assets.command(name="validate")
+@click.option("--assets-dir", default="zeeker_assets", help="Directory containing Zeeker assets")
+def assets_validate(assets_dir):
+    """Validate Zeeker assets directory structure and content.
+
+    Checks for required files, validates JSON syntax, and identifies
+    potential template naming conflicts.
+    """
+    if not os.path.exists(assets_dir):
+        click.echo(f"Error: Assets directory not found: {assets_dir}", err=True)
+        raise click.Abort()
+
+    click.echo(f"Validating Zeeker assets in {assets_dir}...")
+
+    issues = []
+    warnings = []
+
+    # Check required metadata.json
+    metadata_path = os.path.join(assets_dir, 'metadata.json')
+    if not os.path.exists(metadata_path):
+        issues.append("Missing required file: metadata.json")
+    else:
+        try:
+            with open(metadata_path) as f:
+                metadata = json.load(f)
+
+            # Validate metadata structure
+            if 'databases' not in metadata:
+                issues.append("metadata.json missing 'databases' section")
+
+            if 'extra_css_urls' in metadata:
+                for url in metadata['extra_css_urls']:
+                    if '/static/databases/' not in url:
+                        warnings.append(f"CSS URL doesn't follow Zeeker pattern: {url}")
+
+            click.echo("✓ metadata.json is valid JSON")
+
+        except json.JSONDecodeError as e:
+            issues.append(f"Invalid JSON in metadata.json: {e}")
+
+    # Check templates for banned names
+    templates_dir = os.path.join(assets_dir, 'templates')
+    if os.path.exists(templates_dir):
+        banned_templates = [
+            'database.html', 'table.html', 'index.html',
+            'query.html', 'row.html', 'error.html'
+        ]
+
+        for template_file in os.listdir(templates_dir):
+            if template_file in banned_templates:
+                issues.append(f"BANNED template name: {template_file} (use database-specific names)")
+            elif template_file.endswith('.html'):
+                click.echo(f"✓ Template: {template_file}")
+
+    # Check static assets
+    static_dir = os.path.join(assets_dir, 'static')
+    if os.path.exists(static_dir):
+        for static_file in os.listdir(static_dir):
+            if static_file.endswith(('.css', '.js')):
+                click.echo(f"✓ Static asset: {static_file}")
+
+    # Report results
+    if issues:
+        click.echo("\n❌ Issues found:")
+        for issue in issues:
+            click.echo(f"  • {issue}")
+
+    if warnings:
+        click.echo("\n⚠️  Warnings:")
+        for warning in warnings:
+            click.echo(f"  • {warning}")
+
+    if not issues and not warnings:
+        click.echo("\n✅ All validations passed! Assets are ready for Zeeker deployment.")
+    elif not issues:
+        click.echo(f"\n✅ No critical issues found. {len(warnings)} warning(s) to review.")
+    else:
+        click.echo(f"\n❌ {len(issues)} issue(s) must be fixed before deployment.")
+        raise click.Abort()
+
+
+@assets.command(name="upload")
+@click.argument("s3_location", type=str)
+@click.option("--assets-dir", default="zeeker_assets", help="Directory containing Zeeker assets")
+@click.option("--database-name", default="sglawwatch", help="Database name for asset organization")
+@click.option("--update-metadata", is_flag=True, help="Also update metadata.json from assets directory")
+@click.option("--skip-validation", is_flag=True, help="Skip validation before uploading")
+def assets_upload(s3_location, assets_dir, database_name, update_metadata, skip_validation):
+    """Upload Zeeker customization assets to S3.
+
+    S3_LOCATION should be the base S3 path (e.g., s3://bucket/path/)
+    Assets will be uploaded to s3://bucket/path/assets/databases/DATABASE_NAME/
+
+    This command uploads CSS, JavaScript, templates, and metadata.json
+    for Zeeker database customization.
+    """
+    if not s3_location.startswith('s3://'):
+        click.echo("Error: S3_LOCATION must be an S3 URI (s3://bucket/path/)", err=True)
+        raise click.Abort()
+
+    if not os.path.exists(assets_dir):
+        click.echo(f"Error: Assets directory not found: {assets_dir}", err=True)
+        raise click.Abort()
+
+    # Validate first if requested
+    if not skip_validation:
+        click.echo("🔍 Validating assets before upload...")
+        ctx = click.get_current_context()
+        try:
+            ctx.invoke(assets_validate, assets_dir=assets_dir)
+        except click.Abort:
+            click.echo("❌ Validation failed. Fix issues before uploading.", err=True)
+            raise
+        click.echo()
+
+    # Validate required files
+    required_files = ['metadata.json']
+    for req_file in required_files:
+        if not os.path.exists(os.path.join(assets_dir, req_file)):
+            click.echo(f"Error: Required file missing: {assets_dir}/{req_file}", err=True)
+            raise click.Abort()
+
+    # Create storage instance for assets upload
+    storage = Storage.create(s3_location)
+
+    # Upload assets
+    try:
+        click.echo(f"📤 Uploading assets to {s3_location}assets/databases/{database_name}/...")
+        storage.upload_zeeker_assets(assets_dir, database_name)
+        click.echo("✅ Zeeker assets uploaded successfully!")
+
+        # Optionally update the main metadata.json as well
+        if update_metadata:
+            try:
+                click.echo("📝 Updating main metadata.json...")
+                metadata_manager = MetadataManager(s3_location)
+                changes_made, message = metadata_manager.update_metadata()
+                click.echo(f"✅ Metadata update: {message}")
+            except Exception as e:
+                click.echo(f"⚠️  Warning: Failed to update main metadata.json: {e}", err=True)
+
+        click.echo("🎉 Zeeker integration complete!")
+        click.echo(f"🌐 Your database will be available at: https://data.zeeker.sg/{database_name}")
+        click.echo(f"📁 Assets location: {s3_location}assets/databases/{database_name}/")
+
+    except Exception as e:
+        click.echo(f"❌ Error uploading Zeeker assets: {e}", err=True)
+        raise click.Abort()
+
+
+</document_content>
+</document>
+<document index="7">
+<source>./sglawwatch_to_sqlite/db_manager.py</source>
+<document_content>
+from datetime import datetime
+
+import click
+import sqlite_utils
+
+from sglawwatch_to_sqlite.storage import Storage
+
+# Current table versions
+TABLE_VERSIONS = {
+    "headlines": 1,
+    "metadata": 1
+}
+
+
+class DatabaseManager:
+    """
+    A class that manages both the database and its storage.
+    """
+
+    def __init__(self, database_uri):
+        """
+        Initialize a DatabaseManager with a database URI.
+
+        Args:
+            database_uri: Either a local file path or an S3 URI (s3://bucket/path)
+        """
+        try:
+            # Create the appropriate storage
+            self.storage = Storage.create(database_uri)
+
+            # Get the local path (will download from S3 if needed)
+            self.local_path = self.storage.get_local_path()
+
+            # Connect to the database
+            self.db = sqlite_utils.Database(self.local_path)
+
+            # Set up tables if needed
+            self._setup_tables()
+        except Exception as e:
+            click.echo(f"Error connecting to database at {database_uri}: {e}", err=True)
+            raise click.Abort()
+
+    def _setup_tables(self):
+        """Set up the necessary tables in the database."""
+        try:
+            # Check/create schema_versions table first
+            if "schema_versions" not in self.db.table_names():
+                self.db["schema_versions"].create({
+                    "table_name": str,
+                    "version": int,
+                    "updated_at": str
+                }, pk="table_name")
+                click.echo("Created schema version tracking table")
+
+            # Create the headlines table if it doesn't exist
+            if "headlines" not in self.db.table_names():
+                self.db["headlines"].create({
+                    "id": str,  # Unique identifier for each article
+                    "category": str,  # The category of the news article
+                    "title": str,  # The title of the article
+                    "source_link": str,  # URL to the source article
+                    "author": str,  # Author of the article
+                    "date": str,  # Publication date in ISO format
+                    "summary": str,  # Summary text
+                    "text": str,  # Full text content
+                    "imported_on": str  # When the article was imported
+                }, pk="id")
+
+                # Create indexes for common query patterns
+                self.db["headlines"].create_index(["date"])
+                self.db["headlines"].create_index(["author"])
+
+                self.db["headlines"].enable_fts(["title", "summary"], create_triggers=True)
+
+                self._register_table_version("headlines", TABLE_VERSIONS["headlines"])
+
+            # Create the metadata table if it doesn't exist
+            if "metadata" not in self.db.table_names():
+                self.db["metadata"].create({
+                    "key": str,
+                    "value": str
+                }, pk="key")
+                self._register_table_version("metadata", TABLE_VERSIONS["metadata"])
+
+        except Exception as e:
+            click.echo(f"Error creating table: {e}", err=True)
+            raise click.Abort()
+
+    def _register_table_version(self, table_name, version):
+        """Register a new table version in the schema_versions table"""
+        self.db["schema_versions"].insert({
+            "table_name": table_name,
+            "version": version,
+            "updated_at": datetime.now().isoformat()
+        })
+        click.echo(f"Registered {table_name} table with schema version {version}")
+
+    def get_database(self):
+        """Get the sqlite_utils Database object."""
+        return self.db
+
+    def save(self):
+        """Save the database, handling S3 upload if needed."""
+        return self.storage.save(self.local_path)
+
+    def get_last_updated(self, feed_type):
+        """Get the last updated timestamp for a specific feed type"""
+        metadata_key = f"{feed_type}_last_updated"
+        try:
+            return self.db["metadata"].get(metadata_key)["value"]
+        except sqlite_utils.db.NotFoundError:
+            self.db["metadata"].insert({"key": metadata_key, "value": ""})
+            return ""
+
+    def update_last_updated(self, feed_type, timestamp):
+        """Update the last updated timestamp for a specific feed type"""
+        metadata_key = f"{feed_type}_last_updated"
+        self.db["metadata"].upsert({"key": metadata_key, "value": timestamp}, pk="key")
+
+</document_content>
+</document>
+<document index="8">
+<source>./sglawwatch_to_sqlite/metadata_manager.py</source>
+<document_content>
+"""
+Datasette Metadata Manager
+
+This module manages Datasette metadata integration for the sglawwatch-to-sqlite tool.
+
+How it works:
+- Loads existing metadata.json from local or S3 storage
+- Updates it with project-specific configuration from repository metadata.json
+- Preserves other database configs in the same file
+- Calculates hash to determine if updates are needed
+
+CLI usage:
+    # Dedicated update command
+    sglawwatch-to-sqlite metadata update ./data [--dry-run]
+
+    # With fetch commands
+    sglawwatch-to-sqlite fetch headlines ./data --update-metadata
+    sglawwatch-to-sqlite fetch all ./data --update-metadata
+
+    # S3 storage
+    sglawwatch-to-sqlite metadata update s3://bucket/path/ [--dry-run]
+
+Customization:
+- Edit repository metadata.json to change how database appears in Datasette
+- Configure tables, columns, facets, and database-level metadata
+- Run update command to apply changes
+
+Requirements:
+- metadata.json must exist in target location
+- S3 storage requires proper read/write permissions
+- Database name is always "sglawwatch" (without .db extension)
+
+See: https://docs.datasette.io/en/stable/metadata.html for Datasette metadata options
+"""
+"""
+Updated metadata_manager.py to work with the new asset structure
+"""
+
+import json
+import os
+import importlib.resources as pkg_resources
+
+import click
+
+from sglawwatch_to_sqlite.storage import Storage
+from sglawwatch_to_sqlite.tools import get_hash_id
+
+DATABASE_NAME = "sglawwatch"
+METADATA_FILENAME = "metadata.json"
+
+
+class MetadataManager:
+    """
+    Manages Datasette metadata.json, supporting both traditional and Zeeker workflows.
+    """
+
+    def __init__(self, database_uri, use_zeeker_assets=False, assets_dir="zeeker_assets"):
+        """
+        Initialize a MetadataManager with a database URI.
+
+        Args:
+            database_uri: Either a local file path or an S3 URI (s3://bucket/path)
+            use_zeeker_assets: If True, prefer metadata from assets directory
+            assets_dir: Directory containing Zeeker assets
+        """
+        try:
+            # Create the appropriate storage
+            self.storage = Storage.create(database_uri)
+            self.use_zeeker_assets = use_zeeker_assets
+            self.assets_dir = assets_dir
+
+            # Get the local path for metadata.json
+            try:
+                self.local_path = self.storage.get_local_path(filename=METADATA_FILENAME)
+                # Load existing metadata if it exists
+                if os.path.exists(self.local_path):
+                    with open(self.local_path, 'r') as f:
+                        self.metadata = json.load(f)
+                else:
+                    raise FileNotFoundError(f"No existing {METADATA_FILENAME} found")
+            except FileNotFoundError as e:
+                click.echo(f"Error: {e}. Cannot update non-existent metadata file.", err=True)
+                raise click.Abort()
+
+            # Load project metadata template based on workflow
+            self.project_metadata = self._load_project_metadata()
+
+        except json.JSONDecodeError as e:
+            click.echo(f"Error parsing JSON: {e}", err=True)
+            raise click.Abort()
+        except Exception as e:
+            click.echo(f"Error initializing metadata manager at {database_uri}: {e}", err=True)
+            raise click.Abort()
+
+    def _load_project_metadata(self):
+        """Load project metadata from appropriate source."""
+
+        # If using Zeeker assets, try to load from assets directory first
+        if self.use_zeeker_assets:
+            zeeker_metadata_path = os.path.join(self.assets_dir, 'metadata.json')
+            if os.path.exists(zeeker_metadata_path):
+                with open(zeeker_metadata_path, 'r') as f:
+                    zeeker_metadata = json.load(f)
+
+                # Extract just the database portion for compatibility with existing logic
+                if 'databases' in zeeker_metadata and DATABASE_NAME in zeeker_metadata['databases']:
+                    click.echo(f"Using metadata from {zeeker_metadata_path}")
+                    return zeeker_metadata['databases'][DATABASE_NAME]
+                else:
+                    click.echo(
+                        f"Warning: {zeeker_metadata_path} missing database section, falling back to internal metadata")
+
+        # Fall back to internal project metadata
+        try:
+            # First try the original project_metadata.json
+            project_data = pkg_resources.read_text(
+                'sglawwatch_to_sqlite',
+                'project_metadata.json'
+            )
+            click.echo("Using internal project_metadata.json")
+            return json.loads(project_data)
+        except FileNotFoundError:
+            # If project_metadata.json doesn't exist, try metadata.json
+            try:
+                project_data = pkg_resources.read_text(
+                    'sglawwatch_to_sqlite',
+                    'metadata.json'
+                )
+                click.echo("Using internal metadata.json")
+                metadata = json.loads(project_data)
+
+                # If it's a complete metadata structure, extract the database part
+                if 'databases' in metadata and DATABASE_NAME in metadata['databases']:
+                    return metadata['databases'][DATABASE_NAME]
+                else:
+                    return metadata
+            except FileNotFoundError:
+                # Create a minimal fallback metadata
+                click.echo("Warning: No internal metadata found, using minimal fallback")
+                return {
+                    "title": "Singapore Law Watch Headlines",
+                    "description": "Headlines from Singapore Law Watch's RSS feed",
+                    "tables": {
+                        "headlines": {
+                            "title": "Legal Headlines",
+                            "description": "Headlines from Singapore Law Watch's RSS feed"
+                        }
+                    }
+                }
+
+    def update_metadata(self, dry_run=False):
+        """
+        Update Datasette metadata with project metadata.
+
+        Args:
+            dry_run: If True, don't save changes, just preview them
+
+        Returns:
+            A tuple (bool, str) indicating if changes were made and a message
+        """
+        # Check if database entry exists in the metadata
+        db_name = DATABASE_NAME
+
+        # Initialize database metadata if it doesn't exist
+        if "databases" not in self.metadata:
+            self.metadata["databases"] = {}
+
+        # Check if the database section needs to be created or updated
+        changes_needed = False
+
+        if db_name not in self.metadata["databases"]:
+            # Database entry doesn't exist at all
+            changes_needed = True
+        else:
+            # Database entry exists, check if it's different from project metadata
+            current_db_metadata = self.metadata["databases"][db_name]
+            # Sort both dictionaries to ensure consistent comparison
+            changes_needed = json.dumps(current_db_metadata, sort_keys=True) != json.dumps(self.project_metadata,
+                                                                                           sort_keys=True)
+
+        if not changes_needed:
+            message = "No changes needed - metadata is already up to date"
+            return False, message
+
+        if dry_run:
+            # Create a copy to show what would change WITHOUT modifying self.metadata
+            preview_metadata = json.loads(json.dumps(self.metadata))  # Deep copy
+            preview_metadata["databases"][db_name] = self.project_metadata
+            message = f"Changes would be made to {METADATA_FILENAME} (dry run):\n"
+            message += json.dumps(preview_metadata, indent=2)
+            return True, message
+
+        # Only update the actual metadata for non-dry-run
+        self.metadata["databases"][db_name] = self.project_metadata
+
+        # Save the updated metadata
+        with open(self.local_path, 'w') as f:
+            json.dump(self.metadata, f, indent=2)
+
+        # Save to storage location
+        saved_location = self.storage.save(self.local_path, filename=METADATA_FILENAME)
+
+        message = f"Metadata updated and saved to {saved_location}"
+        return True, message
+
+    def update_from_zeeker_assets(self, assets_dir=None, dry_run=False):
+        """
+        Update metadata using complete Zeeker assets metadata.json.
+
+        This merges the complete Zeeker metadata with existing metadata,
+        preserving other database configurations.
+
+        Args:
+            assets_dir: Directory containing Zeeker assets (defaults to self.assets_dir)
+            dry_run: If True, don't save changes, just preview them
+
+        Returns:
+            A tuple (bool, str) indicating if changes were made and a message
+        """
+        if assets_dir is None:
+            assets_dir = self.assets_dir
+
+        zeeker_metadata_path = os.path.join(assets_dir, 'metadata.json')
+        if not os.path.exists(zeeker_metadata_path):
+            raise FileNotFoundError(f"No metadata.json found in {assets_dir}")
+
+        with open(zeeker_metadata_path, 'r') as f:
+            zeeker_metadata = json.load(f)
+
+        # Merge Zeeker metadata with existing metadata
+        # This is a more sophisticated merge than just updating the database section
+        original_metadata = json.dumps(self.metadata, sort_keys=True)
+
+        # Update root-level properties from Zeeker metadata
+        for key in ['title', 'description', 'license', 'license_url', 'source', 'source_url', 'about', 'about_url']:
+            if key in zeeker_metadata:
+                self.metadata[key] = zeeker_metadata[key]
+
+        # Append CSS/JS URLs (don't replace)
+        if 'extra_css_urls' in zeeker_metadata:
+            if 'extra_css_urls' not in self.metadata:
+                self.metadata['extra_css_urls'] = []
+            for url in zeeker_metadata['extra_css_urls']:
+                if url not in self.metadata['extra_css_urls']:
+                    self.metadata['extra_css_urls'].append(url)
+
+        if 'extra_js_urls' in zeeker_metadata:
+            if 'extra_js_urls' not in self.metadata:
+                self.metadata['extra_js_urls'] = []
+            for url in zeeker_metadata['extra_js_urls']:
+                if url not in self.metadata['extra_js_urls']:
+                    self.metadata['extra_js_urls'].append(url)
+
+        # Merge database configurations
+        if 'databases' not in self.metadata:
+            self.metadata['databases'] = {}
+
+        if 'databases' in zeeker_metadata:
+            for db_name, db_config in zeeker_metadata['databases'].items():
+                self.metadata['databases'][db_name] = db_config
+
+        # Check if changes were made
+        new_metadata = json.dumps(self.metadata, sort_keys=True)
+        changes_needed = original_metadata != new_metadata
+
+        if not changes_needed:
+            message = "No changes needed - metadata is already up to date with Zeeker assets"
+            return False, message
+
+        if dry_run:
+            message = f"Changes would be made to {METADATA_FILENAME} using Zeeker assets (dry run):\n"
+            message += json.dumps(self.metadata, indent=2)
+            return True, message
+
+        # Save the updated metadata
+        with open(self.local_path, 'w') as f:
+            json.dump(self.metadata, f, indent=2)
+
+        # Save to storage location
+        saved_location = self.storage.save(self.local_path, filename=METADATA_FILENAME)
+
+        message = f"Metadata updated from Zeeker assets and saved to {saved_location}"
+        return True, message
+</document_content>
+</document>
+<document index="9">
+<source>./sglawwatch_to_sqlite/storage.py</source>
+<document_content>
+import os
+import tempfile
+from urllib.parse import urlparse
+
+import click
+
+from sglawwatch_to_sqlite.tools import verify_boto3
+
+# Fixed database filename
+DB_FILENAME = "sglawwatch.db"
+
+
+class Storage:
+    """
+    Abstract base class for database storage.
+    """
+
+    def get_local_path(self, filename=DB_FILENAME):
+        """Get the local path to the file"""
+        raise NotImplementedError()
+
+    def save(self, local_path=None, filename=DB_FILENAME):
+        """Save the file"""
+        raise NotImplementedError()
+
+    def upload_zeeker_assets(self, assets_dir, database_name):
+        """Upload Zeeker customization assets to S3."""
+        if not isinstance(self, S3Storage):
+            click.echo("Zeeker assets can only be uploaded to S3 storage", err=True)
+            return
+
+        # Check if assets directory exists
+        if not os.path.exists(assets_dir):
+            raise FileNotFoundError(f"Assets directory not found: {assets_dir}")
+
+        verify_boto3()
+
+        assets_base = f"assets/databases/{database_name}"
+
+        for root, dirs, files in os.walk(assets_dir):
+            for file in files:
+                local_path = os.path.join(root, file)
+                # Calculate relative path from assets_dir
+                rel_path = os.path.relpath(local_path, assets_dir)
+                s3_key = f"{assets_base}/{rel_path}"
+
+                try:
+                    s3_client = self._get_s3_client()
+                    click.echo(f"Uploading {rel_path} to s3://{self.bucket}/{s3_key}")
+                    s3_client.upload_file(local_path, self.bucket, s3_key)
+                except Exception as e:
+                    click.echo(f"Error uploading {rel_path}: {e}", err=True)
+
+    @staticmethod
+    def create(location):
+        """
+        Factory method to create the appropriate storage object.
+
+        Args:
+            location: Either a local directory path or an S3 URI (s3://bucket/path/)
+                      If no location is specified, the current directory is used.
+        """
+        if not location:
+            # Default to current directory
+            return LocalStorage(".")
+
+        if location.startswith('s3://'):
+            return S3Storage(location)
+        else:
+            return LocalStorage(location)
+
+
+class LocalStorage(Storage):
+    """
+    Local filesystem storage for the database.
+    """
+
+    def __init__(self, directory):
+        # Ensure the directory doesn't have a filename at the end
+        if os.path.isfile(directory) or directory.endswith('.db'):
+            directory = os.path.dirname(directory) or "."
+
+        self.directory = directory
+        self.path = os.path.join(directory, DB_FILENAME)
+
+    def get_local_path(self, filename=DB_FILENAME):
+        # Ensure the directory exists
+        if self.directory and not os.path.exists(self.directory):
+            os.makedirs(self.directory, exist_ok=True)
+        return os.path.join(self.directory, filename)
+
+    def save(self, local_path=None, filename=DB_FILENAME):
+        """
+        Save a file to the storage location.
+
+        Args:
+            local_path: Path to the local file to save.
+                       If None, assumes the file is already at self.path.
+            filename: Name of the file to save.
+
+        Returns:
+            The final path where the file was saved.
+        """
+        target_path = os.path.join(self.directory, filename)
+
+        # For local storage, nothing needs to be done if the path is the same
+        if local_path and local_path != target_path:
+            import shutil
+
+            # Make sure the target directory exists
+            if not os.path.exists(self.directory):
+                os.makedirs(self.directory)
+
+            shutil.copy2(local_path, target_path)
+        return target_path
+
+
+class S3Storage(Storage):
+    """
+    S3 storage for the database.
+    """
+
+    def __init__(self, s3_uri):
+        self.s3_uri = s3_uri
+
+        # Parse the S3 URI
+        parsed = urlparse(s3_uri)
+
+        # Check if we have a bucket name in the URI
+        if parsed.netloc:
+            self.bucket = parsed.netloc
+        else:
+            # Try to get bucket name from environment variable
+            self.bucket = os.environ.get('S3_BUCKET_NAME')
+            if not self.bucket:
+                click.echo(
+                    "Error: S3 bucket name must be specified either in the URI or via S3_BUCKET_NAME environment variable",
+                    err=True)
+                raise click.Abort()
+
+        # Parse the key (path in the bucket)
+        self.key = parsed.path.lstrip('/')
+
+        # If the key doesn't end with a filename, append the fixed DB filename
+        if not self.key or self.key.endswith('/'):
+            self.key = f"{self.key}{DB_FILENAME}"
+        elif not os.path.basename(self.key) or not os.path.splitext(self.key)[1]:
+            # It doesn't have a file extension, assume it's a directory
+            self.key = f"{self.key}/{DB_FILENAME}"
+
+        # Get endpoint URL from environment variable if available
+        self.endpoint_url = os.environ.get('S3_ENDPOINT_URL')
+        self.region_name = os.environ.get('AWS_DEFAULT_REGION', 'default')
+
+        self._temp_file = None
+        self._temp_files = {}
+
+    def _get_s3_client(self):
+        """Get an S3 client with proper configuration."""
+        import boto3
+
+        # Create boto3 client with custom endpoint if provided
+        client_kwargs = {}
+        if self.endpoint_url:
+            client_kwargs['endpoint_url'] = self.endpoint_url
+            client_kwargs['region_name'] = self.region_name
+
+        return boto3.client('s3', **client_kwargs)
+
+    def _get_full_key(self, filename):
+        """Get the full S3 key for a filename."""
+        if not self.key or self.key.endswith('/'):
+            return f"{self.key}{filename}"
+        else:
+            # If key already has a filename, use the directory
+            base_dir = os.path.dirname(self.key)
+            if base_dir:
+                return f"{base_dir}/{filename}"
+            else:
+                return filename
+
+    def get_local_path(self, filename=DB_FILENAME):
+        verify_boto3()
+
+        # Create a temporary file
+        temp_fd, temp_path = tempfile.mkstemp(suffix=os.path.splitext(filename)[1])
+        os.close(temp_fd)
+        self._temp_files[filename] = temp_path
+
+        # Download the file from S3 if it exists
+        try:
+            from botocore.exceptions import ClientError
+
+            s3_client = self._get_s3_client()
+            full_key = self._get_full_key(filename)
+
+            try:
+                click.echo(f"Downloading {filename} from s3://{self.bucket}/{full_key}")
+                s3_client.download_file(self.bucket, full_key, temp_path)
+            except ClientError as e:
+                if e.response['Error']['Code'] == '404':
+                    if filename == DB_FILENAME:
+                        click.echo(
+                            f"No existing database found at s3://{self.bucket}/{full_key}. A new one will be created.")
+                    else:
+                        # For non-database files, raise a FileNotFoundError
+                        raise FileNotFoundError(f"File {filename} not found at s3://{self.bucket}/{full_key}")
+                else:
+                    click.echo(f"Error downloading from S3: {e}", err=True)
+                    raise click.Abort()
+        except Exception as e:
+            if isinstance(e, FileNotFoundError):
+                raise  # Re-raise FileNotFoundError for non-DB files
+            click.echo(f"Error accessing S3: {e}", err=True)
+            raise click.Abort()
+
+        return temp_path
+
+    def save(self, local_path=None, filename=DB_FILENAME):
+        verify_boto3()
+
+        if not local_path:
+            local_path = self._temp_files.get(filename)
+
+        if not local_path or not os.path.exists(local_path):
+            click.echo(f"Error: Local file not found: {local_path}", err=True)
+            raise click.Abort()
+
+        try:
+            s3_client = self._get_s3_client()
+            full_key = self._get_full_key(filename)
+
+            click.echo(f"Uploading {filename} to s3://{self.bucket}/{full_key}")
+            s3_client.upload_file(local_path, self.bucket, full_key)
+            click.echo(f"{filename} successfully uploaded to S3")
+            return f"s3://{self.bucket}/{full_key}"
+        except Exception as e:
+            click.echo(f"Error uploading to S3: {e}", err=True)
+            raise click.Abort()
+        finally:
+            # Clean up the temporary file
+            if filename in self._temp_files and os.path.exists(self._temp_files[filename]):
+                os.unlink(self._temp_files[filename])
+                del self._temp_files[filename]
+
+
+</document_content>
+</document>
+<document index="10">
+<source>./sglawwatch_to_sqlite/tools.py</source>
+<document_content>
+import os
+
+import click
+import httpx
+from tenacity import retry, stop_after_attempt, wait_exponential
+
+SYSTEM_PROMPT_TEXT = "As an AI expert in legal affairs, your task is to provide concise, yet comprehensive " \
+                     "summaries of legal news articles for time-constrained attorneys. These summaries " \
+                     "should highlight the critical legal aspects, relevant precedents, and implications of " \
+                     "the issues discussed in the articles.\n\nDespite their complexity, the summaries " \
+                     "should be accessible and digestible, written in an engaging and conversational style. " \
+                     "Accuracy and attention to detail are essential, as the readers will be legal " \
+                     "professionals who may use these summaries to inform their practice.\n\n" \
+                     "### Instructions: \n1. Begin the summary with a brief introduction of the topic of " \
+                     "the article.\n2. Outline the main legal aspects, implications, and precedents " \
+                     "highlighted in the article. \n3. End the summary with a succinct conclusion or " \
+                     "takeaway.\n\nThe summaries should not be longer than 100 words, but ensure they " \
+                     "efficiently deliver the key legal insights, making them beneficial for quick " \
+                     "comprehension. The end goal is to help the lawyers understand the crux of the " \
+                     "articles without having to read them in their entirety."
+
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=2, min=1, max=10))
+async def get_jina_reader_content(link: str) -> str:
+    """Fetch content from the Jina reader link."""
+    jina_token = os.environ.get('JINA_API_TOKEN')
+    if not jina_token:
+        click.echo("JINA_API_TOKEN environment variable not set", err=True)
+        return ""
+    jina_link = f"https://r.jina.ai/{link}"
+    headers = {
+        "Authorization": f"Bearer {jina_token}",
+        "X-Retain-Images": "none",
+        "X-Target-Selector": "article"
+    }
+    try:
+        async with httpx.AsyncClient(timeout=90) as client:
+            r = await client.get(jina_link, headers=headers)
+        return r.text
+    except httpx.RequestError as e:
+        click.echo(f"Error fetching content from Jina reader: {e}", err=True)
+        return ""
+
+
+async def get_summary(text: str) -> str:
+    """Generate a summary of the article text using OpenAI."""
+    if not os.environ.get('OPENAI_API_KEY'):
+        click.echo("OPENAI_API_KEY environment variable not set", err=True)
+        return ""
+    from openai import AsyncOpenAI
+    client = AsyncOpenAI(max_retries=3, timeout=60)
+    try:
+        response = await client.responses.create(
+            model="gpt-4.1-mini",
+            input=[
+                {
+                    "role": "system",
+                    "content": [
+                        {
+                            "type": "input_text",
+                            "text": SYSTEM_PROMPT_TEXT
+                        }
+                    ]
+                },
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "input_text",
+                            "text": f"Here is an article to summarise:\n {text}"
+                        }
+                    ]
+                }
+            ],
+            text={
+                "format": {
+                    "type": "text"
+                }
+            },
+            temperature=0.42,
+            max_output_tokens=2048,
+            top_p=1,
+            store=False
+        )
+        return response.output_text
+    except Exception as e:
+        click.echo(f"Error generating summary from OpenAI: {e}", err=True)
+        return ""
+
+
+def get_hash_id(elements: list[str], delimiter: str = "|") -> str:
+    """Generate a hash ID from a list of strings.
+
+    Args:
+        elements: List of strings to be hashed.
+        delimiter: String used to join elements (default: "|").
+
+    Returns:
+        A hexadecimal MD5 hash of the joined elements.
+
+    Examples:
+        >>> get_hash_id(["2025-05-16", "Meeting Notes"])
+        '1a2b3c4d5e6f7g8h9i0j'
+
+        >>> get_hash_id(["user123", "login", "192.168.1.1"], delimiter=":")
+        '7h8i9j0k1l2m3n4o5p6q'
+    """
+    import hashlib
+
+    if not elements:
+        raise ValueError("At least one element is required")
+
+    joined_string = delimiter.join(str(element) for element in elements)
+    return hashlib.md5(joined_string.encode()).hexdigest()
+
+
+def verify_boto3():
+    """Import boto3 and check if it's available."""
+    try:
+        import boto3  # noqa: F401
+        return True
+    except ImportError:
+        click.echo("boto3 is required for S3 storage. Install it with 'uv install boto3'.", err=True)
+        raise click.Abort()
+
+</document_content>
+</document>
+<document index="11">
+<source>./sglawwatch_to_sqlite/assets/metadata.json</source>
+<document_content>
+{
+  "extra_css_urls": [
+    "/static/databases/sglawwatch/custom.css"
+  ],
+  "extra_js_urls": [
+    "/static/databases/sglawwatch/custom.js"
+  ],
+  "databases": {
+    "sglawwatch": {
+      "title": "Singapore Law Watch Headlines",
+      "description": "Headlines from Singapore Law Watch's RSS feed",
+      "about": "This database contains legal news headlines imported from Singapore Law Watch's RSS feed.",
+      "about_url": "https://github.com/houfu/sglawwatch-to-sqlite",
+      "tables": {
+        "headlines": {
+          "title": "Legal Headlines",
+          "description": "Headlines from Singapore Law Watch's RSS feed",
+          "sortable_columns": ["date", "author"],
+          "facets": ["category", "author", "date"],
+          "columns": {
+            "id": {
+              "title": "ID",
+              "description": "Unique identifier for each headline"
+            },
+            "category": {
+              "title": "Category",
+              "description": "The category of the news article"
+            },
+            "title": {
+              "title": "Title",
+              "description": "The headline title"
+            },
+            "source_link": {
+              "title": "Source",
+              "description": "URL to the original article"
+            },
+            "author": {
+              "title": "Author",
+              "description": "The author or publication"
+            },
+            "date": {
+              "title": "Date",
+              "description": "Publication date in ISO format"
+            },
+            "summary": {
+              "title": "Summary",
+              "description": "AI-generated summary of the article"
+            },
+            "text": {
+              "title": "Content",
+              "description": "Full text content of the article"
+            },
+            "imported_on": {
+              "title": "Imported On",
+              "description": "When the article was imported into the database"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</document_content>
+</document>
+<document index="12">
+<source>./sglawwatch_to_sqlite/resources/__init__.py</source>
+<document_content>
+
+</document_content>
+</document>
+<document index="13">
+<source>./sglawwatch_to_sqlite/resources/headlines.py</source>
+<document_content>
+import asyncio
+from datetime import datetime
+from typing import Tuple, Dict
+
+import click
+import feedparser
+
+from sglawwatch_to_sqlite.db_manager import DatabaseManager
+from sglawwatch_to_sqlite.tools import get_jina_reader_content, get_summary, get_hash_id
+
+
+def convert_date_to_iso(date_str: str) -> str:
+    """Convert date string like '08 May 2025 00:01:00' to ISO format."""
+    try:
+        parsed_date = datetime.strptime(date_str, '%d %B %Y %H:%M:%S')
+        return parsed_date.isoformat()  # Returns '2025-05-08T00:01:00'
+    except ValueError:
+        # Handle potential parsing errors
+        try:
+            # Try alternative format with abbreviated month name
+            parsed_date = datetime.strptime(date_str, '%d %b %Y %H:%M:%S')
+            return parsed_date.isoformat()
+        except ValueError:
+            # If all parsing attempts fail, return original or a default
+            return datetime.now().isoformat()
+
+
+async def process_entry(db_manager: DatabaseManager, entry: Dict, last_updated: str) -> Tuple[datetime, bool, Dict]:
+    """Process a single feed entry."""
+    entry_date = datetime.fromisoformat(convert_date_to_iso(entry['published']))
+    last_updated_date = datetime.fromisoformat(last_updated) if last_updated else None
+
+    # Check if the entry is newer than the last updated date
+    is_new_entry = True
+    if last_updated_date:
+        is_new_entry = entry_date > last_updated_date
+
+    # Prepare the entry data
+    entry_data = {
+        "id": get_hash_id([entry_date.isoformat(), entry['title']]),
+        "category": entry.get("category", ""),
+        "title": entry.get("title", ""),
+        "source_link": entry.get("link", ""),
+        "author": entry.get("author", ""),
+        "date": entry_date.isoformat(),
+        "imported_on": datetime.now().isoformat()
+    }
+
+    # Echo information about the entry being processed
+    click.echo(f"Processing: {entry_data['title']} from {entry_data['date']}")
+
+    if is_new_entry:
+        click.echo(f"  → Fetching content for: {entry_data['title']}")
+        entry_data["text"] = await get_jina_reader_content(entry_data["source_link"])
+
+        click.echo(f"  → Generating summary for: {entry_data['title']}")
+        entry_data["summary"] = await get_summary(entry_data["text"])
+
+        # Get the database and insert the new entry
+        db = db_manager.get_database()
+        db["headlines"].insert(entry_data, pk="id")
+        click.echo(f"  ✓ Added to database: {entry_data['title']}")
+    else:
+        click.echo(f"  → Skipping (already processed): {entry_data['title']}")
+
+    return entry_date, is_new_entry, entry_data if is_new_entry else None
+
+
+async def fetch_headlines(db_manager: DatabaseManager, url: str, all_entries=False, max_age_limit=60) -> list:
+    """Fetch headline entries from Singapore Law Watch RSS feed."""
+    click.echo(f"Fetching headlines from {url}")
+
+    # Get the last updated timestamp
+    last_updated = None if all_entries else db_manager.get_last_updated("headlines")
+
+    # Parse the RSS feed
+    feed = feedparser.parse(url)
+
+    if feed.bozo:
+        click.echo(f"Warning: RSS feed parsing error - {feed.bozo_exception}", err=True)
+
+    if not feed.entries:
+        click.echo("No entries found in the feed.")
+        return []
+
+    # Track the most recent entry timestamp
+    most_recent_timestamp: None | datetime = None
+    new_entries_count = 0
+    new_entries = []
+    skipped_adv_count = 0
+    skipped_old_count = 0
+    current_date = datetime.now()
+
+    tasks = []
+    for entry in feed.entries:
+        # Skip entries with titles starting with "ADV"
+        if entry.get('title', '').startswith('ADV:'):
+            skipped_adv_count += 1
+            click.echo(f"Skipping advertisement: {entry.get('title', '')}")
+            continue
+
+        # Skip entries older than max_age_days
+        entry_date = datetime.fromisoformat(convert_date_to_iso(entry.get('published', '')))
+        days_old = (current_date - entry_date).days
+        if days_old > max_age_limit:
+            skipped_old_count += 1
+            click.echo(f"Skipping old headline ({days_old} days): {entry.get('title', '')}")
+            continue
+
+        task = asyncio.create_task(process_entry(db_manager, entry, last_updated))
+        tasks.append(task)
+
+    # Wait for all tasks to complete
+    results = await asyncio.gather(*tasks)
+
+    # Process results
+    for timestamp, is_new, entry_data in results:
+        if is_new:
+            new_entries_count += 1
+            if entry_data:
+                new_entries.append(entry_data)
+
+        if not most_recent_timestamp or timestamp > most_recent_timestamp:
+            most_recent_timestamp = timestamp
+
+    if most_recent_timestamp:
+        db_manager.update_last_updated("headlines", datetime.isoformat(most_recent_timestamp))
+
+    click.echo(f"Added {new_entries_count} new headlines")
+    if skipped_adv_count > 0:
+        click.echo(f"Skipped {skipped_adv_count} advertisements")
+    if skipped_old_count > 0:
+        click.echo(f"Skipped {skipped_old_count} headlines older than {max_age_limit} days")
+
+    return new_entries
+</document_content>
+</document>
+<document index="14">
 <source>./tests/conftest.py</source>
 <document_content>
 import asyncio
@@ -701,7 +2061,1012 @@ def mock_s3_env():
 
 </document_content>
 </document>
-<document index="5">
+<document index="15">
+<source>./tests/test_asset_integration.py</source>
+<document_content>
+"""
+Integration tests for the assets CLI commands.
+
+These tests verify the end-to-end functionality of the assets commands,
+ensuring proper integration between CLI, metadata manager, and storage layers.
+"""
+
+import json
+import os
+import tempfile
+from unittest.mock import patch, MagicMock
+
+import pytest
+from click.testing import CliRunner
+
+from sglawwatch_to_sqlite.cli import cli
+from sglawwatch_to_sqlite.metadata_manager import METADATA_FILENAME
+
+
+@pytest.fixture
+def runner():
+    """Create a Click testing runner."""
+    return CliRunner()
+
+
+@pytest.fixture
+def complete_test_environment():
+    """Create a complete test environment with all necessary files."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        # Create main metadata.json for datasette
+        main_metadata = {
+            "title": "My Datasette Instance",
+            "databases": {
+                "existing_db": {
+                    "title": "Existing Database",
+                    "description": "Should be preserved"
+                }
+            }
+        }
+        main_metadata_path = os.path.join(temp_dir, METADATA_FILENAME)
+        with open(main_metadata_path, "w") as f:
+            json.dump(main_metadata, f, indent=2)
+
+        # Create zeeker assets directory
+        assets_dir = os.path.join(temp_dir, "zeeker_assets")
+        os.makedirs(assets_dir)
+
+        # Create zeeker metadata.json
+        zeeker_metadata = {
+            "databases": {
+                "sglawwatch": {
+                    "title": "Singapore Law Watch Headlines",
+                    "description": "Legal news headlines from Singapore Law Watch",
+                    "tables": {
+                        "headlines": {
+                            "title": "Headlines",
+                            "facets": ["category", "author"]
+                        }
+                    }
+                }
+            },
+            "extra_css_urls": ["/static/databases/sglawwatch/custom.css"]
+        }
+        zeeker_metadata_path = os.path.join(assets_dir, "metadata.json")
+        with open(zeeker_metadata_path, "w") as f:
+            json.dump(zeeker_metadata, f, indent=2)
+
+        # Create templates
+        templates_dir = os.path.join(assets_dir, "templates")
+        os.makedirs(templates_dir)
+        templates = {
+            "database-sglawwatch.html": "<h1>Custom Database Page</h1>",
+            "table-sglawwatch-headlines.html": "<h1>Custom Headlines Table</h1>",
+            "row-sglawwatch-headlines.html": "<div>Custom Row View</div>",
+        }
+        for template_name, content in templates.items():
+            with open(os.path.join(templates_dir, template_name), "w") as f:
+                f.write(content)
+
+        # Create static assets
+        static_dir = os.path.join(assets_dir, "static")
+        os.makedirs(static_dir)
+        static_files = {
+            "custom.css": "body { background: #f0f0f0; }",
+            "custom.js": "console.log('Singapore Law Watch loaded');",
+        }
+        for file_name, content in static_files.items():
+            with open(os.path.join(static_dir, file_name), "w") as f:
+                f.write(content)
+
+        # Create subdirectory in static
+        images_dir = os.path.join(static_dir, "images")
+        os.makedirs(images_dir)
+        with open(os.path.join(images_dir, "logo.svg"), "w") as f:
+            f.write('<svg><circle r="10" /></svg>')
+
+        yield {
+            "temp_dir": temp_dir,
+            "main_metadata_path": main_metadata_path,
+            "assets_dir": assets_dir,
+            "zeeker_metadata_path": zeeker_metadata_path,
+            "templates_dir": templates_dir,
+            "static_dir": static_dir,
+        }
+
+
+class TestAssetsWorkflowIntegration:
+    """Test complete assets workflow integration."""
+
+    def test_full_assets_workflow_local(self, runner, complete_test_environment):
+        """Test complete assets workflow with local storage."""
+        env = complete_test_environment
+
+        # Step 1: Validate assets
+        result = runner.invoke(
+            cli,
+            [
+                "assets",
+                "validate",
+                "--assets-dir",
+                env["assets_dir"],
+            ],
+        )
+        assert result.exit_code == 0
+        assert "All validations passed!" in result.output
+
+        # Step 2: Update metadata from assets
+        with patch("sglawwatch_to_sqlite.metadata_manager.pkg_resources.read_text") as mock_read_text:
+            # Mock the project metadata
+            project_metadata = {
+                "title": "Singapore Law Watch Headlines",
+                "description": "Legal news database",
+                "tables": {"headlines": {"title": "Headlines"}}
+            }
+            mock_read_text.return_value = json.dumps(project_metadata)
+
+            result = runner.invoke(
+                cli,
+                [
+                    "assets",
+                    "update-metadata",
+                    env["temp_dir"],
+                ],
+            )
+            assert result.exit_code == 0
+            assert "updated" in result.output
+
+            # Verify metadata was updated correctly
+            with open(env["main_metadata_path"], "r") as f:
+                updated_metadata = json.load(f)
+
+            assert "sglawwatch" in updated_metadata["databases"]
+            assert "existing_db" in updated_metadata["databases"]  # Preserved
+            assert updated_metadata["databases"]["sglawwatch"]["title"] == "Singapore Law Watch Headlines"
+
+    @patch("sglawwatch_to_sqlite.cli.Storage")
+    def test_full_assets_workflow_s3(self, mock_storage_class, runner, complete_test_environment):
+        """Test complete assets workflow with S3 storage."""
+        env = complete_test_environment
+
+        # Setup S3 storage mock
+        mock_storage = MagicMock()
+        mock_storage_class.create.return_value = mock_storage
+
+        # Step 1: Validate assets (works the same for S3)
+        result = runner.invoke(
+            cli,
+            [
+                "assets",
+                "validate",
+                "--assets-dir",
+                env["assets_dir"],
+            ],
+        )
+        assert result.exit_code == 0
+
+        # Step 2: Upload assets to S3
+        result = runner.invoke(
+            cli,
+            [
+                "assets",
+                "upload",
+                "s3://test-bucket/path/",
+                "--assets-dir",
+                env["assets_dir"],
+            ],
+        )
+        assert result.exit_code == 0
+        assert "Zeeker assets uploaded successfully!" in result.output
+
+        # Verify storage interactions
+        mock_storage_class.create.assert_called_with("s3://test-bucket/path/")
+        mock_storage.upload_zeeker_assets.assert_called_once_with(
+            env["assets_dir"], "sglawwatch"
+        )
+
+    def test_assets_validation_catches_errors(self, runner, complete_test_environment):
+        """Test that validation catches various error conditions."""
+        env = complete_test_environment
+
+        # Create a banned template
+        banned_template = os.path.join(env["templates_dir"], "database.html")
+        with open(banned_template, "w") as f:
+            f.write("<h1>Banned Template</h1>")
+
+        result = runner.invoke(
+            cli,
+            [
+                "assets",
+                "validate",
+                "--assets-dir",
+                env["assets_dir"],
+            ],
+        )
+        assert result.exit_code == 1
+        assert "BANNED template name: database.html" in result.output
+
+    def test_metadata_update_preserves_structure(self, runner, complete_test_environment):
+        """Test that metadata update preserves existing structure."""
+        env = complete_test_environment
+
+        with patch("sglawwatch_to_sqlite.metadata_manager.pkg_resources.read_text") as mock_read_text:
+            # Mock minimal project metadata
+            mock_read_text.return_value = '{"title": "Test Project"}'
+
+            # Read original metadata
+            with open(env["main_metadata_path"], "r") as f:
+                original_metadata = json.load(f)
+
+            result = runner.invoke(
+                cli,
+                [
+                    "assets",
+                    "update-metadata",
+                    env["temp_dir"],
+                ],
+            )
+            assert result.exit_code == 0
+
+            # Verify original structure preserved
+            with open(env["main_metadata_path"], "r") as f:
+                updated_metadata = json.load(f)
+
+            assert updated_metadata["title"] == original_metadata["title"]
+            assert "existing_db" in updated_metadata["databases"]
+            assert "sglawwatch" in updated_metadata["databases"]
+
+    def test_dry_run_shows_changes_without_applying(self, runner, complete_test_environment):
+        """Test that dry run shows changes without applying them."""
+        env = complete_test_environment
+
+        with patch("sglawwatch_to_sqlite.metadata_manager.pkg_resources.read_text") as mock_read_text:
+            mock_read_text.return_value = '{"title": "Test Project"}'
+
+            # Read original metadata
+            with open(env["main_metadata_path"], "r") as f:
+                original_metadata = json.load(f)
+
+            # Run with dry-run
+            result = runner.invoke(
+                cli,
+                [
+                    "assets",
+                    "update-metadata",
+                    env["temp_dir"],
+                    "--dry-run",
+                ],
+            )
+            assert result.exit_code == 0
+            assert "Changes would be made" in result.output
+
+            # Verify no changes were actually made
+            with open(env["main_metadata_path"], "r") as f:
+                current_metadata = json.load(f)
+
+            assert current_metadata == original_metadata
+            assert "sglawwatch" not in current_metadata["databases"]
+
+
+class TestAssetsErrorHandlingIntegration:
+    """Test error handling across the assets workflow."""
+
+    def test_upload_without_validation_fails_on_missing_files(self, runner):
+        """Test upload fails gracefully when required files are missing."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Create empty assets directory
+            assets_dir = os.path.join(temp_dir, "empty_assets")
+            os.makedirs(assets_dir)
+
+            result = runner.invoke(
+                cli,
+                [
+                    "assets",
+                    "upload",
+                    "s3://test-bucket/path/",
+                    "--assets-dir",
+                    assets_dir,
+                    "--skip-validation",
+                ],
+            )
+            assert result.exit_code == 1
+            assert "Required file missing" in result.output
+
+    def test_metadata_update_handles_storage_errors(self, runner):
+        """Test metadata update handles storage errors gracefully."""
+        with patch("sglawwatch_to_sqlite.cli.MetadataManager") as mock_metadata_manager:
+            mock_metadata_manager.side_effect = Exception("Storage unavailable")
+
+            result = runner.invoke(
+                cli,
+                [
+                    "assets",
+                    "update-metadata",
+                    "s3://unreachable-bucket/",
+                ],
+            )
+            assert result.exit_code == 1
+            assert "Error updating metadata" in result.output
+
+    @patch("sglawwatch_to_sqlite.cli.Storage")
+    def test_upload_handles_s3_errors(self, mock_storage_class, runner, complete_test_environment):
+        """Test upload handles S3 errors gracefully."""
+        env = complete_test_environment
+
+        # Setup storage to fail
+        mock_storage = MagicMock()
+        mock_storage.upload_zeeker_assets.side_effect = Exception("S3 access denied")
+        mock_storage_class.create.return_value = mock_storage
+
+        result = runner.invoke(
+            cli,
+            [
+                "assets",
+                "upload",
+                "s3://test-bucket/path/",
+                "--assets-dir",
+                env["assets_dir"],
+            ],
+        )
+        assert result.exit_code == 1
+        assert "Error uploading Zeeker assets" in result.output
+
+
+class TestAssetsCommandOptions:
+    """Test various command-line options for assets commands."""
+
+    def test_custom_database_name_in_upload(self, runner, complete_test_environment):
+        """Test using custom database name in upload."""
+        env = complete_test_environment
+
+        with patch("sglawwatch_to_sqlite.cli.Storage") as mock_storage_class:
+            mock_storage = MagicMock()
+            mock_storage_class.create.return_value = mock_storage
+
+            result = runner.invoke(
+                cli,
+                [
+                    "assets",
+                    "upload",
+                    "s3://test-bucket/path/",
+                    "--assets-dir",
+                    env["assets_dir"],
+                    "--database-name",
+                    "custom_legal_db",
+                ],
+            )
+            assert result.exit_code == 0
+
+            # Verify custom database name was used
+            mock_storage.upload_zeeker_assets.assert_called_once_with(
+                env["assets_dir"], "custom_legal_db"
+            )
+
+    def test_custom_assets_directory(self, runner):
+        """Test using custom assets directory."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Create custom assets directory
+            custom_assets = os.path.join(temp_dir, "my_custom_assets")
+            os.makedirs(custom_assets)
+
+            # Create required metadata.json
+            metadata = {"databases": {"sglawwatch": {"title": "Test"}}}
+            with open(os.path.join(custom_assets, "metadata.json"), "w") as f:
+                json.dump(metadata, f)
+
+            result = runner.invoke(
+                cli,
+                [
+                    "assets",
+                    "validate",
+                    "--assets-dir",
+                    custom_assets,
+                ],
+            )
+            assert result.exit_code == 0
+            assert "All validations passed!" in result.output
+
+    def test_upload_with_metadata_update_integration(self, runner, complete_test_environment):
+        """Test upload with automatic metadata update."""
+        env = complete_test_environment
+
+        with patch("sglawwatch_to_sqlite.cli.Storage") as mock_storage_class:
+            with patch("sglawwatch_to_sqlite.cli.MetadataManager") as mock_metadata_manager:
+                # Setup mocks
+                mock_storage = MagicMock()
+                mock_storage_class.create.return_value = mock_storage
+
+                mock_manager = MagicMock()
+                mock_manager.update_metadata.return_value = (True, "Metadata updated successfully")
+                mock_metadata_manager.return_value = mock_manager
+
+                result = runner.invoke(
+                    cli,
+                    [
+                        "assets",
+                        "upload",
+                        "s3://test-bucket/path/",
+                        "--assets-dir",
+                        env["assets_dir"],
+                        "--update-metadata",
+                    ],
+                )
+                assert result.exit_code == 0
+                assert "Zeeker assets uploaded successfully!" in result.output
+                assert "Metadata update: Metadata updated successfully" in result.output
+
+                # Verify both operations were called
+                mock_storage.upload_zeeker_assets.assert_called_once()
+                mock_metadata_manager.assert_called_once_with("s3://test-bucket/path/")
+                mock_manager.update_metadata.assert_called_once()
+
+
+class TestAssetsCommandHelp:
+    """Test that help text is informative and correct."""
+
+    def test_assets_group_help_comprehensive(self, runner):
+        """Test that assets group help is comprehensive."""
+        result = runner.invoke(cli, ["assets", "--help"])
+
+        assert result.exit_code == 0
+        assert "Manage database assets" in result.output
+        assert "metadata" in result.output
+        assert "templates" in result.output
+        assert "CSS" in result.output
+        assert "JavaScript" in result.output
+
+    def test_upload_command_help_includes_examples(self, runner):
+        """Test that upload command help includes usage examples."""
+        result = runner.invoke(cli, ["assets", "upload", "--help"])
+
+        assert result.exit_code == 0
+        assert "s3://bucket/path/" in result.output
+        assert "DATABASE_NAME" in result.output
+        assert "Zeeker" in result.output
+
+    def test_validate_command_help_explains_purpose(self, runner):
+        """Test that validate command help explains its purpose."""
+        result = runner.invoke(cli, ["assets", "validate", "--help"])
+
+        assert result.exit_code == 0
+        assert "structure" in result.output
+        assert "content" in result.output
+        assert "template" in result.output
+
+    def test_update_metadata_help_explains_options(self, runner):
+        """Test that update-metadata help explains options."""
+        result = runner.invoke(cli, ["assets", "update-metadata", "--help"])
+
+        assert result.exit_code == 0
+        assert "dry-run" in result.output
+        assert "zeeker-assets" in result.output
+        assert "Datasette" in result.output
+</document_content>
+</document>
+<document index="16">
+<source>./tests/test_cli_assets.py</source>
+<document_content>
+import json
+import os
+import tempfile
+from unittest.mock import patch, MagicMock, mock_open
+
+import pytest
+from click.testing import CliRunner
+
+from sglawwatch_to_sqlite.cli import cli
+
+
+@pytest.fixture
+def runner():
+    """Create a Click testing runner."""
+    return CliRunner()
+
+
+@pytest.fixture
+def temp_dir():
+    """Create a temporary directory for testing."""
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        yield tmpdirname
+
+
+@pytest.fixture
+def sample_metadata():
+    """Sample metadata.json content."""
+    return {
+        "title": "Test Datasette",
+        "databases": {
+            "other_db": {"title": "Other Database"}
+        }
+    }
+
+
+@pytest.fixture
+def sample_zeeker_assets_dir(temp_dir):
+    """Create a sample zeeker assets directory."""
+    assets_dir = os.path.join(temp_dir, "zeeker_assets")
+    os.makedirs(assets_dir)
+
+    # Create metadata.json
+    metadata = {
+        "databases": {
+            "sglawwatch": {
+                "title": "Singapore Law Watch",
+                "description": "Legal headlines database"
+            }
+        },
+        "extra_css_urls": ["/static/databases/sglawwatch/custom.css"]
+    }
+    with open(os.path.join(assets_dir, "metadata.json"), "w") as f:
+        json.dump(metadata, f)
+
+    # Create templates directory
+    templates_dir = os.path.join(assets_dir, "templates")
+    os.makedirs(templates_dir)
+    with open(os.path.join(templates_dir, "database-sglawwatch.html"), "w") as f:
+        f.write("<h1>Custom Template</h1>")
+
+    # Create static directory
+    static_dir = os.path.join(assets_dir, "static")
+    os.makedirs(static_dir)
+    with open(os.path.join(static_dir, "custom.css"), "w") as f:
+        f.write("body { color: blue; }")
+
+    return assets_dir
+
+
+class TestAssetsUpdateMetadata:
+    """Tests for the assets update-metadata command."""
+
+    @patch("sglawwatch_to_sqlite.cli.MetadataManager")
+    def test_update_metadata_success(self, mock_metadata_manager, runner):
+        """Test successful metadata update."""
+        # Setup mock
+        mock_manager = MagicMock()
+        mock_manager.update_metadata.return_value = (
+            True,
+            "Metadata updated successfully"
+        )
+        mock_metadata_manager.return_value = mock_manager
+
+        # Run command
+        result = runner.invoke(cli, ["assets", "update-metadata", "./data"])
+
+        # Assert
+        assert result.exit_code == 0
+        assert "Metadata updated successfully" in result.output
+        mock_metadata_manager.assert_called_once_with("./data")
+        mock_manager.update_metadata.assert_called_once_with(False)
+
+    @patch("sglawwatch_to_sqlite.cli.MetadataManager")
+    def test_update_metadata_dry_run(self, mock_metadata_manager, runner):
+        """Test metadata update with dry run."""
+        # Setup mock
+        mock_manager = MagicMock()
+        mock_manager.update_metadata.return_value = (
+            True,
+            "Changes would be made (dry run)"
+        )
+        mock_metadata_manager.return_value = mock_manager
+
+        # Run command with dry run
+        result = runner.invoke(cli, ["assets", "update-metadata", "--dry-run"])
+
+        # Assert
+        assert result.exit_code == 0
+        assert "Changes would be made" in result.output
+        mock_manager.update_metadata.assert_called_once_with(True)
+
+    @patch("sglawwatch_to_sqlite.cli.MetadataManager")
+    def test_update_metadata_s3_location(self, mock_metadata_manager, runner):
+        """Test metadata update with S3 location."""
+        # Setup mock
+        mock_manager = MagicMock()
+        mock_manager.update_metadata.return_value = (
+            True,
+            "Metadata updated and saved to s3://bucket/path/metadata.json"
+        )
+        mock_metadata_manager.return_value = mock_manager
+
+        # Run command
+        result = runner.invoke(
+            cli,
+            ["assets", "update-metadata", "s3://test-bucket/path/"]
+        )
+
+        # Assert
+        assert result.exit_code == 0
+        mock_metadata_manager.assert_called_once_with("s3://test-bucket/path/")
+
+    @patch("sglawwatch_to_sqlite.cli.MetadataManager")
+    def test_update_metadata_error(self, mock_metadata_manager, runner):
+        """Test metadata update with error."""
+        # Setup mock to raise exception
+        mock_metadata_manager.side_effect = Exception("Test error")
+
+        # Run command
+        result = runner.invoke(cli, ["assets", "update-metadata"])
+
+        # Assert
+        assert result.exit_code == 1
+        assert "Error updating metadata: Test error" in result.output
+
+    def test_update_metadata_from_zeeker_assets_missing(self, runner, temp_dir):
+        """Test update metadata from missing zeeker assets."""
+        result = runner.invoke(
+            cli,
+            [
+                "assets",
+                "update-metadata",
+                "--from-zeeker-assets",
+                "--assets-dir",
+                "nonexistent"
+            ]
+        )
+
+        assert result.exit_code == 1
+        assert "No metadata.json found in nonexistent" in result.output
+
+    def test_update_metadata_from_zeeker_assets_invalid_structure(
+            self, runner, temp_dir
+    ):
+        """Test update metadata from zeeker assets with invalid structure."""
+        # Create assets directory with invalid metadata
+        assets_dir = os.path.join(temp_dir, "assets")
+        os.makedirs(assets_dir)
+
+        invalid_metadata = {"title": "No databases section"}
+        with open(os.path.join(assets_dir, "metadata.json"), "w") as f:
+            json.dump(invalid_metadata, f)
+
+        result = runner.invoke(
+            cli,
+            [
+                "assets",
+                "update-metadata",
+                "--from-zeeker-assets",
+                "--assets-dir",
+                assets_dir,
+            ],
+        )
+
+        assert result.exit_code == 1
+        assert "missing sglawwatch database section" in result.output
+
+
+class TestAssetsValidate:
+    """Tests for the assets validate command."""
+
+    def test_validate_missing_directory(self, runner):
+        """Test validate with missing assets directory."""
+        result = runner.invoke(
+            cli,
+            ["assets", "validate", "--assets-dir", "nonexistent"]
+        )
+
+        assert result.exit_code == 1
+        assert "Assets directory not found: nonexistent" in result.output
+
+    def test_validate_success(self, runner, sample_zeeker_assets_dir):
+        """Test successful validation."""
+        result = runner.invoke(
+            cli,
+            ["assets", "validate", "--assets-dir", sample_zeeker_assets_dir]
+        )
+
+        assert result.exit_code == 0
+        assert "✓ metadata.json is valid JSON" in result.output
+        assert "✓ Template: database-sglawwatch.html" in result.output
+        assert "✓ Static asset: custom.css" in result.output
+        assert "All validations passed!" in result.output
+
+    def test_validate_missing_metadata(self, runner, temp_dir):
+        """Test validation with missing metadata.json."""
+        assets_dir = os.path.join(temp_dir, "assets")
+        os.makedirs(assets_dir)
+
+        result = runner.invoke(
+            cli,
+            ["assets", "validate", "--assets-dir", assets_dir]
+        )
+
+        assert result.exit_code == 1
+        assert "Missing required file: metadata.json" in result.output
+
+    def test_validate_invalid_json(self, runner, temp_dir):
+        """Test validation with invalid JSON in metadata.json."""
+        assets_dir = os.path.join(temp_dir, "assets")
+        os.makedirs(assets_dir)
+
+        # Create invalid JSON file
+        with open(os.path.join(assets_dir, "metadata.json"), "w") as f:
+            f.write("{invalid json")
+
+        result = runner.invoke(
+            cli,
+            ["assets", "validate", "--assets-dir", assets_dir]
+        )
+
+        assert result.exit_code == 1
+        assert "Invalid JSON in metadata.json" in result.output
+
+    def test_validate_banned_template_names(self, runner, temp_dir):
+        """Test validation catches banned template names."""
+        assets_dir = os.path.join(temp_dir, "assets")
+        os.makedirs(assets_dir)
+
+        # Create valid metadata.json
+        metadata = {"databases": {}}
+        with open(os.path.join(assets_dir, "metadata.json"), "w") as f:
+            json.dump(metadata, f)
+
+        # Create templates directory with banned name
+        templates_dir = os.path.join(assets_dir, "templates")
+        os.makedirs(templates_dir)
+        with open(os.path.join(templates_dir, "database.html"), "w") as f:
+            f.write("<h1>Banned Template</h1>")
+
+        result = runner.invoke(
+            cli,
+            ["assets", "validate", "--assets-dir", assets_dir]
+        )
+
+        assert result.exit_code == 1
+        assert "BANNED template name: database.html" in result.output
+
+    def test_validate_css_url_warnings(self, runner, temp_dir):
+        """Test validation shows warnings for non-standard CSS URLs."""
+        assets_dir = os.path.join(temp_dir, "assets")
+        os.makedirs(assets_dir)
+
+        # Create metadata with non-standard CSS URL
+        metadata = {
+            "databases": {},
+            "extra_css_urls": ["/some/other/path/style.css"]
+        }
+        with open(os.path.join(assets_dir, "metadata.json"), "w") as f:
+            json.dump(metadata, f)
+
+        result = runner.invoke(
+            cli,
+            ["assets", "validate", "--assets-dir", assets_dir]
+        )
+
+        assert result.exit_code == 0
+        assert "doesn't follow Zeeker pattern" in result.output
+        assert "warning(s) to review" in result.output
+
+
+class TestAssetsUpload:
+    """Tests for the assets upload command."""
+
+    def test_upload_invalid_s3_location(self, runner):
+        """Test upload with invalid S3 location."""
+        result = runner.invoke(
+            cli,
+            ["assets", "upload", "invalid://location"]
+        )
+
+        assert result.exit_code == 1
+        assert "must be an S3 URI" in result.output
+
+    def test_upload_missing_assets_directory(self, runner):
+        """Test upload with missing assets directory."""
+        result = runner.invoke(
+            cli,
+            ["assets", "upload", "s3://bucket/path/", "--assets-dir", "nonexistent"]
+        )
+
+        assert result.exit_code == 1
+        assert "Assets directory not found: nonexistent" in result.output
+
+    @patch("sglawwatch_to_sqlite.cli.Storage")
+    def test_upload_missing_required_files(self, mock_storage, runner, temp_dir):
+        """Test upload with missing required files."""
+        # Create empty assets directory
+        assets_dir = os.path.join(temp_dir, "assets")
+        os.makedirs(assets_dir)
+
+        result = runner.invoke(
+            cli,
+            [
+                "assets",
+                "upload",
+                "s3://bucket/path/",
+                "--assets-dir",
+                assets_dir,
+                "--skip-validation",
+            ],
+        )
+
+        assert result.exit_code == 1
+        assert "Required file missing" in result.output
+
+    @patch("sglawwatch_to_sqlite.cli.Storage")
+    def test_upload_success(self, mock_storage, runner, sample_zeeker_assets_dir):
+        """Test successful upload."""
+        # Setup mock storage
+        mock_storage_instance = MagicMock()
+        mock_storage.create.return_value = mock_storage_instance
+
+        result = runner.invoke(
+            cli,
+            [
+                "assets",
+                "upload",
+                "s3://bucket/path/",
+                "--assets-dir",
+                sample_zeeker_assets_dir,
+            ],
+        )
+
+        assert result.exit_code == 0
+        assert "Zeeker assets uploaded successfully!" in result.output
+        assert "Zeeker integration complete!" in result.output
+
+        # Verify storage methods were called
+        mock_storage.create.assert_called_once_with("s3://bucket/path/")
+        mock_storage_instance.upload_zeeker_assets.assert_called_once_with(
+            sample_zeeker_assets_dir, "sglawwatch"
+        )
+
+    @patch("sglawwatch_to_sqlite.cli.Storage")
+    @patch("sglawwatch_to_sqlite.cli.MetadataManager")
+    def test_upload_with_metadata_update(
+            self, mock_metadata_manager, mock_storage, runner, sample_zeeker_assets_dir
+    ):
+        """Test upload with metadata update."""
+        # Setup mocks
+        mock_storage_instance = MagicMock()
+        mock_storage.create.return_value = mock_storage_instance
+
+        mock_manager = MagicMock()
+        mock_manager.update_metadata.return_value = (
+            True,
+            "Metadata updated"
+        )
+        mock_metadata_manager.return_value = mock_manager
+
+        result = runner.invoke(
+            cli,
+            [
+                "assets",
+                "upload",
+                "s3://bucket/path/",
+                "--assets-dir",
+                sample_zeeker_assets_dir,
+                "--update-metadata",
+            ],
+        )
+
+        assert result.exit_code == 0
+        assert "Zeeker assets uploaded successfully!" in result.output
+        assert "Metadata update: Metadata updated" in result.output
+
+        # Verify metadata manager was called
+        mock_metadata_manager.assert_called_once_with("s3://bucket/path/")
+        mock_manager.update_metadata.assert_called_once()
+
+    @patch("sglawwatch_to_sqlite.cli.Storage")
+    def test_upload_storage_error(self, mock_storage, runner, sample_zeeker_assets_dir):
+        """Test upload with storage error."""
+        # Setup mock to raise exception
+        mock_storage_instance = MagicMock()
+        mock_storage_instance.upload_zeeker_assets.side_effect = Exception(
+            "S3 upload failed"
+        )
+        mock_storage.create.return_value = mock_storage_instance
+
+        result = runner.invoke(
+            cli,
+            [
+                "assets",
+                "upload",
+                "s3://bucket/path/",
+                "--assets-dir",
+                sample_zeeker_assets_dir,
+            ],
+        )
+
+        assert result.exit_code == 1
+        assert "Error uploading Zeeker assets: S3 upload failed" in result.output
+
+    @patch("sglawwatch_to_sqlite.cli.Storage")
+    def test_upload_custom_database_name(
+            self, mock_storage, runner, sample_zeeker_assets_dir
+    ):
+        """Test upload with custom database name."""
+        # Setup mock storage
+        mock_storage_instance = MagicMock()
+        mock_storage.create.return_value = mock_storage_instance
+
+        result = runner.invoke(
+            cli,
+            [
+                "assets",
+                "upload",
+                "s3://bucket/path/",
+                "--assets-dir",
+                sample_zeeker_assets_dir,
+                "--database-name",
+                "custom_db",
+            ],
+        )
+
+        assert result.exit_code == 0
+
+        # Verify custom database name was used
+        mock_storage_instance.upload_zeeker_assets.assert_called_once_with(
+            sample_zeeker_assets_dir, "custom_db"
+        )
+
+    @patch("sglawwatch_to_sqlite.cli.Storage")
+    def test_upload_validation_failure(
+            self, mock_storage, runner, temp_dir
+    ):
+        """Test upload when validation fails."""
+        # Create assets directory with invalid content
+        assets_dir = os.path.join(temp_dir, "assets")
+        os.makedirs(assets_dir)
+
+        # Create invalid JSON file
+        with open(os.path.join(assets_dir, "metadata.json"), "w") as f:
+            f.write("{invalid json")
+
+        result = runner.invoke(
+            cli,
+            [
+                "assets",
+                "upload",
+                "s3://bucket/path/",
+                "--assets-dir",
+                assets_dir,
+            ],
+        )
+
+        assert result.exit_code == 1
+        assert "Validation failed" in result.output
+
+        # Verify storage was never called due to validation failure
+        mock_storage.create.assert_not_called()
+
+
+class TestAssetsIntegration:
+    """Integration tests for assets commands."""
+
+    def test_assets_help(self, runner):
+        """Test assets group help."""
+        result = runner.invoke(cli, ["assets", "--help"])
+
+        assert result.exit_code == 0
+        assert "Manage database assets" in result.output
+        assert "update-metadata" in result.output
+        assert "validate" in result.output
+        assert "upload" in result.output
+
+    def test_update_metadata_help(self, runner):
+        """Test update-metadata command help."""
+        result = runner.invoke(cli, ["assets", "update-metadata", "--help"])
+
+        assert result.exit_code == 0
+        assert "Update Datasette metadata.json" in result.output
+        assert "--dry-run" in result.output
+        assert "--from-zeeker-assets" in result.output
+
+    def test_validate_help(self, runner):
+        """Test validate command help."""
+        result = runner.invoke(cli, ["assets", "validate", "--help"])
+
+        assert result.exit_code == 0
+        assert "Validate Zeeker assets directory" in result.output
+        assert "--assets-dir" in result.output
+
+    def test_upload_help(self, runner):
+        """Test upload command help."""
+        result = runner.invoke(cli, ["assets", "upload", "--help"])
+
+        assert result.exit_code == 0
+        assert "Upload Zeeker customization assets to S3" in result.output
+        assert "--database-name" in result.output
+        assert "--update-metadata" in result.output
+</document_content>
+</document>
+<document index="17">
 <source>./tests/test_db_manager.py</source>
 <document_content>
 import os
@@ -871,7 +3236,7 @@ def test_database_manager_s3(mock_s3_storage, temp_dir):
     assert db_manager.storage == mock_instance
 </document_content>
 </document>
-<document index="6">
+<document index="18">
 <source>./tests/test_headlines.py</source>
 <document_content>
 import datetime
@@ -1074,7 +3439,7 @@ async def test_fetch_headlines_skip_advertisements():
 
 </document_content>
 </document>
-<document index="7">
+<document index="19">
 <source>./tests/test_metadata_manager.py</source>
 <document_content>
 # tests/test_metadata_manager.py
@@ -1183,10 +3548,10 @@ def metadata_file(temp_dir, sample_metadata):
 
 @pytest.fixture
 def mock_project_metadata(sample_project_metadata):
-    """Mock the project_metadata.json file."""
+    """Mock the metadata.json file."""
     with patch('sglawwatch_to_sqlite.metadata_manager.pkg_resources.read_text',
                return_value=json.dumps(sample_project_metadata)):
-        return sample_project_metadata
+        yield sample_project_metadata
 
 
 def test_metadata_manager_initialization(temp_dir, metadata_file, mock_project_metadata):
@@ -1216,7 +3581,7 @@ def test_metadata_manager_invalid_json(temp_dir):
     with open(metadata_path, 'w') as f:
         f.write("{invalid json")
 
-    # Mock project_metadata.json to exist
+    # Mock metadata.json to exist
     with patch('os.path.exists', return_value=True):
         with patch('builtins.open') as mock_open:
             def side_effect(path, *args, **kwargs):
@@ -1224,7 +3589,7 @@ def test_metadata_manager_invalid_json(temp_dir):
                     # Use the real file for metadata.json
                     return open.__enter__(path, *args, **kwargs)
                 else:
-                    # Mock for project_metadata.json
+                    # Mock for metadata.json
                     mock = MagicMock()
                     mock.__enter__.return_value.read.return_value = "{}"
                     return mock
@@ -1325,9 +3690,343 @@ def test_metadata_manager_create_new_database_entry(temp_dir, metadata_file, moc
         assert DATABASE_NAME in updated_metadata["databases"]
         assert updated_metadata["databases"][DATABASE_NAME] == mock_project_metadata
 
+
+class TestMetadataManagerS3Integration:
+    """Tests for MetadataManager with S3 storage."""
+
+    @patch("sglawwatch_to_sqlite.metadata_manager.Storage")
+    @patch("sglawwatch_to_sqlite.metadata_manager.pkg_resources.read_text")
+    def test_metadata_manager_s3_init(self, mock_read_text, mock_storage_class):
+        """Test MetadataManager initialization with S3 URI."""
+        # Setup mocks
+        mock_storage = MagicMock()
+        mock_storage.get_local_path.return_value = "/tmp/metadata.json"
+        mock_storage_class.create.return_value = mock_storage
+
+        # Create a temporary metadata file
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            json.dump({"databases": {}}, f)
+            temp_path = f.name
+
+        mock_storage.get_local_path.return_value = temp_path
+        mock_read_text.return_value = '{"title": "Test Project"}'
+
+        try:
+            # Test initialization
+            manager = MetadataManager("s3://test-bucket/path/")
+
+            # Verify storage was created correctly
+            mock_storage_class.create.assert_called_once_with("s3://test-bucket/path/")
+            mock_storage.get_local_path.assert_called_once_with(filename=METADATA_FILENAME)
+
+            # Verify metadata was loaded
+            assert manager.metadata == {"databases": {}}
+            assert manager.project_metadata == {"title": "Test Project"}
+
+        finally:
+            os.unlink(temp_path)
+
+    @patch("sglawwatch_to_sqlite.metadata_manager.Storage")
+    @patch("sglawwatch_to_sqlite.metadata_manager.pkg_resources.read_text")
+    def test_metadata_manager_s3_file_not_found(self, mock_read_text, mock_storage_class):
+        """Test MetadataManager when metadata.json doesn't exist on S3."""
+        # Setup mocks
+        mock_storage = MagicMock()
+        mock_storage.get_local_path.side_effect = FileNotFoundError("No existing metadata.json found")
+        mock_storage_class.create.return_value = mock_storage
+
+        mock_read_text.return_value = '{"title": "Test Project"}'
+
+        # Test initialization should fail gracefully
+        with pytest.raises(click.exceptions.Abort):
+            MetadataManager("s3://test-bucket/path/")
+
+    @patch("sglawwatch_to_sqlite.metadata_manager.Storage")
+    @patch("sglawwatch_to_sqlite.metadata_manager.pkg_resources.read_text")
+    def test_metadata_manager_s3_save(self, mock_read_text, mock_storage_class):
+        """Test MetadataManager save with S3 storage."""
+        # Setup mocks
+        mock_storage = MagicMock()
+        mock_storage_class.create.return_value = mock_storage
+
+        # Create a temporary metadata file
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            json.dump({"databases": {}}, f)
+            temp_path = f.name
+
+        mock_storage.get_local_path.return_value = temp_path
+        mock_storage.save.return_value = "s3://test-bucket/path/metadata.json"
+        mock_read_text.return_value = '{"title": "Test Project"}'
+
+        try:
+            # Test save operation
+            manager = MetadataManager("s3://test-bucket/path/")
+            changes_made, message = manager.update_metadata()
+
+            # Verify save was called with correct parameters
+            mock_storage.save.assert_called_once_with(temp_path, filename=METADATA_FILENAME)
+            assert "s3://test-bucket/path/metadata.json" in message
+
+        finally:
+            os.unlink(temp_path)
+
+
+class TestMetadataManagerErrorHandling:
+    """Tests for MetadataManager error handling."""
+
+    @patch("sglawwatch_to_sqlite.metadata_manager.Storage")
+    def test_metadata_manager_storage_creation_error(self, mock_storage_class):
+        """Test MetadataManager when storage creation fails."""
+        mock_storage_class.create.side_effect = Exception("Storage creation failed")
+
+        with pytest.raises(click.exceptions.Abort):
+            MetadataManager("invalid://uri")
+
+    @patch("sglawwatch_to_sqlite.metadata_manager.Storage")
+    @patch("sglawwatch_to_sqlite.metadata_manager.pkg_resources.read_text")
+    def test_metadata_manager_corrupted_existing_metadata(self, mock_read_text, mock_storage_class):
+        """Test MetadataManager with corrupted existing metadata file."""
+        # Setup mocks
+        mock_storage = MagicMock()
+        mock_storage_class.create.return_value = mock_storage
+
+        # Create a corrupted metadata file
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            f.write("{invalid json content")
+            temp_path = f.name
+
+        mock_storage.get_local_path.return_value = temp_path
+        mock_read_text.return_value = '{"title": "Test Project"}'
+
+        try:
+            with pytest.raises(click.exceptions.Abort):
+                MetadataManager("./test")
+        finally:
+            os.unlink(temp_path)
+
+    @patch("sglawwatch_to_sqlite.metadata_manager.Storage")
+    @patch("sglawwatch_to_sqlite.metadata_manager.pkg_resources.read_text")
+    def test_metadata_manager_corrupted_project_metadata(self, mock_read_text, mock_storage_class):
+        """Test MetadataManager with corrupted project metadata."""
+        # Setup mocks
+        mock_storage = MagicMock()
+        mock_storage_class.create.return_value = mock_storage
+
+        # Create a valid metadata file
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            json.dump({"databases": {}}, f)
+            temp_path = f.name
+
+        mock_storage.get_local_path.return_value = temp_path
+        mock_read_text.return_value = "{invalid project json}"
+
+        try:
+            with pytest.raises(click.exceptions.Abort):
+                MetadataManager("./test")
+        finally:
+            os.unlink(temp_path)
+
+
+class TestMetadataManagerUpdateScenarios:
+    """Tests for various metadata update scenarios."""
+
+    @patch("sglawwatch_to_sqlite.metadata_manager.Storage")
+    @patch("sglawwatch_to_sqlite.metadata_manager.pkg_resources.read_text")
+    def test_update_metadata_preserves_other_databases(self, mock_read_text, mock_storage_class):
+        """Test that updating metadata preserves other database configurations."""
+        # Setup mocks
+        mock_storage = MagicMock()
+        mock_storage_class.create.return_value = mock_storage
+        mock_storage.save.return_value = "/tmp/metadata.json"
+
+        # Create metadata with existing database
+        existing_metadata = {
+            "title": "My Datasette",
+            "databases": {
+                "other_db": {
+                    "title": "Other Database",
+                    "description": "Should be preserved"
+                }
+            }
+        }
+
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            json.dump(existing_metadata, f)
+            temp_path = f.name
+
+        mock_storage.get_local_path.return_value = temp_path
+        mock_read_text.return_value = '{"title": "SG Law Watch", "description": "New project"}'
+
+        try:
+            manager = MetadataManager("./test")
+            changes_made, message = manager.update_metadata()
+
+            # Verify other database was preserved
+            assert changes_made
+            assert "other_db" in manager.metadata["databases"]
+            assert manager.metadata["databases"]["other_db"]["title"] == "Other Database"
+
+            # Verify our database was added
+            assert DATABASE_NAME in manager.metadata["databases"]
+            assert manager.metadata["databases"][DATABASE_NAME]["title"] == "SG Law Watch"
+
+        finally:
+            os.unlink(temp_path)
+
+    @patch("sglawwatch_to_sqlite.metadata_manager.Storage")
+    @patch("sglawwatch_to_sqlite.metadata_manager.pkg_resources.read_text")
+    def test_update_metadata_no_databases_section(self, mock_read_text, mock_storage_class):
+        """Test updating metadata when no databases section exists."""
+        # Setup mocks
+        mock_storage = MagicMock()
+        mock_storage_class.create.return_value = mock_storage
+        mock_storage.save.return_value = "/tmp/metadata.json"
+
+        # Create metadata without databases section
+        existing_metadata = {
+            "title": "My Datasette",
+            "description": "No databases yet"
+        }
+
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            json.dump(existing_metadata, f)
+            temp_path = f.name
+
+        mock_storage.get_local_path.return_value = temp_path
+        mock_read_text.return_value = '{"title": "SG Law Watch"}'
+
+        try:
+            manager = MetadataManager("./test")
+            changes_made, message = manager.update_metadata()
+
+            # Verify databases section was created
+            assert changes_made
+            assert "databases" in manager.metadata
+            assert DATABASE_NAME in manager.metadata["databases"]
+
+        finally:
+            os.unlink(temp_path)
+
+    @patch("sglawwatch_to_sqlite.metadata_manager.Storage")
+    @patch("sglawwatch_to_sqlite.metadata_manager.pkg_resources.read_text")
+    def test_update_metadata_complex_project_structure(self, mock_read_text, mock_storage_class):
+        """Test updating with complex project metadata structure."""
+        # Setup mocks
+        mock_storage = MagicMock()
+        mock_storage_class.create.return_value = mock_storage
+        mock_storage.save.return_value = "/tmp/metadata.json"
+
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            json.dump({"databases": {}}, f)
+            temp_path = f.name
+
+        mock_storage.get_local_path.return_value = temp_path
+
+        # Complex project metadata
+        complex_project_metadata = {
+            "title": "Singapore Law Watch Headlines",
+            "description": "Legal news database",
+            "license": "Apache-2.0",
+            "tables": {
+                "headlines": {
+                    "title": "Headlines",
+                    "facets": ["category", "author"],
+                    "sortable_columns": ["date"],
+                    "columns": {
+                        "title": {"description": "Article title"},
+                        "date": {"description": "Publication date"}
+                    }
+                }
+            }
+        }
+        mock_read_text.return_value = json.dumps(complex_project_metadata)
+
+        try:
+            manager = MetadataManager("./test")
+            changes_made, message = manager.update_metadata()
+
+            # Verify complex structure was preserved
+            assert changes_made
+            db_metadata = manager.metadata["databases"][DATABASE_NAME]
+            assert db_metadata["license"] == "Apache-2.0"
+            assert "headlines" in db_metadata["tables"]
+            assert "facets" in db_metadata["tables"]["headlines"]
+
+        finally:
+            os.unlink(temp_path)
+
+    @patch("sglawwatch_to_sqlite.metadata_manager.Storage")
+    @patch("sglawwatch_to_sqlite.metadata_manager.pkg_resources.read_text")
+    def test_update_metadata_save_failure(self, mock_read_text, mock_storage_class):
+        """Test handling of save failure during metadata update."""
+        # Setup mocks
+        mock_storage = MagicMock()
+        mock_storage_class.create.return_value = mock_storage
+        mock_storage.save.side_effect = Exception("Save failed")
+
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            json.dump({"databases": {}}, f)
+            temp_path = f.name
+
+        mock_storage.get_local_path.return_value = temp_path
+        mock_read_text.return_value = '{"title": "Test"}'
+
+        try:
+            manager = MetadataManager("./test")
+
+            # Dry run should work
+            changes_made, message = manager.update_metadata(dry_run=True)
+            assert changes_made
+            assert "dry run" in message
+
+            # Actual update should fail
+            with pytest.raises(Exception, match="Save failed"):
+                manager.update_metadata(dry_run=False)
+
+        finally:
+            os.unlink(temp_path)
+
+
+class TestMetadataManagerConstants:
+    """Tests for metadata manager constants and configuration."""
+
+    def test_database_name_constant(self):
+        """Test that DATABASE_NAME constant is correct."""
+        assert DATABASE_NAME == "sglawwatch"
+
+    def test_metadata_filename_constant(self):
+        """Test that METADATA_FILENAME constant is correct."""
+        assert METADATA_FILENAME == "metadata.json"
+
+    @patch("sglawwatch_to_sqlite.metadata_manager.Storage")
+    @patch("sglawwatch_to_sqlite.metadata_manager.pkg_resources.read_text")
+    def test_database_name_used_consistently(self, mock_read_text, mock_storage_class):
+        """Test that DATABASE_NAME is used consistently throughout."""
+        # Setup mocks
+        mock_storage = MagicMock()
+        mock_storage_class.create.return_value = mock_storage
+        mock_storage.save.return_value = "/tmp/metadata.json"
+
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            json.dump({"databases": {}}, f)
+            temp_path = f.name
+
+        mock_storage.get_local_path.return_value = temp_path
+        mock_read_text.return_value = '{"title": "Test"}'
+
+        try:
+            manager = MetadataManager("./test")
+            manager.update_metadata()
+
+            # Verify DATABASE_NAME was used as the key
+            assert DATABASE_NAME in manager.metadata["databases"]
+            assert manager.metadata["databases"][DATABASE_NAME]["title"] == "Test"
+
+        finally:
+            os.unlink(temp_path)
 </document_content>
 </document>
-<document index="8">
+<document index="20">
 <source>./tests/test_sglawwatch_to_sqlite.py</source>
 <document_content>
 import os
@@ -1444,7 +4143,7 @@ def test_headlines_command_integration():
             mock_fetch.assert_called_once()
 </document_content>
 </document>
-<document index="9">
+<document index="21">
 <source>./tests/test_storage.py</source>
 <document_content>
 import os
@@ -1667,9 +4366,218 @@ def test_s3_storage_save(mock_boto3_client):
         # Clean up
         if os.path.exists(tmp_path):
             os.unlink(tmp_path)
+
+
+@pytest.fixture
+def mock_zeeker_assets_dir():
+    """Create a mock zeeker assets directory structure."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        assets_dir = os.path.join(temp_dir, "zeeker_assets")
+        os.makedirs(assets_dir)
+
+        # Create metadata.json
+        metadata_path = os.path.join(assets_dir, "metadata.json")
+        with open(metadata_path, "w") as f:
+            f.write('{"databases": {"sglawwatch": {"title": "Test"}}}')
+
+        # Create templates directory with files
+        templates_dir = os.path.join(assets_dir, "templates")
+        os.makedirs(templates_dir)
+        with open(os.path.join(templates_dir, "database-sglawwatch.html"), "w") as f:
+            f.write("<h1>Custom Database Template</h1>")
+        with open(os.path.join(templates_dir, "table-sglawwatch-headlines.html"), "w") as f:
+            f.write("<h1>Custom Table Template</h1>")
+
+        # Create static directory with files
+        static_dir = os.path.join(assets_dir, "static")
+        os.makedirs(static_dir)
+        with open(os.path.join(static_dir, "custom.css"), "w") as f:
+            f.write("body { color: blue; }")
+        with open(os.path.join(static_dir, "custom.js"), "w") as f:
+            f.write("console.log('Custom JS');")
+
+        # Create subdirectory in static
+        static_subdir = os.path.join(static_dir, "images")
+        os.makedirs(static_subdir)
+        with open(os.path.join(static_subdir, "logo.svg"), "w") as f:
+            f.write("<svg>Logo</svg>")
+
+        yield assets_dir
+
+
+class TestZeekerAssetsUpload:
+    """Tests for upload_zeeker_assets functionality."""
+
+    def test_upload_zeeker_assets_local_storage_error(self, mock_zeeker_assets_dir):
+        """Test that upload_zeeker_assets raises error for LocalStorage."""
+        storage = LocalStorage("./data")
+
+        with patch("click.echo") as mock_echo:
+            storage.upload_zeeker_assets(mock_zeeker_assets_dir, "test_db")
+            mock_echo.assert_called_with(
+                "Zeeker assets can only be uploaded to S3 storage", err=True
+            )
+
+    @patch("boto3.client")
+    def test_upload_zeeker_assets_s3_success(self, mock_boto3_client, mock_zeeker_assets_dir):
+        """Test successful upload of zeeker assets to S3."""
+        # Mock S3 client
+        mock_s3 = MagicMock()
+        mock_boto3_client.return_value = mock_s3
+
+        # Create S3Storage instance
+        storage = S3Storage("s3://test_bucket/path/")
+
+        with patch("click.echo") as mock_echo:
+            storage.upload_zeeker_assets(mock_zeeker_assets_dir, "test_db")
+
+            # Verify all expected files were uploaded
+            expected_calls = [
+                # metadata.json
+                ("metadata.json", "test-bucket", "assets/databases/test_db/metadata.json"),
+                # templates
+                ("templates/database-sglawwatch.html", "test-bucket",
+                 "assets/databases/test_db/templates/database-sglawwatch.html"),
+                ("templates/table-sglawwatch-headlines.html", "test-bucket",
+                 "assets/databases/test_db/templates/table-sglawwatch-headlines.html"),
+                # static files
+                ("static/custom.css", "test-bucket", "assets/databases/test_db/static/custom.css"),
+                ("static/custom.js", "test-bucket", "assets/databases/test_db/static/custom.js"),
+                ("static/images/logo.svg", "test-bucket", "assets/databases/test_db/static/images/logo.svg"),
+            ]
+
+            # Verify upload_file was called for each expected file
+            assert mock_s3.upload_file.call_count == 6
+
+            # Check that the right files were uploaded with correct paths
+            upload_calls = mock_s3.upload_file.call_args_list
+            for call in upload_calls:
+                local_path, bucket, s3_key = call[0]
+                assert bucket == "test_bucket"
+                assert s3_key.startswith("assets/databases/test_db/")
+                assert os.path.exists(local_path)
+
+            # Verify echo calls for each upload
+            echo_calls = mock_echo.call_args_list
+            assert len(echo_calls) >= 6  # At least one call per file
+
+    @patch("boto3.client")
+    def test_upload_zeeker_assets_s3_upload_error(self, mock_boto3_client, mock_zeeker_assets_dir):
+        """Test handling of S3 upload errors."""
+        # Mock S3 client to raise exception
+        mock_s3 = MagicMock()
+        mock_s3.upload_file.side_effect = Exception("S3 upload failed")
+        mock_boto3_client.return_value = mock_s3
+
+        # Create S3Storage instance
+        storage = S3Storage("s3://test-bucket/path/")
+
+        with patch("click.echo") as mock_echo:
+            storage.upload_zeeker_assets(mock_zeeker_assets_dir, "test_db")
+
+            # Verify error was logged
+            error_calls = [call for call in mock_echo.call_args_list if call[1].get('err')]
+            assert len(error_calls) > 0
+            assert any("Error uploading" in str(call) for call in error_calls)
+
+    def test_upload_zeeker_assets_missing_directory(self):
+        """Test upload_zeeker_assets with missing directory."""
+        storage = S3Storage("s3://test-bucket/path/")
+
+        # This should raise an exception when trying to walk a non-existent directory
+        with pytest.raises(FileNotFoundError):
+            storage.upload_zeeker_assets("/nonexistent/path", "test_db")
+
+    @patch("boto3.client")
+    def test_upload_zeeker_assets_empty_directory(self, mock_boto3_client):
+        """Test upload_zeeker_assets with empty directory."""
+        mock_s3 = MagicMock()
+        mock_boto3_client.return_value = mock_s3
+
+        with tempfile.TemporaryDirectory() as empty_dir:
+            storage = S3Storage("s3://test-bucket/path/")
+
+            with patch("click.echo"):
+                storage.upload_zeeker_assets(empty_dir, "test_db")
+
+                # Should not have uploaded any files
+                mock_s3.upload_file.assert_not_called()
+
+    @patch("boto3.client")
+    def test_upload_zeeker_assets_custom_database_name(self, mock_boto3_client, mock_zeeker_assets_dir):
+        """Test upload_zeeker_assets with custom database name."""
+        mock_s3 = MagicMock()
+        mock_boto3_client.return_value = mock_s3
+
+        storage = S3Storage("s3://test-bucket/path/")
+
+        with patch("click.echo"):
+            storage.upload_zeeker_assets(mock_zeeker_assets_dir, "my_custom_db")
+
+            # Verify all uploaded files use the custom database name in the path
+            upload_calls = mock_s3.upload_file.call_args_list
+            for call in upload_calls:
+                _, bucket, s3_key = call[0]
+                assert s3_key.startswith("assets/databases/my_custom_db/")
+
+    @patch("boto3.client")
+    def test_upload_zeeker_assets_preserves_directory_structure(self, mock_boto3_client, mock_zeeker_assets_dir):
+        """Test that directory structure is preserved in S3 keys."""
+        mock_s3 = MagicMock()
+        mock_boto3_client.return_value = mock_s3
+
+        storage = S3Storage("s3://test-bucket/path/")
+
+        with patch("click.echo"):
+            storage.upload_zeeker_assets(mock_zeeker_assets_dir, "test_db")
+
+            # Check that subdirectory structure is preserved
+            upload_calls = mock_s3.upload_file.call_args_list
+            s3_keys = [call[0][2] for call in upload_calls]
+
+            # Verify specific nested file path
+            assert "assets/databases/test_db/static/images/logo.svg" in s3_keys
+            assert "assets/databases/test_db/templates/database-sglawwatch.html" in s3_keys
+
+    def test_upload_zeeker_assets_verify_boto3_called(self, mock_zeeker_assets_dir):
+        """Test that verify_boto3 is called during upload."""
+        storage = S3Storage("s3://test-bucket/path/")
+
+        with patch("sglawwatch_to_sqlite.storage.verify_boto3") as mock_verify:
+            with patch("boto3.client"):
+                with patch("click.echo"):
+                    storage.upload_zeeker_assets(mock_zeeker_assets_dir, "test_db")
+
+                    mock_verify.assert_called_once()
+
+
+class TestStorageFactoryWithZeekerAssets:
+    """Test the Storage factory method works with zeeker assets functionality."""
+
+    def test_create_s3_storage_supports_zeeker_upload(self, mock_zeeker_assets_dir):
+        """Test that S3Storage created by factory supports zeeker assets."""
+        storage = Storage.create("s3://test-bucket/path/")
+
+        assert isinstance(storage, S3Storage)
+        assert hasattr(storage, "upload_zeeker_assets")
+
+        # Verify it's callable (even if we don't actually call it)
+        assert callable(storage.upload_zeeker_assets)
+
+    def test_create_local_storage_zeeker_upload_error(self, mock_zeeker_assets_dir):
+        """Test that LocalStorage created by factory shows error for zeeker upload."""
+        storage = Storage.create("./local/path")
+
+        assert isinstance(storage, LocalStorage)
+
+        with patch("click.echo") as mock_echo:
+            storage.upload_zeeker_assets(mock_zeeker_assets_dir, "test_db")
+            mock_echo.assert_called_with(
+                "Zeeker assets can only be uploaded to S3 storage", err=True
+            )
 </document_content>
 </document>
-<document index="10">
+<document index="22">
 <source>./tests/test_tools.py</source>
 <document_content>
 import datetime
@@ -1767,1018 +4675,6 @@ class TestGetHashId:
         first_result = get_hash_id(elements)
         second_result = get_hash_id(elements)
         assert first_result == second_result
-</document_content>
-</document>
-<document index="11">
-<source>./sglawwatch_to_sqlite/__init__.py</source>
-<document_content>
-__version__ = "0.2.0"
-
-</document_content>
-</document>
-<document index="12">
-<source>./sglawwatch_to_sqlite/__main__.py</source>
-<document_content>
-from .cli import cli
-
-if __name__ == "__main__":
-    cli()
-
-</document_content>
-</document>
-<document index="13">
-<source>./sglawwatch_to_sqlite/cli.py</source>
-<document_content>
-import asyncio
-import os
-
-import click
-
-from sglawwatch_to_sqlite.db_manager import DatabaseManager
-from sglawwatch_to_sqlite.metadata_manager import MetadataManager
-from sglawwatch_to_sqlite.storage import DB_FILENAME
-
-
-@click.group()
-@click.version_option()
-def cli():
-    """Track Singapore's legal developments by importing Singapore Law Watch's RSS feed into a searchable SQLite database"""
-
-
-@cli.group(name="fetch")
-def fetch():
-    """Fetch entries from Singapore Law Watch RSS feeds into a SQLite database."""
-    pass
-
-
-@fetch.command(name="headlines")
-@click.argument(
-    "location",
-    type=str,
-    required=False,
-    default=".",
-)
-@click.option(
-    "--url",
-    default="https://www.singaporelawwatch.sg/Portals/0/RSS/Headlines.xml",
-    help="URL of the Singapore Law Watch Headlines RSS feed",
-)
-@click.option(
-    "--all",
-    is_flag=True,
-    help="Fetch all entries regardless of last run state",
-)
-@click.option("--update-metadata", is_flag=True, help="Update Datasette project_metadata.json after fetching")
-def headlines_command(location, url, all, update_metadata):
-    """Fetch headline entries from Singapore Law Watch RSS feed.
-
-    LOCATION can be a local directory or an S3 path (s3://bucket/path/).
-    The database will always be named 'sglawwatch.db'.
-
-    If LOCATION is not specified, the current directory is used.
-
-    For S3 storage, you can also set the S3_BUCKET_NAME environment variable
-    instead of including it in the path.
-    """
-    # Create a database manager
-    db_manager = DatabaseManager(location)
-
-    # Import here to avoid circular imports
-    from sglawwatch_to_sqlite.resources.headlines import fetch_headlines
-
-    # Run the fetch operation asynchronously
-    asyncio.run(fetch_headlines(db_manager, url, all))
-
-    # Save the database (this will upload to S3 if needed)
-    saved_location = db_manager.save()
-
-    if location.startswith('s3://'):
-        click.echo(f"Database saved to {saved_location}")
-    else:
-        # For local storage, make the path more user-friendly
-        rel_path = os.path.join(location, DB_FILENAME)
-        if os.path.isabs(rel_path):
-            click.echo(f"Database saved to {rel_path}")
-        else:
-            # Convert to relative path for better readability
-            click.echo(f"Database saved to ./{rel_path}")
-
-    if update_metadata:
-        try:
-            metadata_manager = MetadataManager(location)
-            changes_made, message = metadata_manager.update_metadata()
-            click.echo(message)
-        except Exception as e:
-            click.echo(f"Warning: Failed to update metadata: {e}", err=True)
-
-
-# Add a command to fetch all feed types at once
-@fetch.command(name="all")
-@click.argument(
-    "location",
-    type=str,
-    required=False,
-    default=".",
-)
-@click.option(
-    "--reset",
-    is_flag=True,
-    help="Reset and fetch all entries from scratch",
-)
-@click.option("--update-metadata", is_flag=True, help="Update Datasette project_metadata.json after fetching")
-def fetch_all(location, reset, update_metadata):
-    """Fetch all available feeds (headlines and judgments).
-
-    LOCATION can be a local directory or an S3 path (s3://bucket/path/).
-    The database will always be named 'sglawwatch.db'.
-
-    If LOCATION is not specified, the current directory is used.
-
-    For S3 storage, you can also set the S3_BUCKET_NAME environment variable
-    instead of including it in the path.
-    """
-    click.echo("Fetching all Singapore Law Watch feeds...")
-
-    ctx = click.get_current_context()
-
-    # Fetch headlines
-    ctx.invoke(headlines_command, location=location, all=reset, update_metadata=False)
-
-    if update_metadata:
-        try:
-            metadata_manager = MetadataManager(location)
-            changes_made, message = metadata_manager.update_metadata()
-            click.echo(message)
-        except Exception as e:
-            click.echo(f"Warning: Failed to update metadata: {e}", err=True)
-
-    click.echo("All feeds have been processed")
-
-
-@cli.group(name="metadata")
-def metadata():
-    """Manage Datasette metadata for the Singapore Law Watch database."""
-    pass
-
-
-@metadata.command(name="update")
-@click.argument("location", type=str, required=False, default=".")
-@click.option("--dry-run", is_flag=True, help="Show changes without applying them")
-def metadata_update(location, dry_run):
-    """Update Datasette project_metadata.json with Singapore Law Watch database metadata.
-
-    LOCATION can be a local directory or an S3 path (s3://bucket/path/).
-    If LOCATION is not specified, the current directory is used.
-    """
-    try:
-        metadata_manager = MetadataManager(location)
-        changes_made, message = metadata_manager.update_metadata(dry_run)
-        click.echo(message)
-    except Exception as e:
-        click.echo(f"Error updating metadata: {e}", err=True)
-        raise click.Abort()
-
-</document_content>
-</document>
-<document index="14">
-<source>./sglawwatch_to_sqlite/db_manager.py</source>
-<document_content>
-from datetime import datetime
-
-import click
-import sqlite_utils
-
-from sglawwatch_to_sqlite.storage import Storage
-
-# Current table versions
-TABLE_VERSIONS = {
-    "headlines": 1,
-    "metadata": 1
-}
-
-
-class DatabaseManager:
-    """
-    A class that manages both the database and its storage.
-    """
-
-    def __init__(self, database_uri):
-        """
-        Initialize a DatabaseManager with a database URI.
-
-        Args:
-            database_uri: Either a local file path or an S3 URI (s3://bucket/path)
-        """
-        try:
-            # Create the appropriate storage
-            self.storage = Storage.create(database_uri)
-
-            # Get the local path (will download from S3 if needed)
-            self.local_path = self.storage.get_local_path()
-
-            # Connect to the database
-            self.db = sqlite_utils.Database(self.local_path)
-
-            # Set up tables if needed
-            self._setup_tables()
-        except Exception as e:
-            click.echo(f"Error connecting to database at {database_uri}: {e}", err=True)
-            raise click.Abort()
-
-    def _setup_tables(self):
-        """Set up the necessary tables in the database."""
-        try:
-            # Check/create schema_versions table first
-            if "schema_versions" not in self.db.table_names():
-                self.db["schema_versions"].create({
-                    "table_name": str,
-                    "version": int,
-                    "updated_at": str
-                }, pk="table_name")
-                click.echo("Created schema version tracking table")
-
-            # Create the headlines table if it doesn't exist
-            if "headlines" not in self.db.table_names():
-                self.db["headlines"].create({
-                    "id": str,  # Unique identifier for each article
-                    "category": str,  # The category of the news article
-                    "title": str,  # The title of the article
-                    "source_link": str,  # URL to the source article
-                    "author": str,  # Author of the article
-                    "date": str,  # Publication date in ISO format
-                    "summary": str,  # Summary text
-                    "text": str,  # Full text content
-                    "imported_on": str  # When the article was imported
-                }, pk="id")
-
-                # Create indexes for common query patterns
-                self.db["headlines"].create_index(["date"])
-                self.db["headlines"].create_index(["author"])
-
-                self.db["headlines"].enable_fts(["title", "summary"], create_triggers=True)
-
-                self._register_table_version("headlines", TABLE_VERSIONS["headlines"])
-
-            # Create the metadata table if it doesn't exist
-            if "metadata" not in self.db.table_names():
-                self.db["metadata"].create({
-                    "key": str,
-                    "value": str
-                }, pk="key")
-                self._register_table_version("metadata", TABLE_VERSIONS["metadata"])
-
-        except Exception as e:
-            click.echo(f"Error creating table: {e}", err=True)
-            raise click.Abort()
-
-    def _register_table_version(self, table_name, version):
-        """Register a new table version in the schema_versions table"""
-        self.db["schema_versions"].insert({
-            "table_name": table_name,
-            "version": version,
-            "updated_at": datetime.now().isoformat()
-        })
-        click.echo(f"Registered {table_name} table with schema version {version}")
-
-    def get_database(self):
-        """Get the sqlite_utils Database object."""
-        return self.db
-
-    def save(self):
-        """Save the database, handling S3 upload if needed."""
-        return self.storage.save(self.local_path)
-
-    def get_last_updated(self, feed_type):
-        """Get the last updated timestamp for a specific feed type"""
-        metadata_key = f"{feed_type}_last_updated"
-        try:
-            return self.db["metadata"].get(metadata_key)["value"]
-        except sqlite_utils.db.NotFoundError:
-            self.db["metadata"].insert({"key": metadata_key, "value": ""})
-            return ""
-
-    def update_last_updated(self, feed_type, timestamp):
-        """Update the last updated timestamp for a specific feed type"""
-        metadata_key = f"{feed_type}_last_updated"
-        self.db["metadata"].upsert({"key": metadata_key, "value": timestamp}, pk="key")
-
-</document_content>
-</document>
-<document index="15">
-<source>./sglawwatch_to_sqlite/metadata_manager.py</source>
-<document_content>
-"""
-Datasette Metadata Manager
-
-This module manages Datasette metadata integration for the sglawwatch-to-sqlite tool.
-
-How it works:
-- Loads existing metadata.json from local or S3 storage
-- Updates it with project-specific configuration from repository project_metadata.json
-- Preserves other database configs in the same file
-- Calculates hash to determine if updates are needed
-
-CLI usage:
-    # Dedicated update command
-    sglawwatch-to-sqlite metadata update ./data [--dry-run]
-
-    # With fetch commands
-    sglawwatch-to-sqlite fetch headlines ./data --update-metadata
-    sglawwatch-to-sqlite fetch all ./data --update-metadata
-
-    # S3 storage
-    sglawwatch-to-sqlite metadata update s3://bucket/path/ [--dry-run]
-
-Customization:
-- Edit repository project_metadata.json to change how database appears in Datasette
-- Configure tables, columns, facets, and database-level metadata
-- Run update command to apply changes
-
-Requirements:
-- project_metadata.json must exist in target location
-- S3 storage requires proper read/write permissions
-- Database name is always "sglawwatch" (without .db extension)
-
-See: https://docs.datasette.io/en/stable/metadata.html for Datasette metadata options
-"""
-
-import json
-import os
-import importlib.resources as pkg_resources
-
-import click
-
-from sglawwatch_to_sqlite.storage import Storage
-from sglawwatch_to_sqlite.tools import get_hash_id
-
-DATABASE_NAME = "sglawwatch"
-
-
-# Filename constants
-METADATA_FILENAME = "metadata.json"
-
-
-class MetadataManager:
-    """
-    Manages Datasette metadata.json, adding project-specific metadata.
-    """
-
-    def __init__(self, database_uri):
-        """
-        Initialize a MetadataManager with a database URI.
-
-        Args:
-            database_uri: Either a local file path or an S3 URI (s3://bucket/path)
-        """
-        try:
-            # Create the appropriate storage
-            self.storage = Storage.create(database_uri)
-
-            # Get the local path for metadata.json
-            try:
-                self.local_path = self.storage.get_local_path(filename=METADATA_FILENAME)
-                # Load existing metadata if it exists
-                if os.path.exists(self.local_path):
-                    with open(self.local_path, 'r') as f:
-                        self.metadata = json.load(f)
-                else:
-                    raise FileNotFoundError(f"No existing {METADATA_FILENAME} found")
-            except FileNotFoundError as e:
-                click.echo(f"Error: {e}. Cannot update non-existent metadata file.", err=True)
-                raise click.Abort()
-
-            # Load project metadata template (now using project_metadata.json)
-            project_data = pkg_resources.read_text(
-                'sglawwatch_to_sqlite',
-                'project_metadata.json'
-            )
-            self.project_metadata = json.loads(project_data)
-
-        except json.JSONDecodeError as e:
-            click.echo(f"Error parsing JSON: {e}", err=True)
-            raise click.Abort()
-        except Exception as e:
-            click.echo(f"Error initializing metadata manager at {database_uri}: {e}", err=True)
-            raise click.Abort()
-
-    def update_metadata(self, dry_run=False):
-        """
-        Update Datasette metadata with project metadata.
-
-        Args:
-            dry_run: If True, don't save changes, just preview them
-
-        Returns:
-            A tuple (bool, str) indicating if changes were made and a message
-        """
-        # Check if database entry exists in the metadata
-        db_name = DATABASE_NAME  # DB filename without extension
-
-        # Initialize database metadata if it doesn't exist
-        if "databases" not in self.metadata:
-            self.metadata["databases"] = {}
-
-        # Check if the database section needs to be created or updated
-        changes_needed = False
-
-        if db_name not in self.metadata["databases"]:
-            # Database entry doesn't exist at all
-            changes_needed = True
-        else:
-            # Database entry exists, check if it's different from project metadata
-            current_db_metadata = self.metadata["databases"][db_name]
-            # Sort both dictionaries to ensure consistent comparison
-            changes_needed = json.dumps(current_db_metadata, sort_keys=True) != json.dumps(self.project_metadata,
-                                                                                           sort_keys=True)
-
-        if not changes_needed:
-            message = "No changes needed - metadata is already up to date"
-            return False, message
-
-        # Update the metadata
-        self.metadata["databases"][db_name] = self.project_metadata
-
-        if dry_run:
-            message = f"Changes would be made to {METADATA_FILENAME} (dry run):\n"
-            message += json.dumps(self.metadata, indent=2)
-            return True, message
-
-        # Save the updated metadata
-        with open(self.local_path, 'w') as f:
-            json.dump(self.metadata, f, indent=2)
-
-        # Save to storage location
-        saved_location = self.storage.save(self.local_path, filename=METADATA_FILENAME)
-
-        message = f"Metadata updated and saved to {saved_location}"
-        return True, message
-
-</document_content>
-</document>
-<document index="16">
-<source>./sglawwatch_to_sqlite/project_metadata.json</source>
-<document_content>
-{
-  "title": "Singapore Law Watch Headlines",
-  "description": "A database of legal news headlines from Singapore Law Watch",
-  "license": "Apache License 2.0",
-  "license_url": "https://github.com/houfu/sglawwatch-to-sqlite/blob/master/LICENSE",
-  "source": "Singapore Law Watch",
-  "source_url": "https://www.singaporelawwatch.sg/",
-  "about": "This database contains legal news headlines imported from Singapore Law Watch's RSS feed.",
-  "about_url": "https://github.com/houfu/sglawwatch-to-sqlite",
-  "tables": {
-    "headlines": {
-      "title": "Legal Headlines",
-      "description": "Headlines from Singapore Law Watch's RSS feed",
-      "sortable_columns": [
-        "date",
-        "author"
-      ],
-      "facets": [
-        "category",
-        "author",
-        "date"
-      ],
-      "columns": {
-        "id": {
-          "title": "ID",
-          "description": "Unique identifier for each headline"
-        },
-        "category": {
-          "title": "Category",
-          "description": "The category of the news article"
-        },
-        "title": {
-          "title": "Title",
-          "description": "The headline title"
-        },
-        "source_link": {
-          "title": "Source",
-          "description": "URL to the original article"
-        },
-        "author": {
-          "title": "Author",
-          "description": "The author or publication"
-        },
-        "date": {
-          "title": "Date",
-          "description": "Publication date in ISO format"
-        },
-        "summary": {
-          "title": "Summary",
-          "description": "AI-generated summary of the article"
-        },
-        "text": {
-          "title": "Content",
-          "description": "Full text content of the article"
-        },
-        "imported_on": {
-          "title": "Imported On",
-          "description": "When the article was imported into the database"
-        }
-      }
-    }
-  }
-}
-</document_content>
-</document>
-<document index="17">
-<source>./sglawwatch_to_sqlite/storage.py</source>
-<document_content>
-import os
-import tempfile
-from urllib.parse import urlparse
-
-import click
-
-from sglawwatch_to_sqlite.tools import verify_boto3
-
-# Fixed database filename
-DB_FILENAME = "sglawwatch.db"
-
-
-class Storage:
-    """
-    Abstract base class for database storage.
-    """
-
-    def get_local_path(self, filename=DB_FILENAME):
-        """Get the local path to the file"""
-        raise NotImplementedError()
-
-    def save(self, local_path=None, filename=DB_FILENAME):
-        """Save the file"""
-        raise NotImplementedError()
-
-    @staticmethod
-    def create(location):
-        """
-        Factory method to create the appropriate storage object.
-
-        Args:
-            location: Either a local directory path or an S3 URI (s3://bucket/path/)
-                      If no location is specified, the current directory is used.
-        """
-        if not location:
-            # Default to current directory
-            return LocalStorage(".")
-
-        if location.startswith('s3://'):
-            return S3Storage(location)
-        else:
-            return LocalStorage(location)
-
-
-class LocalStorage(Storage):
-    """
-    Local filesystem storage for the database.
-    """
-
-    def __init__(self, directory):
-        # Ensure the directory doesn't have a filename at the end
-        if os.path.isfile(directory) or directory.endswith('.db'):
-            directory = os.path.dirname(directory) or "."
-
-        self.directory = directory
-        self.path = os.path.join(directory, DB_FILENAME)
-
-    def get_local_path(self, filename=DB_FILENAME):
-        # Ensure the directory exists
-        if self.directory and not os.path.exists(self.directory):
-            os.makedirs(self.directory, exist_ok=True)
-        return os.path.join(self.directory, filename)
-
-    def save(self, local_path=None, filename=DB_FILENAME):
-        """
-        Save a file to the storage location.
-
-        Args:
-            local_path: Path to the local file to save.
-                       If None, assumes the file is already at self.path.
-            filename: Name of the file to save.
-
-        Returns:
-            The final path where the file was saved.
-        """
-        target_path = os.path.join(self.directory, filename)
-
-        # For local storage, nothing needs to be done if the path is the same
-        if local_path and local_path != target_path:
-            import shutil
-
-            # Make sure the target directory exists
-            if not os.path.exists(self.directory):
-                os.makedirs(self.directory)
-
-            shutil.copy2(local_path, target_path)
-        return target_path
-
-
-class S3Storage(Storage):
-    """
-    S3 storage for the database.
-    """
-
-    def __init__(self, s3_uri):
-        self.s3_uri = s3_uri
-
-        # Parse the S3 URI
-        parsed = urlparse(s3_uri)
-
-        # Check if we have a bucket name in the URI
-        if parsed.netloc:
-            self.bucket = parsed.netloc
-        else:
-            # Try to get bucket name from environment variable
-            self.bucket = os.environ.get('S3_BUCKET_NAME')
-            if not self.bucket:
-                click.echo(
-                    "Error: S3 bucket name must be specified either in the URI or via S3_BUCKET_NAME environment variable",
-                    err=True)
-                raise click.Abort()
-
-        # Parse the key (path in the bucket)
-        self.key = parsed.path.lstrip('/')
-
-        # If the key doesn't end with a filename, append the fixed DB filename
-        if not self.key or self.key.endswith('/'):
-            self.key = f"{self.key}{DB_FILENAME}"
-        elif not os.path.basename(self.key) or not os.path.splitext(self.key)[1]:
-            # It doesn't have a file extension, assume it's a directory
-            self.key = f"{self.key}/{DB_FILENAME}"
-
-        # Get endpoint URL from environment variable if available
-        self.endpoint_url = os.environ.get('S3_ENDPOINT_URL')
-        self.region_name = os.environ.get('AWS_DEFAULT_REGION', 'default')
-
-        self._temp_file = None
-        self._temp_files = {}
-
-    def _get_s3_client(self):
-        """Get an S3 client with proper configuration."""
-        import boto3
-
-        # Create boto3 client with custom endpoint if provided
-        client_kwargs = {}
-        if self.endpoint_url:
-            client_kwargs['endpoint_url'] = self.endpoint_url
-            client_kwargs['region_name'] = self.region_name
-
-        return boto3.client('s3', **client_kwargs)
-
-    def _get_full_key(self, filename):
-        """Get the full S3 key for a filename."""
-        if not self.key or self.key.endswith('/'):
-            return f"{self.key}{filename}"
-        else:
-            # If key already has a filename, use the directory
-            base_dir = os.path.dirname(self.key)
-            if base_dir:
-                return f"{base_dir}/{filename}"
-            else:
-                return filename
-
-    def get_local_path(self, filename=DB_FILENAME):
-        verify_boto3()
-
-        # Create a temporary file
-        temp_fd, temp_path = tempfile.mkstemp(suffix=os.path.splitext(filename)[1])
-        os.close(temp_fd)
-        self._temp_files[filename] = temp_path
-
-        # Download the file from S3 if it exists
-        try:
-            from botocore.exceptions import ClientError
-
-            s3_client = self._get_s3_client()
-            full_key = self._get_full_key(filename)
-
-            try:
-                click.echo(f"Downloading {filename} from s3://{self.bucket}/{full_key}")
-                s3_client.download_file(self.bucket, full_key, temp_path)
-            except ClientError as e:
-                if e.response['Error']['Code'] == '404':
-                    if filename == DB_FILENAME:
-                        click.echo(
-                            f"No existing database found at s3://{self.bucket}/{full_key}. A new one will be created.")
-                    else:
-                        # For non-database files, raise a FileNotFoundError
-                        raise FileNotFoundError(f"File {filename} not found at s3://{self.bucket}/{full_key}")
-                else:
-                    click.echo(f"Error downloading from S3: {e}", err=True)
-                    raise click.Abort()
-        except Exception as e:
-            if isinstance(e, FileNotFoundError):
-                raise  # Re-raise FileNotFoundError for non-DB files
-            click.echo(f"Error accessing S3: {e}", err=True)
-            raise click.Abort()
-
-        return temp_path
-
-    def save(self, local_path=None, filename=DB_FILENAME):
-        verify_boto3()
-
-        if not local_path:
-            local_path = self._temp_files.get(filename)
-
-        if not local_path or not os.path.exists(local_path):
-            click.echo(f"Error: Local file not found: {local_path}", err=True)
-            raise click.Abort()
-
-        try:
-            s3_client = self._get_s3_client()
-            full_key = self._get_full_key(filename)
-
-            click.echo(f"Uploading {filename} to s3://{self.bucket}/{full_key}")
-            s3_client.upload_file(local_path, self.bucket, full_key)
-            click.echo(f"{filename} successfully uploaded to S3")
-            return f"s3://{self.bucket}/{full_key}"
-        except Exception as e:
-            click.echo(f"Error uploading to S3: {e}", err=True)
-            raise click.Abort()
-        finally:
-            # Clean up the temporary file
-            if filename in self._temp_files and os.path.exists(self._temp_files[filename]):
-                os.unlink(self._temp_files[filename])
-                del self._temp_files[filename]
-
-</document_content>
-</document>
-<document index="18">
-<source>./sglawwatch_to_sqlite/tools.py</source>
-<document_content>
-import os
-
-import click
-import httpx
-from tenacity import retry, stop_after_attempt, wait_exponential
-
-SYSTEM_PROMPT_TEXT = "As an AI expert in legal affairs, your task is to provide concise, yet comprehensive " \
-                     "summaries of legal news articles for time-constrained attorneys. These summaries " \
-                     "should highlight the critical legal aspects, relevant precedents, and implications of " \
-                     "the issues discussed in the articles.\n\nDespite their complexity, the summaries " \
-                     "should be accessible and digestible, written in an engaging and conversational style. " \
-                     "Accuracy and attention to detail are essential, as the readers will be legal " \
-                     "professionals who may use these summaries to inform their practice.\n\n" \
-                     "### Instructions: \n1. Begin the summary with a brief introduction of the topic of " \
-                     "the article.\n2. Outline the main legal aspects, implications, and precedents " \
-                     "highlighted in the article. \n3. End the summary with a succinct conclusion or " \
-                     "takeaway.\n\nThe summaries should not be longer than 100 words, but ensure they " \
-                     "efficiently deliver the key legal insights, making them beneficial for quick " \
-                     "comprehension. The end goal is to help the lawyers understand the crux of the " \
-                     "articles without having to read them in their entirety."
-
-
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=2, min=1, max=10))
-async def get_jina_reader_content(link: str) -> str:
-    """Fetch content from the Jina reader link."""
-    jina_token = os.environ.get('JINA_API_TOKEN')
-    if not jina_token:
-        click.echo("JINA_API_TOKEN environment variable not set", err=True)
-        return ""
-    jina_link = f"https://r.jina.ai/{link}"
-    headers = {
-        "Authorization": f"Bearer {jina_token}",
-        "X-Retain-Images": "none",
-        "X-Target-Selector": "article"
-    }
-    try:
-        async with httpx.AsyncClient(timeout=90) as client:
-            r = await client.get(jina_link, headers=headers)
-        return r.text
-    except httpx.RequestError as e:
-        click.echo(f"Error fetching content from Jina reader: {e}", err=True)
-        return ""
-
-
-async def get_summary(text: str) -> str:
-    """Generate a summary of the article text using OpenAI."""
-    if not os.environ.get('OPENAI_API_KEY'):
-        click.echo("OPENAI_API_KEY environment variable not set", err=True)
-        return ""
-    from openai import AsyncOpenAI
-    client = AsyncOpenAI(max_retries=3, timeout=60)
-    try:
-        response = await client.responses.create(
-            model="gpt-4.1-mini",
-            input=[
-                {
-                    "role": "system",
-                    "content": [
-                        {
-                            "type": "input_text",
-                            "text": SYSTEM_PROMPT_TEXT
-                        }
-                    ]
-                },
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "input_text",
-                            "text": f"Here is an article to summarise:\n {text}"
-                        }
-                    ]
-                }
-            ],
-            text={
-                "format": {
-                    "type": "text"
-                }
-            },
-            temperature=0.42,
-            max_output_tokens=2048,
-            top_p=1,
-            store=False
-        )
-        return response.output_text
-    except Exception as e:
-        click.echo(f"Error generating summary from OpenAI: {e}", err=True)
-        return ""
-
-
-def get_hash_id(elements: list[str], delimiter: str = "|") -> str:
-    """Generate a hash ID from a list of strings.
-
-    Args:
-        elements: List of strings to be hashed.
-        delimiter: String used to join elements (default: "|").
-
-    Returns:
-        A hexadecimal MD5 hash of the joined elements.
-
-    Examples:
-        >>> get_hash_id(["2025-05-16", "Meeting Notes"])
-        '1a2b3c4d5e6f7g8h9i0j'
-
-        >>> get_hash_id(["user123", "login", "192.168.1.1"], delimiter=":")
-        '7h8i9j0k1l2m3n4o5p6q'
-    """
-    import hashlib
-
-    if not elements:
-        raise ValueError("At least one element is required")
-
-    joined_string = delimiter.join(str(element) for element in elements)
-    return hashlib.md5(joined_string.encode()).hexdigest()
-
-
-def verify_boto3():
-    """Import boto3 and check if it's available."""
-    try:
-        import boto3  # noqa: F401
-        return True
-    except ImportError:
-        click.echo("boto3 is required for S3 storage. Install it with 'uv install boto3'.", err=True)
-        raise click.Abort()
-
-</document_content>
-</document>
-<document index="19">
-<source>./sglawwatch_to_sqlite/resources/__init__.py</source>
-<document_content>
-
-</document_content>
-</document>
-<document index="20">
-<source>./sglawwatch_to_sqlite/resources/headlines.py</source>
-<document_content>
-import asyncio
-from datetime import datetime
-from typing import Tuple, Dict
-
-import click
-import feedparser
-
-from sglawwatch_to_sqlite.db_manager import DatabaseManager
-from sglawwatch_to_sqlite.tools import get_jina_reader_content, get_summary, get_hash_id
-
-
-def convert_date_to_iso(date_str: str) -> str:
-    """Convert date string like '08 May 2025 00:01:00' to ISO format."""
-    try:
-        parsed_date = datetime.strptime(date_str, '%d %B %Y %H:%M:%S')
-        return parsed_date.isoformat()  # Returns '2025-05-08T00:01:00'
-    except ValueError:
-        # Handle potential parsing errors
-        try:
-            # Try alternative format with abbreviated month name
-            parsed_date = datetime.strptime(date_str, '%d %b %Y %H:%M:%S')
-            return parsed_date.isoformat()
-        except ValueError:
-            # If all parsing attempts fail, return original or a default
-            return datetime.now().isoformat()
-
-
-async def process_entry(db_manager: DatabaseManager, entry: Dict, last_updated: str) -> Tuple[datetime, bool, Dict]:
-    """Process a single feed entry."""
-    entry_date = datetime.fromisoformat(convert_date_to_iso(entry['published']))
-    last_updated_date = datetime.fromisoformat(last_updated) if last_updated else None
-
-    # Check if the entry is newer than the last updated date
-    is_new_entry = True
-    if last_updated_date:
-        is_new_entry = entry_date > last_updated_date
-
-    # Prepare the entry data
-    entry_data = {
-        "id": get_hash_id([entry_date.isoformat(), entry['title']]),
-        "category": entry.get("category", ""),
-        "title": entry.get("title", ""),
-        "source_link": entry.get("link", ""),
-        "author": entry.get("author", ""),
-        "date": entry_date.isoformat(),
-        "imported_on": datetime.now().isoformat()
-    }
-
-    # Echo information about the entry being processed
-    click.echo(f"Processing: {entry_data['title']} from {entry_data['date']}")
-
-    if is_new_entry:
-        click.echo(f"  → Fetching content for: {entry_data['title']}")
-        entry_data["text"] = await get_jina_reader_content(entry_data["source_link"])
-
-        click.echo(f"  → Generating summary for: {entry_data['title']}")
-        entry_data["summary"] = await get_summary(entry_data["text"])
-
-        # Get the database and insert the new entry
-        db = db_manager.get_database()
-        db["headlines"].insert(entry_data, pk="id")
-        click.echo(f"  ✓ Added to database: {entry_data['title']}")
-    else:
-        click.echo(f"  → Skipping (already processed): {entry_data['title']}")
-
-    return entry_date, is_new_entry, entry_data if is_new_entry else None
-
-
-async def fetch_headlines(db_manager: DatabaseManager, url: str, all_entries=False, max_age_limit=60) -> list:
-    """Fetch headline entries from Singapore Law Watch RSS feed."""
-    click.echo(f"Fetching headlines from {url}")
-
-    # Get the last updated timestamp
-    last_updated = None if all_entries else db_manager.get_last_updated("headlines")
-
-    # Parse the RSS feed
-    feed = feedparser.parse(url)
-
-    if feed.bozo:
-        click.echo(f"Warning: RSS feed parsing error - {feed.bozo_exception}", err=True)
-
-    if not feed.entries:
-        click.echo("No entries found in the feed.")
-        return []
-
-    # Track the most recent entry timestamp
-    most_recent_timestamp: None | datetime = None
-    new_entries_count = 0
-    new_entries = []
-    skipped_adv_count = 0
-    skipped_old_count = 0
-    current_date = datetime.now()
-
-    tasks = []
-    for entry in feed.entries:
-        # Skip entries with titles starting with "ADV"
-        if entry.get('title', '').startswith('ADV:'):
-            skipped_adv_count += 1
-            click.echo(f"Skipping advertisement: {entry.get('title', '')}")
-            continue
-
-        # Skip entries older than max_age_days
-        entry_date = datetime.fromisoformat(convert_date_to_iso(entry.get('published', '')))
-        days_old = (current_date - entry_date).days
-        if days_old > max_age_limit:
-            skipped_old_count += 1
-            click.echo(f"Skipping old headline ({days_old} days): {entry.get('title', '')}")
-            continue
-
-        task = asyncio.create_task(process_entry(db_manager, entry, last_updated))
-        tasks.append(task)
-
-    # Wait for all tasks to complete
-    results = await asyncio.gather(*tasks)
-
-    # Process results
-    for timestamp, is_new, entry_data in results:
-        if is_new:
-            new_entries_count += 1
-            if entry_data:
-                new_entries.append(entry_data)
-
-        if not most_recent_timestamp or timestamp > most_recent_timestamp:
-            most_recent_timestamp = timestamp
-
-    if most_recent_timestamp:
-        db_manager.update_last_updated("headlines", datetime.isoformat(most_recent_timestamp))
-
-    click.echo(f"Added {new_entries_count} new headlines")
-    if skipped_adv_count > 0:
-        click.echo(f"Skipped {skipped_adv_count} advertisements")
-    if skipped_old_count > 0:
-        click.echo(f"Skipped {skipped_old_count} headlines older than {max_age_limit} days")
-
-    return new_entries
 </document_content>
 </document>
 </documents>
